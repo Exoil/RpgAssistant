@@ -4,13 +4,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3A6273D4-990
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{391437C7-5C77-4BEE-8B6D-34FD818FCAC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgAssistant.Api", "src\RpgAssistant.Api\RpgAssistant.Api.csproj", "{D22A6D87-CD52-46E5-9A67-E8B2286DB488}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgAssistant.Domain", "src\RpgAssistant.Domain\RpgAssistant.Domain.csproj", "{A0293186-C3E4-4D89-B17A-6218A417B761}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgAssistant.Infrastructure", "src\RpgAssistant.Infrastructure\RpgAssistant.Infrastructure.csproj", "{213DD3AD-65C6-45CA-A97E-A46A3186E556}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgAssistant.Application", "src\RpgAssistant.Application\RpgAssistant.Application.csproj", "{4E440AED-AF66-4689-A2B2-002F78DCF96D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgAssistant.Api", "src\RpgAssistant.Api\RpgAssistant.Api.csproj", "{ABB8FE41-3F57-4A4F-A059-75E773C532DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,10 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D22A6D87-CD52-46E5-9A67-E8B2286DB488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D22A6D87-CD52-46E5-9A67-E8B2286DB488}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D22A6D87-CD52-46E5-9A67-E8B2286DB488}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D22A6D87-CD52-46E5-9A67-E8B2286DB488}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A0293186-C3E4-4D89-B17A-6218A417B761}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A0293186-C3E4-4D89-B17A-6218A417B761}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0293186-C3E4-4D89-B17A-6218A417B761}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -34,11 +30,15 @@ Global
 		{4E440AED-AF66-4689-A2B2-002F78DCF96D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E440AED-AF66-4689-A2B2-002F78DCF96D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E440AED-AF66-4689-A2B2-002F78DCF96D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABB8FE41-3F57-4A4F-A059-75E773C532DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABB8FE41-3F57-4A4F-A059-75E773C532DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABB8FE41-3F57-4A4F-A059-75E773C532DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABB8FE41-3F57-4A4F-A059-75E773C532DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D22A6D87-CD52-46E5-9A67-E8B2286DB488} = {3A6273D4-990C-4E0E-8707-65B80E85C14B}
 		{A0293186-C3E4-4D89-B17A-6218A417B761} = {3A6273D4-990C-4E0E-8707-65B80E85C14B}
 		{213DD3AD-65C6-45CA-A97E-A46A3186E556} = {3A6273D4-990C-4E0E-8707-65B80E85C14B}
 		{4E440AED-AF66-4689-A2B2-002F78DCF96D} = {3A6273D4-990C-4E0E-8707-65B80E85C14B}
+		{ABB8FE41-3F57-4A4F-A059-75E773C532DC} = {3A6273D4-990C-4E0E-8707-65B80E85C14B}
 	EndGlobalSection
 EndGlobal

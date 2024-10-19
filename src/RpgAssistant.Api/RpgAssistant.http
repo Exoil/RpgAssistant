@@ -1,6 +1,0 @@
-@RpgAssistant_HostAddress = http://localhost:5032
-
-GET {{RpgAssistant_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
