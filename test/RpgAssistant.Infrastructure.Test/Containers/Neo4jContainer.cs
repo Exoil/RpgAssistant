@@ -12,8 +12,7 @@ public class Neo4jContainer : IDisposable
     public const string Login = "neo4j";
     public const string Password = "s3cr3ts3cr3t";
     public const string Dbname = "RpgCampaignDb";
-
-    public string DatabaseUrl = $"neo4j://localhost:{ExposedBoltPort}";
+    
     public string BoltUri
     {
         get
@@ -63,10 +62,7 @@ public class Neo4jContainer : IDisposable
         ExposedHttpPort = _container.GetMappedPublicPort(HttpPort);
         ExposedBoltPort = _container.GetMappedPublicPort(BoltPort);
         
-        await using var driver = 
-            GraphDatabase.Driver(
-                BoltUri,
-                AuthTokens.Basic(Login, Password));
+        await using var driver = Driver;
 
         await using var session = driver.AsyncSession();
         await using var transactionAsync = await session.BeginTransactionAsync();
@@ -81,10 +77,7 @@ public class Neo4jContainer : IDisposable
     
     public async Task ResetAsync()
     {
-        await using var driver = 
-            GraphDatabase.Driver(
-                BoltUri,
-                AuthTokens.Basic(Login, Password));
+        await using var driver = Driver;
 
         await using var session = driver.AsyncSession();
 
