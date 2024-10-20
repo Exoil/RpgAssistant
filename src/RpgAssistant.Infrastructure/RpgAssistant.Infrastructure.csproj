@@ -16,4 +16,8 @@
       <PackageReference Include="Neo4j.Driver" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="IoC\" />
+    </ItemGroup>
+
 </Project>
