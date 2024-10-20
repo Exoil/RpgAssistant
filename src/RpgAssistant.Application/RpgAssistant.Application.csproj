@@ -5,5 +5,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    <ItemGroup>
+        <PackageReference Include="MediatR" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\RpgAssistant.Infrastructure\RpgAssistant.Infrastructure.csproj" />
+    </ItemGroup>
 </Project>
