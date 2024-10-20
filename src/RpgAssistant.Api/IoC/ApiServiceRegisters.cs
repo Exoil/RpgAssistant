@@ -8,4 +8,18 @@ public static class ApiServiceRegisters
     {
         serviceCollection.RegisterMediator();
     }
+
+    public static void SetCors(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddCors(co =>
+        {
+            co.AddDefaultPolicy(options =>
+            {
+                options
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+    }
 }
