@@ -47,18 +47,20 @@ public class HttpResponseResolver : IResponseResolver
 
     private IResult GetErrorBadRequest(Exception exception) => exception switch
     {
-        ValidationException notValidationException
+        ValidationException validationException
             => Results.Problem(
-                notValidationException.Message,
+                validationException.Message,
                 _endpointDisplayName,
                 (int)HttpStatusCode.BadRequest,
-                notValidationException.Title),
+                validationException.Title,
+                validationException.ErrorCode),
         BusinessValidationException businessValidationException
             => Results.Problem(
                 businessValidationException.Message,
                 _endpointDisplayName,
                 (int)HttpStatusCode.UnprocessableEntity,
-                businessValidationException.Title),
+                businessValidationException.Title,
+                businessValidationException.ErrorCode),
         NotFoundException notFoundException
             => Results.Problem(
                 notFoundException.Message,
@@ -70,11 +72,13 @@ public class HttpResponseResolver : IResponseResolver
                 domainException.Message,
                 _endpointDisplayName,
                 (int)HttpStatusCode.InternalServerError,
-                domainException.Title),
+                domainException.Title,
+                domainException.ErrorCode),
         _ => Results.Problem(
             $"Internal service exception, please contact with administrator.{Environment.NewLine}{exception.Message}",
             _endpointDisplayName,
             (int)HttpStatusCode.InternalServerError,
-            "Unexpected error")
+            "Unexpected error",
+            "Unknow")
     };
 }

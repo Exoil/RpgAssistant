@@ -63,6 +63,7 @@ public class HttpResponseResolverTests
         problemHttpResult!.StatusCode.Should().Be(expectedStatusCode);
         problemHttpResult.ProblemDetails.Detail.Should().Be(exception.Message);
         problemHttpResult.ProblemDetails.Title.Should().Be(exception.Title);
+        problemHttpResult.ProblemDetails.Type.Should().Be("errorCode");
         problemHttpResult.ProblemDetails.Instance.Should().Be(_mockEndpoint.DisplayName);
     }
 
@@ -87,6 +88,7 @@ public class HttpResponseResolverTests
         problemHttpResult.ProblemDetails.Detail.Should().Be(
             $"Internal service exception, please contact with administrator.{Environment.NewLine}test");
         problemHttpResult.ProblemDetails.Title.Should().Be("Unexpected error");
+        problemHttpResult.ProblemDetails.Type.Should().Be("errorCode");
         problemHttpResult.ProblemDetails.Instance.Should().Be(_mockEndpoint.DisplayName);
     }
     
@@ -130,6 +132,7 @@ public class HttpResponseResolverTests
         problemHttpResult!.StatusCode.Should().Be(expectedStatusCode);
         problemHttpResult.ProblemDetails.Detail.Should().Be(exception.Message);
         problemHttpResult.ProblemDetails.Title.Should().Be(exception.Title);
+        problemHttpResult.ProblemDetails.Type.Should().Be("errorCode");
         problemHttpResult.ProblemDetails.Instance.Should().Be(_mockEndpoint.DisplayName);
     }
 
@@ -154,6 +157,7 @@ public class HttpResponseResolverTests
         problemHttpResult.ProblemDetails.Detail.Should().Be(
             $"Internal service exception, please contact with administrator.{Environment.NewLine}test");
         problemHttpResult.ProblemDetails.Title.Should().Be("Unexpected error");
+        problemHttpResult.ProblemDetails.Type.Should().Be("errorCode");
         problemHttpResult.ProblemDetails.Instance.Should().Be(_mockEndpoint.DisplayName);
     }
     
@@ -162,22 +166,22 @@ public class HttpResponseResolverTests
     {
         yield return new object[]
         {
-            new ValidationException("Text Validation Exception", new List<ValidationMessage>()),
+            new ValidationException("Text Validation Exception", "errorCode",new List<ValidationMessage>()),
             (int)HttpStatusCode.BadRequest
         };
         yield return new object[]
         {
-            new BusinessValidationException("Test", "Test Exception"),
+            new BusinessValidationException("Test", "errorCode","Test Exception"),
             (int)HttpStatusCode.UnprocessableEntity
         };
         yield return new object[]
         {
-            new NotFoundException("Test", "Test Exception Source"),
+            new NotFoundException("Test", "errorCode","Test Exception Source"),
             (int)HttpStatusCode.NotFound
         };
         yield return new object[]
         {
-            new DomainException("Test", "Test Exception"),
+            new DomainException("Test","errorCode", "Test Exception"),
             (int)HttpStatusCode.InternalServerError
         };
     }

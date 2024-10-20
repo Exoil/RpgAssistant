@@ -7,8 +7,9 @@ public class ValidationException : DomainException
 {
     public ValidationException(
         string title,
+        string errorCode,
         IList<ValidationMessage> validationMessages)
-        : base(title, message: GetValidationMessage(validationMessages))
+        : base(title, errorCode, message: GetValidationMessage(validationMessages))
     {
     }
 
