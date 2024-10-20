@@ -3,4 +3,8 @@
         <Deterministic>true</Deterministic>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Ulid" />
+        <PackageReference Include="Ulid.SystemTextJson"/>
+    </ItemGroup>
 </Project>
