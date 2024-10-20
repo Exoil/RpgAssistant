@@ -5,12 +5,19 @@ using RpgAssistant.Domain.Exceptions;
 
 namespace RpgAssistant.Api.Resolvers;
 
+/// <summary>
+/// The HttpResponseResolver class is responsible for managing HTTP responses. It has methods to handle the results 
+/// of requests and appropriately shape the HTTP responses. The class uses the Mediator pattern and error-handling through exceptions.
+/// </summary>
 public class HttpResponseResolver : IResponseResolver
 {
     private readonly ISender _sender;
     private readonly string _endpointDisplayName;
     public bool LastResponseIsSuccess { get; set; }
 
+    /// <summary>
+    /// Constructor for the HttpResponseResolver class. Initializes the class with a sender (mediator) and HTTP context.
+    /// </summary>
     public HttpResponseResolver(
         IMediator sender,
         IHttpContextAccessor httpContextAccessorAccessor)
@@ -23,6 +30,10 @@ public class HttpResponseResolver : IResponseResolver
                 httpContextAccessorAccessor.HttpContext.GetEndpoint()!.DisplayName : string.Empty)!;
     }
 
+    /// <summary>
+    /// This function will take a request, and a function to transform the request’s payload into a result. 
+    /// It will then use a sender to send the request and call the provided function on the result to get an IResult object.
+    /// </summary>
     public async Task<IResult> GetResult<TPayload>(
         IRequest<Result<TPayload, Exception>> request,
         Func<TPayload, IResult> resultFunc,
@@ -33,7 +44,11 @@ public class HttpResponseResolver : IResponseResolver
 
         return !result.IsSuccess ? GetErrorBadRequest(result.Error!) : resultFunc.Invoke(result.Value);
     }
-    
+
+    /// <summary>
+    /// This function will take a request, and a function to transform the request’s payload into a result. 
+    /// It will then use a sender to send the request and call the provided function on the result to get an IResult object.
+    /// </summary>
     public async Task<IResult> GetResult(
         IRequest<Result<Exception>> request,
         Func<IResult> resultFunc,
@@ -45,6 +60,10 @@ public class HttpResponseResolver : IResponseResolver
         return !result.IsSuccess ? GetErrorBadRequest(result.Error!) : resultFunc.Invoke();
     }
 
+    /// <summary>
+    /// This private function takes an Exception as a parameter and returns an IResult according to the type of exception. 
+    /// This function essentially maps specific exception types to a particular HTTP response.
+    /// </summary>
     private IResult GetErrorBadRequest(Exception exception) => exception switch
     {
         ValidationException validationException
