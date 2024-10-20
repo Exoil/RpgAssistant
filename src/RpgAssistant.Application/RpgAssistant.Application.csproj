@@ -8,6 +8,8 @@
     <ItemGroup>
         <PackageReference Include="MediatR" />
         <PackageReference Include="Serilog" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\RpgAssistant.Infrastructure\RpgAssistant.Infrastructure.csproj" />
