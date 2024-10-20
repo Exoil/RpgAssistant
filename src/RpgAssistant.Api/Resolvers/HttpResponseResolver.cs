@@ -2,7 +2,6 @@ using System.Net;
 using MediatR;
 using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Exceptions;
-using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace RpgAssistant.Api.Resolvers;
 
