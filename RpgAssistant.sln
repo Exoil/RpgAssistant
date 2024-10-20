@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgAssistant.Api", "src\Rpg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgAssistant.Api.Test", "test\RpgAssistant.Api.Test\RpgAssistant.Api.Test.csproj", "{91E6B32D-DA2B-4C6B-93F3-C9D39E0650AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgAssistant.Application.Test", "test\RpgAssistant.Application.Test\RpgAssistant.Application.Test.csproj", "{0E7730CE-4355-4951-929B-65D6653366AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgAssistant.Infrastructure.Test", "test\RpgAssistant.Infrastructure.Test\RpgAssistant.Infrastructure.Test.csproj", "{173CF93B-4DA1-4DCA-A141-4DED341A4F2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +44,14 @@ Global
 		{91E6B32D-DA2B-4C6B-93F3-C9D39E0650AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91E6B32D-DA2B-4C6B-93F3-C9D39E0650AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91E6B32D-DA2B-4C6B-93F3-C9D39E0650AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E7730CE-4355-4951-929B-65D6653366AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E7730CE-4355-4951-929B-65D6653366AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E7730CE-4355-4951-929B-65D6653366AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E7730CE-4355-4951-929B-65D6653366AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{173CF93B-4DA1-4DCA-A141-4DED341A4F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{173CF93B-4DA1-4DCA-A141-4DED341A4F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{173CF93B-4DA1-4DCA-A141-4DED341A4F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{173CF93B-4DA1-4DCA-A141-4DED341A4F2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A0293186-C3E4-4D89-B17A-6218A417B761} = {3A6273D4-990C-4E0E-8707-65B80E85C14B}
@@ -47,5 +59,7 @@ Global
 		{4E440AED-AF66-4689-A2B2-002F78DCF96D} = {3A6273D4-990C-4E0E-8707-65B80E85C14B}
 		{ABB8FE41-3F57-4A4F-A059-75E773C532DC} = {3A6273D4-990C-4E0E-8707-65B80E85C14B}
 		{91E6B32D-DA2B-4C6B-93F3-C9D39E0650AA} = {391437C7-5C77-4BEE-8B6D-34FD818FCAC6}
+		{0E7730CE-4355-4951-929B-65D6653366AE} = {391437C7-5C77-4BEE-8B6D-34FD818FCAC6}
+		{173CF93B-4DA1-4DCA-A141-4DED341A4F2A} = {391437C7-5C77-4BEE-8B6D-34FD818FCAC6}
 	EndGlobalSection
 EndGlobal
