@@ -1,30 +1,35 @@
+using System.ComponentModel.DataAnnotations;
 using RpgAssistant.Domain.Exceptions;
+using ValidationException = RpgAssistant.Domain.Exceptions.ValidationException;
 
 namespace RpgAssistant.Domain.Models;
 
 public record BaseValueObject
 {
-    protected readonly string ModelName = nameof(BaseValueObject);
-    protected readonly IList<ValidationMessage> ValidationMessages;
+    protected virtual string ModelName { get; set; } = nameof(BaseValueObject);
+    protected readonly IList<ValidationMessage> ValidationMessages = new List<ValidationMessage>();
 
-    protected BaseValueObject()
-    {
-        ValidationMessages = new List<ValidationMessage>();
-    }
-
-    protected void Validate()
+    protected virtual void Validate()
     {
         ThrowValidationException();
     }
 
     protected void ThrowValidationException()
     {
-        if (!ValidationMessages.Any())
-            return;
-
+        
+        var context = new ValidationContext(this, serviceProvider: null, items: null);
+        var validationResults = new List<ValidationResult>();
+        
+        if (!Validator.TryValidateObject(this, context, validationResults, validateAllProperties: true))
+        {
+            
+        }
+        
         throw new ValidationException(
             "Validation Error.",
             "Model properties are not valid.",
             ValidationMessages);
     }
+    
+    protected void ValidateProperty
 }
