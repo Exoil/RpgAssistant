@@ -9,12 +9,7 @@ public record BaseValueObject
 { 
     protected virtual string ModelName { get; set; } = nameof(BaseValueObject);
 
-    protected virtual void Validate()
-    {
-        ThrowValidationException();
-    }
-
-    protected void ThrowValidationException()
+    protected void Validate()
     {
         
         var context = new ValidationContext(this, serviceProvider: null, items: null);
