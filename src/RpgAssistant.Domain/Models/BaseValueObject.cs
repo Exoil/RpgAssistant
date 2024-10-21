@@ -7,11 +7,10 @@ namespace RpgAssistant.Domain.Models;
 
 public record BaseValueObject
 { 
-    protected virtual string ModelName { get; set; } = nameof(BaseValueObject);
+    protected virtual string ModelName { get; } = nameof(BaseValueObject);
 
     protected void Validate()
     {
-        
         var context = new ValidationContext(this, serviceProvider: null, items: null);
         var validationResults = new List<ValidationResult>();
 
