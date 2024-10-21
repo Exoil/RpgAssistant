@@ -5,11 +5,11 @@ namespace RpgAssistant.Domain.Models;
 public record BaseValueObject
 {
     protected readonly string ModelName = nameof(BaseValueObject);
-    protected readonly IList<ValidationMessage> _validationMessages;
+    protected readonly IList<ValidationMessage> ValidationMessages;
 
     protected BaseValueObject()
     {
-        _validationMessages = new List<ValidationMessage>();
+        ValidationMessages = new List<ValidationMessage>();
     }
 
     protected void Validate()
@@ -19,12 +19,12 @@ public record BaseValueObject
 
     protected void ThrowValidationException()
     {
-        if (!_validationMessages.Any())
+        if (!ValidationMessages.Any())
             return;
 
         throw new ValidationException(
             "Validation Error.",
             "Model properties are not valid.",
-            _validationMessages);
+            ValidationMessages);
     }
 }
