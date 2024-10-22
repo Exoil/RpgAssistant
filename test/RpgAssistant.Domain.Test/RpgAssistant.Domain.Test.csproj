@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\RpgAssistant.Domain\RpgAssistant.Domain.csproj" />
+      <ProjectReference Include="..\..\src\RpgAssistant.Domain\RpgAssistant.Domain.csproj" />
     </ItemGroup>
 
 </Project>
