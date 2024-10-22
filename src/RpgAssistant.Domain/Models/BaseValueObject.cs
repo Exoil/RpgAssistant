@@ -13,10 +13,10 @@ public record BaseValueObject
     {
         var context = new ValidationContext(this, serviceProvider: null, items: null);
         var validationResults = new List<ValidationResult>();
-
-        if (Validator.TryValidateObject(this, context, validationResults, validateAllProperties: true)) 
+        
+        if (Validator.TryValidateObject(this, context, validationResults, true))
             return;
-
+        
         var validationMessages = validationResults
             .Select(x => new ValidationMessage(x.MemberNames.First(), x.ErrorMessage!))
             .ToImmutableList();
