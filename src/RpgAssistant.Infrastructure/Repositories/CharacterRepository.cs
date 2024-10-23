@@ -42,7 +42,7 @@ public class CharacterRepository :
     {
         var queryString = @"
             MATCH (ch:Character {Id: $Id}) 
-            RETURN ch.Id AS Id, ch.Name AS Name, ch.Description";
+            RETURN ch.Id AS Id, ch.Name AS Name, ch.Description AS Description";
         var query = new Query(queryString, new { Id = id.ToDatabaseId() });
         
         var cursorResult = await _session.RunAsync(query);
