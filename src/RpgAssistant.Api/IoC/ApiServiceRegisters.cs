@@ -1,3 +1,4 @@
+using RpgAssistant.Api.Resolvers;
 using RpgAssistant.Application.IoC;
 using RpgAssistant.Infrastructure.IoC;
 
@@ -9,6 +10,8 @@ public static class ApiServiceRegisters
     {
         serviceCollection.RegisterMediator();
         serviceCollection.RegisterDbNeo4j(configuration);
+        serviceCollection.RegisterRepositories();
+        serviceCollection.RegisterResponseResolver();
     }
 
     public static void SetCors(this IServiceCollection serviceCollection)
@@ -23,5 +26,10 @@ public static class ApiServiceRegisters
                     .AllowAnyMethod();
             });
         });
+    }
+
+    private static void RegisterResponseResolver(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddScoped<IResponseResolver, HttpResponseResolver>();
     }
 }

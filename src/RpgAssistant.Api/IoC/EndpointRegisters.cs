@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using RpgAssistant.Api.Dtos;
+using RpgAssistant.Api.Resolvers;
 
 namespace RpgAssistant.Api.IoC;
 
@@ -17,5 +19,13 @@ public static class EndpointRegisters
         this WebApplication webApplication)
     {
         var endpointGroup = webApplication.MapGroup("/characters");
+
+        endpointGroup.MapPost("/", (
+            [FromServices] IResponseResolver responeReslver,
+            [FromBody] Character character,
+            CancellationToken cancellationToken = default) =>
+        {
+
+        });
     }
 }
