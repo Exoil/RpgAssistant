@@ -1,7 +1,6 @@
 using Neo4j.Driver;
 using RpgAssistant.Domain.Entities;
 using RpgAssistant.Domain.ErrorMessages;
-using RpgAssistant.Domain.Exceptions;
 using RpgAssistant.Domain.Extensions;
 using RpgAssistant.Infrastructure.IRepositories;
 using RpgAssistant.Infrastructure.Models;
