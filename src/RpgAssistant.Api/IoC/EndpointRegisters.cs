@@ -12,4 +12,10 @@ public static class EndpointRegisters
                 configuration.GetSection("AppVersion").Value)
             .Produces<string>();
     }
+
+    public static void RegisterCharacterEndpoints(
+        this WebApplication webApplication)
+    {
+        var endpointGroup = webApplication.MapGroup("/characters");
+    }
 }
