@@ -8,10 +8,10 @@ public record CreateCharacter : BaseValueObject
 {
     protected override string ModelName { get; } = nameof(CreateCharacter);
     [Required]
-    [StringLength(CharacterConstants.MinNameLength, MinimumLength = CharacterConstants.MaxNameLength, ErrorMessage = "Name for {0} must be between {1} and {2} characters.")]
-    public string Name;
-    [StringLength(CharacterConstants.MinDescriptionLength, MinimumLength = CharacterConstants.MaxDescriptionLength, ErrorMessage = "Name for {0} must be between {1} and {2} characters.")]
-    public string Description;
+    [StringLength(CharacterConstants.MaxNameLength, MinimumLength = CharacterConstants.MinNameLength, ErrorMessage = "Name for {0} must be between {1} and {2} characters.")]
+    public string Name { get; }
+    [StringLength(CharacterConstants.MaxDescriptionLength, MinimumLength = CharacterConstants.MinNameLength, ErrorMessage = "Name for {0} must be between {1} and {2} characters.")]
+    public string Description { get; }
 
     public CreateCharacter(
         string name,
