@@ -17,7 +17,7 @@ public class CharacterRepositoryCreateAsyncTest
     
     [Fact]
     [Trait(Constants.TraitName,Constants.TestTitle)]
-    public async Task Create_Character_No_Throw_Exception()
+    public async Task Should_Return_Ulid_When_CreateAsync_Is_Called_With_Valid_CreateCharacter()
     {
         // Arrange
         var characterCreate = new CreateCharacter(
