@@ -4,6 +4,7 @@ using NSubstitute.ExceptionExtensions;
 using RpgAssistant.Application.Handlers.CommandHandlers;
 using RpgAssistant.Application.Handlers.CommandHandlers.Commands;
 using RpgAssistant.Domain.Constants;
+using RpgAssistant.Domain.Exceptions;
 using RpgAssistant.Infrastructure.IRepositories;
 
 namespace RpgAssistant.Application.Test.Handlers.CommandHandlers;
@@ -19,7 +20,9 @@ public class CreateCharacterCommandTests
             var id = Ulid.NewUlid();
             var characterRepository = Substitute.For<ICharacterRepository>();
             var command = new CreateCharacterCommand("John", "Desc");
-            characterRepository.CreateAsync(Arg.Any<CreateCharacterCommand>(), Arg.Any<CancellationToken>()).Returns(id);
+            characterRepository
+                .CreateAsync(Arg.Any<CreateCharacterCommand>(), Arg.Any<CancellationToken>())
+                .Returns(id);
 
             var handler = new CreateCharacterCommandHandler(characterRepository);
 
@@ -27,7 +30,7 @@ public class CreateCharacterCommandTests
             var ulidReturned = await handler.Handle(command, default);
 
             // Assert
-            ulidReturned.Should().Be(id);
+            ulidReturned.Value.Should().Be(id);
         }
 
         [Fact]
@@ -41,10 +44,10 @@ public class CreateCharacterCommandTests
             var handler = new CreateCharacterCommandHandler(characterRepository);
 
             // Act
-            Func<Task> action = async () => await handler.Handle(new CreateCharacterCommand("John", "Desc"), CancellationToken.None);
+            var result = await handler.Handle(new CreateCharacterCommand("John", "Desc"), CancellationToken.None);
 
             // Assert
-            await action.Should().ThrowAsync<Exception>();
+            result.Error.Should().BeOfType<DomainException>();
         }
     }
     
