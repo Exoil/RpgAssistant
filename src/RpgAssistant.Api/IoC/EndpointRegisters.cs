@@ -25,7 +25,7 @@ public static class EndpointRegisters
             [FromServices] IResponseResolver responseResolver,
             [FromBody] Character character,
             CancellationToken cancellationToken = default) =>
-            await responseResolver.GetResult<Ulid>(
+            await responseResolver.GetResult(
                 new CreateCharacterCommand(character.Name, character.Description),
                 data =>  Results.Ok(data.ToGuid()),
                 cancellationToken));
