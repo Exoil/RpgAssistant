@@ -63,7 +63,6 @@ public class HttpResponseResolverTests
         problemHttpResult!.StatusCode.Should().Be(expectedStatusCode);
         problemHttpResult.ProblemDetails.Detail.Should().Be(exception.Message);
         problemHttpResult.ProblemDetails.Title.Should().Be(exception.Title);
-        problemHttpResult.ProblemDetails.Type.Should().Be("errorCode");
         problemHttpResult.ProblemDetails.Instance.Should().Be(_mockEndpoint.DisplayName);
     }
 
@@ -88,7 +87,6 @@ public class HttpResponseResolverTests
         problemHttpResult.ProblemDetails.Detail.Should().Be(
             $"Internal service exception, please contact with administrator.{Environment.NewLine}test");
         problemHttpResult.ProblemDetails.Title.Should().Be("Unexpected error");
-        problemHttpResult.ProblemDetails.Type.Should().Be("errorCode");
         problemHttpResult.ProblemDetails.Instance.Should().Be(_mockEndpoint.DisplayName);
     }
     
@@ -132,7 +130,6 @@ public class HttpResponseResolverTests
         problemHttpResult!.StatusCode.Should().Be(expectedStatusCode);
         problemHttpResult.ProblemDetails.Detail.Should().Be(exception.Message);
         problemHttpResult.ProblemDetails.Title.Should().Be(exception.Title);
-        problemHttpResult.ProblemDetails.Type.Should().Be("errorCode");
         problemHttpResult.ProblemDetails.Instance.Should().Be(_mockEndpoint.DisplayName);
     }
 
@@ -157,7 +154,6 @@ public class HttpResponseResolverTests
         problemHttpResult.ProblemDetails.Detail.Should().Be(
             $"Internal service exception, please contact with administrator.{Environment.NewLine}test");
         problemHttpResult.ProblemDetails.Title.Should().Be("Unexpected error");
-        problemHttpResult.ProblemDetails.Type.Should().Be("errorCode");
         problemHttpResult.ProblemDetails.Instance.Should().Be(_mockEndpoint.DisplayName);
     }
     

@@ -72,7 +72,8 @@ public class HttpResponseResolver : IResponseResolver
                 _endpointDisplayName,
                 (int)HttpStatusCode.BadRequest,
                 validationException.Title,
-                validationException.ErrorCode),
+                validationException.ErrorCode,
+                validationException.ValidationErrors!),
         BusinessValidationException businessValidationException
             => Results.Problem(
                 businessValidationException.Message,

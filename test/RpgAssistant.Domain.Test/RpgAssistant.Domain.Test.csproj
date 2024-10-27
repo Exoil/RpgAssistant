@@ -12,7 +12,6 @@
     <ItemGroup>
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="NSubstitute" />
         <PackageReference Include="xunit"/>
         <PackageReference Include="xunit.runner.visualstudio">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\RpgAssistant.Api\RpgAssistant.Api.csproj" />
+      <ProjectReference Include="..\..\src\RpgAssistant.Domain\RpgAssistant.Domain.csproj" />
     </ItemGroup>
 
 </Project>
