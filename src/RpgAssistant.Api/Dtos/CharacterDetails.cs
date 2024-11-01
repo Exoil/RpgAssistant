@@ -1,5 +1,3 @@
-using RpgAssistant.Application.Models;
-
 namespace RpgAssistant.Api.Dtos;
 
 public record CharacterDetails
