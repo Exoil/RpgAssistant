@@ -69,7 +69,7 @@ public class CharacterRepository :
             RETURN ch.Id AS Id, ch.Name AS Name, ch.Description AS Description
             SKIP $Skip
             LIMIT $Limit";
-        var query = new Query(queryString, new { Skip = (int)page.Number, Limit = (int)page.Size });
+        var query = new Query(queryString, new { Skip = (int)page.Number * (int)page.Size , Limit = (int)page.Size });
         
         var cursorResult = (await _session.RunAsync(query)).ToListAsync(cancellationToken);
 

@@ -16,7 +16,7 @@ public class CharacterRepositoryGetListOfCharactersTests : IClassFixture<Neo4jCo
 
     [Fact]
     [Trait(Constants.TraitName, Constants.TestTitle)]
-    public async Task Should_Return_CharacacterCollection_With_Count_Two()
+    public async Task Should_Return_CharacterCollection_With_Count_Two()
     {
         // Arrange
         var characterCreateList = new List<CreateCharacter>()
@@ -45,5 +45,33 @@ public class CharacterRepositoryGetListOfCharactersTests : IClassFixture<Neo4jCo
             var characterExists = characterCreateList.Exists(y => y.Name == x.Name && y.Description == x.Description);
             characterExists.Should().BeTrue();
         });
-    } 
+    }
+    
+    [Fact]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
+    public async Task Should_Return_CharacterCollection_With_Count_Zero_When_Page_Number_Is_One_Size_Is_Two()
+    {
+        // Arrange
+        var characterCreateList = new List<CreateCharacter>()
+        { 
+            new(
+                "CharacterNamess", 
+                "TestDescriptionss"),
+            new(
+                "CharacterNameTwoss", 
+                "TestDescriptionTwoss")
+        };
+        await using var characterRepository = new CharacterRepository(_container.Driver);
+        
+        await characterRepository.CreateAsync(characterCreateList[0], CancellationToken.None);
+        await characterRepository.CreateAsync(characterCreateList[1], CancellationToken.None);
+
+        var page = new Page(1, (uint)characterCreateList.Count);
+        
+        // Act
+        var characterList = await characterRepository.GetAsync(page, CancellationToken.None);
+        
+        // Assert
+        characterList.Length.Should().Be(0);
+    }
 }
