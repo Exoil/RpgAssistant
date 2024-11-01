@@ -49,7 +49,7 @@ public class CharacterRepositoryGetListOfCharactersTests : IClassFixture<Neo4jCo
     
     [Fact]
     [Trait(Constants.TraitName, Constants.TestTitle)]
-    public async Task Should_Return_CharacterCollection_With_Count_Zero_When_Page_Number_Is_One_Size_Is_Two()
+    public async Task Should_Return_CharacterCollection_With_Count_Zero_When_Page_Number_Is_Ten_Size_Is_Two()
     {
         // Arrange
         var characterCreateList = new List<CreateCharacter>()
@@ -66,7 +66,7 @@ public class CharacterRepositoryGetListOfCharactersTests : IClassFixture<Neo4jCo
         await characterRepository.CreateAsync(characterCreateList[0], CancellationToken.None);
         await characterRepository.CreateAsync(characterCreateList[1], CancellationToken.None);
 
-        var page = new Page(1, (uint)characterCreateList.Count);
+        var page = new Page(10, (uint)characterCreateList.Count);
         
         // Act
         var characterList = await characterRepository.GetAsync(page, CancellationToken.None);
