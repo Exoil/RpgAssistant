@@ -36,7 +36,7 @@ public static class EndpointRegisters
 
         endpointGroup.MapGet("/{id}",  async (
                 [FromServices] IResponseResolver responseResolver,
-                [FromBody] Guid id,
+                [FromRoute] Guid id,
                 CancellationToken cancellationToken = default) =>
             await responseResolver.GetResult(
                 new GetCharacterByIdQuery(id.ToUlidFormat()),
