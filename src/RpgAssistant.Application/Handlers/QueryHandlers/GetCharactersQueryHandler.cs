@@ -16,8 +16,14 @@ public class GetCharactersQueryHandler
         _characterRepository = characterRepository;
     }
 
-    public Task<Result<ImmutableArray<CharacterDetails>, Exception>> Handle(GetCharactersQuery request, CancellationToken cancellationToken)
+    public async Task<Result<ImmutableArray<CharacterDetails>, Exception>> Handle(GetCharactersQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var characters = await _characterRepository.GetAsync(request, cancellationToken);
+
+        return characters.Select(x => new CharacterDetails(
+            x.Id.ToGuid(),
+            x.Name,
+            x.Description))
+            .ToImmutableArray();
     }
 }

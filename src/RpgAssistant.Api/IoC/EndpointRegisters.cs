@@ -43,7 +43,7 @@ public static class EndpointRegisters
                 data =>  Results.Ok(new CharacterDetails(data)),
                 cancellationToken));
         
-        endpointGroup.MapGet("/",  async (
+        endpointGroup.MapGet("",  async (
                 [FromServices] IResponseResolver responseResolver,
                 [FromQuery] uint number = 0,
                 [FromQuery] uint size = 10,
