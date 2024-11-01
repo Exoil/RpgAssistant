@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using RpgAssistant.Api.Dtos;
 using RpgAssistant.Api.Resolvers;
 using RpgAssistant.Application.Handlers.CommandHandlers.Commands;
+using RpgAssistant.Application.Handlers.QueryHandlers.Queries;
+using RpgAssistant.Domain.Extensions;
 
 namespace RpgAssistant.Api.IoC;
 
@@ -21,13 +23,24 @@ public static class EndpointRegisters
     {
         var endpointGroup = webApplication.MapGroup("/characters");
 
-        endpointGroup.MapPost("/", async (
+        endpointGroup.MapPost(
+            "/", 
+            async (
             [FromServices] IResponseResolver responseResolver,
             [FromBody] Character character,
             CancellationToken cancellationToken = default) =>
             await responseResolver.GetResult(
                 new CreateCharacterCommand(character.Name, character.Description),
-                data =>  Results.Ok(data.ToGuid()),
+                data =>  Results.Created(string.Empty,data.ToGuid()),
+                cancellationToken));
+
+        endpointGroup.MapGet("/{id}",  async (
+                [FromServices] IResponseResolver responseResolver,
+                [FromBody] Guid id,
+                CancellationToken cancellationToken = default) =>
+            await responseResolver.GetResult(
+                new GetCharacterByIdQuery(id.ToUlidFormat()),
+                data =>  Results.Ok(data),
                 cancellationToken));
     }
 }
