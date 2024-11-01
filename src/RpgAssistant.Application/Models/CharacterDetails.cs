@@ -1,3 +1,3 @@
 namespace RpgAssistant.Application.Models;
 
-public record CharacterDetails(string Name, string Description);
+public record CharacterDetails(Guid Id, string Name, string Description);

@@ -22,7 +22,7 @@ public class GetCharacterByIdQueryHandler : IRequestHandler<GetCharacterByIdQuer
         {
             var character = await _characterRepository.GetAsync(request.Id, cancellationToken);
 
-            return new CharacterDetails(character.Name, character.Description);
+            return new CharacterDetails(character.Id.ToGuid(), character.Name, character.Description);
         }
         catch (Exception e)
         {
