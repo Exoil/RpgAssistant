@@ -9,7 +9,7 @@ public static class IdExtensions
 
     public static Ulid ToUlidFormat(this Guid id)
     {
-        return Ulid.Parse(id.ToString());
+        return new Ulid(id);
     }
     
     public static string ToDatabaseId(this Ulid id)
