@@ -48,8 +48,8 @@ public class BaseValueObjectTest
 
 public record FooValueObject : BaseValueObject
 {
-    protected override string ModelName { get; } = nameof(FooValueObject)
-;
+    protected override string ModelName { get; } = nameof(FooValueObject);
+    
     [Range(minimum: 1, maximum: 10, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
     public int NumberSample { get; }
     

@@ -40,7 +40,18 @@ public static class EndpointRegisters
                 CancellationToken cancellationToken = default) =>
             await responseResolver.GetResult(
                 new GetCharacterByIdQuery(id.ToUlidFormat()),
-                data =>  Results.Ok(data),
+                data =>  Results.Ok(new CharacterDetails(data)),
+                cancellationToken));
+        
+        endpointGroup.MapGet("",  async (
+                [FromServices] IResponseResolver responseResolver,
+                [FromQuery] uint number = 0,
+                [FromQuery] uint size = 10,
+                CancellationToken cancellationToken = default) =>
+            await responseResolver.GetResult(
+                new GetCharactersQuery(number, size),
+                data =>
+                    Results.Ok(data.Select(x => new CharacterDetails(x))),
                 cancellationToken));
     }
 }

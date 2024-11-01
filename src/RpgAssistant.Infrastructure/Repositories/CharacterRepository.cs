@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Neo4j.Driver;
 using RpgAssistant.Domain.Entities;
 using RpgAssistant.Domain.ErrorMessages;
@@ -59,5 +60,37 @@ public class CharacterRepository :
                     record["Description"].As<string>()));
 
         return campaign ?? throw CharacterErrorMessages.GetNotFoundCharacterMessage("DataSource");
+    }
+
+    public async Task<ImmutableArray<Character>> GetAsync(Page page, CancellationToken cancellationToken = default)
+    {
+        var queryString = @"
+            MATCH (ch:Character) 
+            RETURN ch.Id AS Id, ch.Name AS Name, ch.Description AS Description
+            SKIP $Skip
+            LIMIT $Limit";
+        var query = new Query(queryString, new { Skip = (int)page.Number * (int)page.Size , Limit = (int)page.Size });
+        
+        var cursorResult = (await _session.RunAsync(query)).ToListAsync(cancellationToken);
+
+        if (cursorResult is null)
+        {
+            throw CharacterErrorMessages.GetNotFoundCharacterMessage("DataSource");
+        }
+
+        var characters = new List<Character>();
+
+        if (!cursorResult.Result.Any())
+        {
+            return characters.ToImmutableArray();
+        }
+
+        var results = cursorResult.Result.ConvertAll(x => new Character(
+            Ulid.Parse(x["Id"].As<string>()),
+            x["Name"].As<string>(),
+            x["Description"].As<string>())).AsEnumerable();
+        characters.AddRange(results);
+
+        return characters.ToImmutableArray();
     }
 }
