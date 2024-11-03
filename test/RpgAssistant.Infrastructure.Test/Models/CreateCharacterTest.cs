@@ -1,4 +1,3 @@
-using FluentAssertions;
 using RpgAssistant.Domain.Constants;
 using RpgAssistant.Domain.Exceptions;
 using RpgAssistant.Infrastructure.Models;
