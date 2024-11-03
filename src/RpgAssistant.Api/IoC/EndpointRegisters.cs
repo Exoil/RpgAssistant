@@ -63,5 +63,14 @@ public static class EndpointRegisters
                 new UpdateCharacterCommand(id.ToUlidFormat(), characterDataToUpdate.Name, characterDataToUpdate.Description),
                 () => Results.NoContent(),
                 cancellationToken));
+        
+        endpointGroup.MapDelete("/{id}",  async (
+                [FromServices] IResponseResolver responseResolver,
+                [FromRoute] Guid id,
+                CancellationToken cancellationToken = default) =>
+            await responseResolver.GetResult(
+                new DeleteCharacterByIdCommand(id.ToUlidFormat()),
+                () =>  Results.NoContent(),
+                cancellationToken));
     }
 }
