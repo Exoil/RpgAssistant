@@ -1,13 +1,31 @@
 using MediatR;
 using RpgAssistant.Application.Handlers.CommandHandlers.Commands;
 using RpgAssistant.Application.Models;
+using RpgAssistant.Application.Utilities;
+using RpgAssistant.Infrastructure.IRepositories;
 
 namespace RpgAssistant.Application.Handlers.CommandHandlers;
 
 public class UpdateCharacterCommandHandler : IRequestHandler<UpdateCharacterCommand, Result<Exception>>
 {
-    public Task<Result<Exception>> Handle(UpdateCharacterCommand request, CancellationToken cancellationToken)
+    private readonly ICharacterRepository _characterRepository;
+
+    public UpdateCharacterCommandHandler(ICharacterRepository characterRepository)
     {
-        throw new NotImplementedException();
+        _characterRepository = characterRepository;
+    }
+
+    public async Task<Result<Exception>> Handle(UpdateCharacterCommand request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _characterRepository.UpdateAsync(request, cancellationToken);
+
+            return new Result<Exception>();
+        }
+        catch (Exception e)
+        {
+            return ExceptionUtility.ResolveExceptionToReturn(e);
+        }
     }
 }

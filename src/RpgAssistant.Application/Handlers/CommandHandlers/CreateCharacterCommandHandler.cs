@@ -25,6 +25,5 @@ public class CreateCharacterCommandHandler : IRequestHandler<CreateCharacterComm
         {
             return ExceptionUtility.ResolveExceptionToReturn(e);
         }
-        
     }
 }
