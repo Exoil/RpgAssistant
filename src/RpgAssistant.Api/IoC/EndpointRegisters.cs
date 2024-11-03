@@ -53,5 +53,12 @@ public static class EndpointRegisters
                 data =>
                     Results.Ok(data.Select(x => new CharacterDetails(x))),
                 cancellationToken));
+
+        endpointGroup.MapPut("/{id}",  async (
+                [FromServices] IResponseResolver responseResolver,
+                [FromRoute] Guid id,
+                [FromBody] Character characterDataToUpdate,
+                CancellationToken cancellationToken = default) =>
+           throw new NotSupportedException("Not implemented"));
     }
 }
