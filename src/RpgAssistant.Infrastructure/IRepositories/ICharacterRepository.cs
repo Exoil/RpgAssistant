@@ -13,4 +13,6 @@ public interface ICharacterRepository
     Task<ImmutableArray<Character>> GetAsync(Page page, CancellationToken cancellationToken = default);
     
     Task UpdateAsync(UpdateCharacter updateCharacter, CancellationToken cancellationToken = default);
+    
+    Task DeleteAsync(Ulid id, CancellationToken cancellationToken = default);
 }

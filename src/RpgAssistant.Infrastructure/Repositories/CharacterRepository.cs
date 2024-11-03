@@ -46,8 +46,9 @@ public class CharacterRepository :
         var query = new Query(queryString, new { Id = id.ToDatabaseId() });
         
         var cursorResult = await _session.RunAsync(query);
-
-        if (cursorResult is null)
+        
+        if (cursorResult is null || 
+            !(await cursorResult.FetchAsync()))
         {
             throw CharacterErrorMessages.GetNotFoundCharacterMessage("DataSource");
         }
@@ -108,6 +109,25 @@ public class CharacterRepository :
                 Id = updateCharacter.Id.ToDatabaseId(),
                 updateCharacter.Name,
                 updateCharacter.Description
+            });
+        
+        await using var transaction =  await _session.BeginTransactionAsync();
+
+        await transaction.RunAsync(query);
+        await transaction.CommitAsync();
+    }
+
+    public async Task DeleteAsync(Ulid id, CancellationToken cancellationToken = default)
+    {
+        var queryString = @"
+            MATCH (ch:Character {Id: $Id}) 
+            DELETE ch";
+
+        var query = new Query(
+            queryString,
+            new
+            {
+                Id = id.ToDatabaseId()
             });
         
         await using var transaction =  await _session.BeginTransactionAsync();
