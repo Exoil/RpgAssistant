@@ -59,6 +59,9 @@ public static class EndpointRegisters
                 [FromRoute] Guid id,
                 [FromBody] Character characterDataToUpdate,
                 CancellationToken cancellationToken = default) =>
-           throw new NotSupportedException("Not implemented"));
+            await responseResolver.GetResult(
+                new UpdateCharacterCommand(id.ToUlidFormat(), characterDataToUpdate.Name, characterDataToUpdate.Description),
+                () => Results.NoContent(),
+                cancellationToken));
     }
 }
