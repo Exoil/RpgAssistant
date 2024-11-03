@@ -93,4 +93,26 @@ public class CharacterRepository :
 
         return characters.ToImmutableArray();
     }
+
+    public async Task UpdateAsync(UpdateCharacter updateCharacter, CancellationToken cancellationToken = default)
+    {
+        var queryString = @"
+            MATCH (ch:Character {Id: $Id}) 
+            SET ch.Name = $Name, ch.Description = $Description
+            RETURN ID(ch) AS nodeId";
+
+        var query = new Query(
+            queryString,
+            new
+            {
+                Id = updateCharacter.Id.ToDatabaseId(),
+                updateCharacter.Name,
+                updateCharacter.Description
+            });
+        
+        await using var transaction =  await _session.BeginTransactionAsync();
+
+        await transaction.RunAsync(query);
+        await transaction.CommitAsync();
+    }
 }

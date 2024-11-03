@@ -1,4 +1,3 @@
-using FluentAssertions;
 using RpgAssistant.Infrastructure.Models;
 using RpgAssistant.Infrastructure.Repositories;
 using RpgAssistant.Infrastructure.Test.Containers;

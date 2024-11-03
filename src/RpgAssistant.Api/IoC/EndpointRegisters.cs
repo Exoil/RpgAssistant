@@ -53,5 +53,15 @@ public static class EndpointRegisters
                 data =>
                     Results.Ok(data.Select(x => new CharacterDetails(x))),
                 cancellationToken));
+
+        endpointGroup.MapPut("/{id}",  async (
+                [FromServices] IResponseResolver responseResolver,
+                [FromRoute] Guid id,
+                [FromBody] Character characterDataToUpdate,
+                CancellationToken cancellationToken = default) =>
+            await responseResolver.GetResult(
+                new UpdateCharacterCommand(id.ToUlidFormat(), characterDataToUpdate.Name, characterDataToUpdate.Description),
+                () => Results.NoContent(),
+                cancellationToken));
     }
 }

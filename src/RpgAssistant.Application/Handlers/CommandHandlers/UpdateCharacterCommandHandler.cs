@@ -6,20 +6,22 @@ using RpgAssistant.Infrastructure.IRepositories;
 
 namespace RpgAssistant.Application.Handlers.CommandHandlers;
 
-public class CreateCharacterCommandHandler : IRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>
+public class UpdateCharacterCommandHandler : IRequestHandler<UpdateCharacterCommand, Result<Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
 
-    public CreateCharacterCommandHandler(ICharacterRepository characterRepository)
+    public UpdateCharacterCommandHandler(ICharacterRepository characterRepository)
     {
         _characterRepository = characterRepository;
     }
 
-    public async Task<Result<Ulid, Exception>> Handle(CreateCharacterCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Exception>> Handle(UpdateCharacterCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            return await _characterRepository.CreateAsync(request, cancellationToken);
+            await _characterRepository.UpdateAsync(request, cancellationToken);
+
+            return new Result<Exception>();
         }
         catch (Exception e)
         {
