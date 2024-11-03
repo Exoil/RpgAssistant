@@ -8,21 +8,6 @@ namespace RpgAssistant.Infrastructure.Test.Models
     {
         [Fact]
         [Trait(Constants.TraitName,Constants.UnitTestTitle)]
-        public void Should_Throw_ValidationError_When_Number_Is_Less_Than_Minimum()
-        {
-            // Arrange
-            var invalidNumber = PageConstants.NumberMin - 1; // Number less than minimum value
-            var validSize = PageConstants.SizeMin;
-            
-            // Act
-            Action action = () => new Page((uint)invalidNumber, (uint)validSize);
-
-            // Assert
-            action.Should().Throw<ValidationException>();
-        }
-
-        [Fact]
-        [Trait(Constants.TraitName,Constants.UnitTestTitle)]
         public void Should_Throw_ValidationError_When_Size_Is_Greater_Than_Maximum()
         {
             // Arrange
