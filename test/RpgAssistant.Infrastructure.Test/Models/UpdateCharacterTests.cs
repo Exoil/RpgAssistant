@@ -7,6 +7,7 @@ namespace RpgAssistant.Infrastructure.Test.Models
     public class UpdateCharacterTests
     {
         [Fact]
+        [Trait(Constants.TraitName,Constants.UnitTestTitle)]
         public void Should_Throw_ValidationError_When_Name_Length_Is_Less_Than_Minimum()
         {
             // Arrange
@@ -22,6 +23,7 @@ namespace RpgAssistant.Infrastructure.Test.Models
         }
 
         [Fact]
+        [Trait(Constants.TraitName,Constants.UnitTestTitle)]
         public void Should_Throw_ValidationError_When_Description_Length_Is_Greater_Than_Maximum()
         {
             // Arrange
@@ -37,6 +39,7 @@ namespace RpgAssistant.Infrastructure.Test.Models
         }
 
         [Fact]
+        [Trait(Constants.TraitName,Constants.UnitTestTitle)]
         public void Should_Not_Throw_Any_Error_When_Valid_Data_Is_Provided()
         {
             // Arrange
