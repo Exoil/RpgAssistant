@@ -105,7 +105,7 @@ public class CharacterRepository :
             queryString,
             new
             {
-                updateCharacter.Id,
+                Id = updateCharacter.Id.ToDatabaseId(),
                 updateCharacter.Name,
                 updateCharacter.Description
             });
