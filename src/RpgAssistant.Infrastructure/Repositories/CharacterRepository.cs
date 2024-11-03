@@ -47,20 +47,22 @@ public class CharacterRepository :
         
         var cursorResult = await _session.RunAsync(query);
         
-        if (cursorResult is null || 
-            !(await cursorResult.FetchAsync()))
+        try
+        {
+            var campaign = await cursorResult
+                .SingleAsync(record
+                    => new Character(
+                        Ulid.Parse(record["Id"].As<string>()),
+                        record["Name"].As<string>(),
+                        record["Description"].As<string>()));
+
+            return campaign ?? throw CharacterErrorMessages.GetNotFoundCharacterMessage("DataSource");
+        }
+        catch
         {
             throw CharacterErrorMessages.GetNotFoundCharacterMessage("DataSource");
         }
         
-        var campaign = await cursorResult
-            .SingleAsync(record
-                => new Character(
-                    Ulid.Parse(record["Id"].As<string>()),
-                    record["Name"].As<string>(),
-                    record["Description"].As<string>()));
-
-        return campaign ?? throw CharacterErrorMessages.GetNotFoundCharacterMessage("DataSource");
     }
 
     public async Task<ImmutableArray<Character>> GetAsync(Page page, CancellationToken cancellationToken = default)
