@@ -13,9 +13,8 @@ public static class EndpointRegisters
         this WebApplication webApplication)
     {
         webApplication
-            .MapGet("/",  ([FromServices]IConfiguration configuration) =>
-                configuration.GetSection("AppVersion").Value)
-            .Produces<string>();
+            .MapGet("/",  ([FromServices]IConfiguration configuration) => 
+                configuration.GetSection("AppVersion").Value);            
     }
 
     public static void RegisterCharacterEndpoints(
