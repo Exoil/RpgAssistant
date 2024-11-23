@@ -8,11 +8,18 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
-    <UserSecretsId>7b9ebbc0-09a7-472f-802c-bf8dacdc6e18</UserSecretsId>
+    <UserSecretsId>98d1e339-8186-4a3d-803e-47ecb5804bfb</UserSecretsId>
+    <LangVersion>latestmajor</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost"/>
+    <PackageReference Include="NorthernNerds.Aspire.Hosting.Neo4j" />
+    <PackageReference Include="NorthernNerds.Aspire.Neo4j" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RpgAssistant.Api\RpgAssistant.Api.csproj" />
+  </ItemGroup>
+  
 </Project>
