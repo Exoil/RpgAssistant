@@ -6,5 +6,4 @@
         <Nullable>enable</Nullable>
         <LangVersion>latestmajor</LangVersion>
     </PropertyGroup>
-
 </Project>
