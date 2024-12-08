@@ -5,6 +5,7 @@ using RpgAssistant.Domain.ErrorMessages;
 using RpgAssistant.Domain.Extensions;
 using RpgAssistant.Infrastructure.IRepositories;
 using RpgAssistant.Infrastructure.Models;
+using RpgAssistant.Domain.Exceptions;
 
 namespace RpgAssistant.Infrastructure.Repositories;
 
@@ -136,5 +137,52 @@ public class CharacterRepository :
 
         await transaction.RunAsync(query);
         await transaction.CommitAsync();
+    }
+
+    public async Task CreateKnowsRelaitonAsync(Ulid sourceId, Ulid targetId, CancellationToken cancellationToken = default)
+    {
+        var parameters = new
+        {
+            SourceId = sourceId.ToDatabaseId(),
+            TargetId = targetId.ToDatabaseId()
+        };
+
+        await using var transaction = await _session.BeginTransactionAsync();
+
+        await ValidateCreationOfKnowsRelation(transaction, parameters);
+
+        var createRelationQuery = @"
+            MATCH (source:Character {Id: $SourceId}), (target:Character {Id: $TargetId})
+            CREATE (source)-[:KNOWS]->(target)";
+
+        await transaction.RunAsync(new Query(createRelationQuery, parameters));
+        await transaction.CommitAsync();
+    }
+
+    private async Task ValidateCreationOfKnowsRelation(IAsyncTransaction transaction, object parameters)
+    {
+        var checkExistenceQuery = @"
+            MATCH (source:Character {Id: $SourceId}), (target:Character {Id: $TargetId})
+            RETURN COUNT(source) AS SourceCount, COUNT(target) AS TargetCount";
+
+        var checkRelationQuery = @"
+            MATCH (source:Character {Id: $SourceId})-[r:KNOWS]->(target:Character {Id: $TargetId})
+            RETURN COUNT(r) AS RelationCount";
+
+        // Check if both characters exist
+        var existenceResult = await transaction.RunAsync(new Query(checkExistenceQuery, parameters));
+        var existenceRecord = await existenceResult.SingleAsync();
+        if (existenceRecord["SourceCount"].As<int>() == 0 || existenceRecord["TargetCount"].As<int>() == 0)
+        {
+            throw CharacterErrorMessages.GetNotFoundCharacterMessage("Not found character");
+        }
+
+        // Check if the relationship already exists
+        var relationResult = await transaction.RunAsync(new Query(checkRelationQuery, parameters));
+        var relationRecord = await relationResult.SingleAsync();
+        if (relationRecord["RelationCount"].As<int>() > 0)
+        {
+            throw CharacterErrorMessages.GetKnowsRelationCreationExceptionMessage("Character already knows this character");
+        }
     }
 }

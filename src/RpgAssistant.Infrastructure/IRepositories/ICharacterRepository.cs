@@ -15,4 +15,9 @@ public interface ICharacterRepository
     Task UpdateAsync(UpdateCharacter updateCharacter, CancellationToken cancellationToken = default);
     
     Task DeleteAsync(Ulid id, CancellationToken cancellationToken = default);
+
+    Task CreateKnowsRelaitonAsync(
+        Ulid sourceId,
+        Ulid targetId,
+        CancellationToken cancellationToken = default);
 }
