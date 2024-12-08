@@ -1,0 +1,18 @@
+# Context
+# Provide a brief context or summary of the changes. This should be a short sentence or two that explains the purpose of the commit.
+
+# Description
+# Provide a detailed description of the changes made in this commit. This section can include bullet points or a numbered list to clearly outline the modifications.
+
+# Example:
+# - Added unit tests for CreateKnowsRelationAsync method in CharacterRepository.
+# - Refactored ValidateCreationOfKnowsRelation to throw KnowsRelationCreationException.
+# - Updated test cases to use FluentAssertions for better readability.
+# - Fixed input argument issues in CreateCharacter constructor.
+
+# Additional Notes
+# Include any additional information that might be relevant, such as links to related issues, pull requests, or documentation.
+
+# Footer
+# Optionally, include a footer for metadata such as issue tracking IDs or co-authors.
+# Example: Resolves #123, Co-authored-by: Name <email@example.com>

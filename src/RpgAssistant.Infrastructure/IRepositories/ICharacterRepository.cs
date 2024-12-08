@@ -20,4 +20,9 @@ public interface ICharacterRepository
         Ulid sourceId,
         Ulid targetId,
         CancellationToken cancellationToken = default);
+
+    Task DeleteKnowsRelationAsync(
+        Ulid sourceId,
+        Ulid targetId,
+        CancellationToken cancellationToken = default);
 }
