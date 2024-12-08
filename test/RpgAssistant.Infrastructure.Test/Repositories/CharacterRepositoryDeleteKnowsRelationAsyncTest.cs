@@ -52,6 +52,7 @@ public class CharacterRepositoryDeleteKnowsRelationAsyncTest
     }
 
     [Fact]
+    [Trait(Constants.TraitName,Constants.TestTitle)]
     public async Task Should_Throw_Exception_When_Target_Character_Does_Not_Exist()
     {
         // Arrange
@@ -70,6 +71,7 @@ public class CharacterRepositoryDeleteKnowsRelationAsyncTest
     }
 
     [Fact]
+    [Trait(Constants.TraitName,Constants.TestTitle)]
     public async Task Should_Throw_Exception_When_Source_Character_Does_Not_Exist()
     {
         // Arrange
