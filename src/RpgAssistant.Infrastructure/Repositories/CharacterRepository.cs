@@ -149,7 +149,7 @@ public class CharacterRepository :
 
         await using var transaction = await _session.BeginTransactionAsync();
 
-        await ValidateCreationOfKnowsRelation(transaction, parameters);
+        await ValidateModifyOfKnowsRelation(transaction, parameters);
 
         var createRelationQuery = @"
             MATCH (source:Character {Id: $SourceId}), (target:Character {Id: $TargetId})
@@ -172,7 +172,7 @@ public class CharacterRepository :
         await ValidateModifyOfKnowsRelation(transaction, parameters);
 
         var deleteRelationQuery = @"
-            MATCH (source:Character {Id: $SourceId})-[r:KNOWS]->(target:Character {Id: $TargetId})
+            MATCH (source:Character {Id: $SourceId})-[r:"+CharacterConstants.KnowsRelation+@"]->(target:Character {Id: $TargetId})
             DELETE r";
 
         await transaction.RunAsync(new Query(deleteRelationQuery, parameters));
