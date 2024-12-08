@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using Neo4j.Driver;
+using RpgAssistant.Domain.Constants;
 using RpgAssistant.Domain.Entities;
 using RpgAssistant.Domain.ErrorMessages;
 using RpgAssistant.Domain.Extensions;
@@ -152,7 +153,7 @@ public class CharacterRepository :
 
         var createRelationQuery = @"
             MATCH (source:Character {Id: $SourceId}), (target:Character {Id: $TargetId})
-            CREATE (source)-[:KNOWS]->(target)";
+            CREATE (source)-[:"+CharacterConstants.KnowsRelation+"]->(target)";
 
         await transaction.RunAsync(new Query(createRelationQuery, parameters));
         await transaction.CommitAsync();
