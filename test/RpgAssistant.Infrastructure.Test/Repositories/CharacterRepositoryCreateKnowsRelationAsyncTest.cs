@@ -7,7 +7,6 @@ using RpgAssistant.Domain.Extensions;
 using Neo4j.Driver;
 using FluentAssertions;
 
-
 namespace RpgAssistant.Infrastructure.Test.Repositories;
 
 public class CharacterRepositoryCreateKnowsRelationAsyncTest 
@@ -38,7 +37,7 @@ public class CharacterRepositoryCreateKnowsRelationAsyncTest
         var targetId = await characterRepository.CreateAsync(targetCharacter, CancellationToken.None);
 
         // Act
-        await characterRepository.CreateKnowsRelaitonAsync(sourceId, targetId, CancellationToken.None);
+        await characterRepository.CreateKnowsRelationAsync(sourceId, targetId, CancellationToken.None);
 
         // Assert
         var query = "MATCH (source:Character {Id: $SourceId})-[:KNOWS]->(target:Character {Id: $TargetId}) RETURN COUNT(*) AS count";
@@ -62,8 +61,9 @@ public class CharacterRepositoryCreateKnowsRelationAsyncTest
         var nonExistentTargetId = Ulid.NewUlid();
 
         // Act & Assert
-        await Assert.ThrowsAsync<KnowsRelationCreationException>(() =>
-            characterRepository.CreateKnowsRelaitonAsync(sourceId, nonExistentTargetId, CancellationToken.None));
+        await FluentActions.Invoking(() => 
+            characterRepository.CreateKnowsRelationAsync(sourceId, nonExistentTargetId, CancellationToken.None))
+            .Should().ThrowAsync<NotFoundException>();
     }
 
     [Fact]
@@ -79,8 +79,9 @@ public class CharacterRepositoryCreateKnowsRelationAsyncTest
         var nonExistentSourceId = Ulid.NewUlid();
 
         // Act & Assert
-        await Assert.ThrowsAsync<KnowsRelationCreationException>(() =>
-            characterRepository.CreateKnowsRelaitonAsync(nonExistentSourceId, targetId, CancellationToken.None));
+        await FluentActions.Invoking(() => 
+            characterRepository.CreateKnowsRelationAsync(nonExistentSourceId, targetId, CancellationToken.None))
+            .Should().ThrowAsync<NotFoundException>();
     }
 
     [Fact]
@@ -100,10 +101,11 @@ public class CharacterRepositoryCreateKnowsRelationAsyncTest
         var sourceId = await characterRepository.CreateAsync(sourceCharacter, CancellationToken.None);
         var targetId = await characterRepository.CreateAsync(targetCharacter, CancellationToken.None);
 
-        await characterRepository.CreateKnowsRelaitonAsync(sourceId, targetId, CancellationToken.None);
+        await characterRepository.CreateKnowsRelationAsync(sourceId, targetId, CancellationToken.None);
 
         // Act & Assert
-        await Assert.ThrowsAsync<KnowsRelationCreationException>(() =>
-            characterRepository.CreateKnowsRelaitonAsync(sourceId, targetId, CancellationToken.None));
+        await FluentActions.Invoking(() => 
+            characterRepository.CreateKnowsRelationAsync(sourceId, targetId, CancellationToken.None))
+            .Should().ThrowAsync<KnowsRelationCreationException>();
     }
 } 

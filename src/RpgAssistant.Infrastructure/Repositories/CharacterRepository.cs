@@ -138,7 +138,7 @@ public class CharacterRepository :
         await transaction.CommitAsync();
     }
 
-    public async Task CreateKnowsRelaitonAsync(Ulid sourceId, Ulid targetId, CancellationToken cancellationToken = default)
+    public async Task CreateKnowsRelationAsync(Ulid sourceId, Ulid targetId, CancellationToken cancellationToken = default)
     {
         var parameters = new
         {

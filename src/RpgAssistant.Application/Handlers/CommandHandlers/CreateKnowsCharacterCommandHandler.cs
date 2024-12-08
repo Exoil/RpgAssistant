@@ -23,7 +23,7 @@ public class CreateKnowsCharacterCommandhandler
     {
         try
         {
-            await _characterRepository.CreateKnowsRelaitonAsync(
+            await _characterRepository.CreateKnowsRelationAsync(
                 request.SourceId.ToUlidFormat(),
                 request.TargetId.ToUlidFormat(),
                 cancellationToken);
