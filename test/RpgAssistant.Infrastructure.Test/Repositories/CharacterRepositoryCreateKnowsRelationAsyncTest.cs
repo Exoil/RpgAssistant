@@ -20,6 +20,7 @@ public class CharacterRepositoryCreateKnowsRelationAsyncTest
     }
 
     [Fact]
+    [Trait(Constants.TraitName,Constants.TestTitle)]
     public async Task Should_Create_Knows_Relation_When_Both_Characters_Exist()
     {
         // Arrange
@@ -50,6 +51,7 @@ public class CharacterRepositoryCreateKnowsRelationAsyncTest
     }
 
     [Fact]
+    [Trait(Constants.TraitName,Constants.TestTitle)]
     public async Task Should_Throw_Exception_When_Target_Character_Does_Not_Exist()
     {
         // Arrange
