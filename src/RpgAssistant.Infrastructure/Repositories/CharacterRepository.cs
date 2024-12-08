@@ -189,7 +189,6 @@ public class CharacterRepository :
             MATCH (source:Character {Id: $SourceId})-[r:"+CharacterConstants.KnowsRelation+@"]->(target:Character {Id: $TargetId})
             RETURN COUNT(r) AS RelationCount";
 
-        // Check if both characters exist
         var existenceResult = await transaction.RunAsync(new Query(checkExistenceQuery, parameters));
         var existenceRecord = await existenceResult.SingleAsync();
         if (existenceRecord["SourceCount"].As<int>() == 0 || existenceRecord["TargetCount"].As<int>() == 0)
@@ -197,7 +196,6 @@ public class CharacterRepository :
             throw CharacterErrorMessages.GetNotFoundCharacterMessage("Not found character");
         }
 
-        // Check if the relationship already exists
         var relationResult = await transaction.RunAsync(new Query(checkRelationQuery, parameters));
         var relationRecord = await relationResult.SingleAsync();
         if (relationRecord["RelationCount"].As<int>() > 0)
