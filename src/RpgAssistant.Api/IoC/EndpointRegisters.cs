@@ -79,7 +79,7 @@ public static class EndpointRegisters
                 [FromRoute] Guid targetId,
                 CancellationToken cancellationToken = default) =>
             await responseResolver.GetResult(
-                new CreateKnowledgeCharacterCommand(sourceId, targetId),
+                new CreateKnowsCharacterCommand(sourceId, targetId),
                 () => Results.NoContent(),
                 cancellationToken));
     }

@@ -5,7 +5,6 @@ using RpgAssistant.Domain.ErrorMessages;
 using RpgAssistant.Domain.Extensions;
 using RpgAssistant.Infrastructure.IRepositories;
 using RpgAssistant.Infrastructure.Models;
-using RpgAssistant.Domain.Exceptions;
 
 namespace RpgAssistant.Infrastructure.Repositories;
 
