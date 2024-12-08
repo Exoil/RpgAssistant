@@ -1,4 +1,3 @@
-using System;
 using MediatR;
 using RpgAssistant.Application.Handlers.CommandHandlers.Commands;
 using RpgAssistant.Application.Models;
@@ -30,7 +29,7 @@ public class DeleteKnowsCharacterCommandHandler
         }
         catch (Exception e)
         {
-            return ExcptionUtility.ResolveExceptionToReturn(e);
+            return ExceptionUtility.ResolveExceptionToReturn(e);
         }
 
         return new Result<Exception>();

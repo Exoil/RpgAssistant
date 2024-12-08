@@ -159,7 +159,27 @@ public class CharacterRepository :
         await transaction.CommitAsync();
     }
 
-    private async Task ValidateCreationOfKnowsRelation(IAsyncTransaction transaction, object parameters)
+    public async Task DeleteKnowsRelationAsync(Ulid sourceId, Ulid targetId, CancellationToken cancellationToken = default)
+    {
+        var parameters = new
+        {
+            SourceId = sourceId.ToDatabaseId(),
+            TargetId = targetId.ToDatabaseId()
+        };
+
+        await using var transaction = await _session.BeginTransactionAsync();
+
+        await ValidateModifyOfKnowsRelation(transaction, parameters);
+
+        var deleteRelationQuery = @"
+            MATCH (source:Character {Id: $SourceId})-[r:KNOWS]->(target:Character {Id: $TargetId})
+            DELETE r";
+
+        await transaction.RunAsync(new Query(deleteRelationQuery, parameters));
+        await transaction.CommitAsync();
+    }
+
+    private async Task ValidateModifyOfKnowsRelation(IAsyncTransaction transaction, object parameters)
     {
         var checkExistenceQuery = @"
             MATCH (source:Character {Id: $SourceId}), (target:Character {Id: $TargetId})
