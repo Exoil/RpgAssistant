@@ -72,5 +72,15 @@ public static class EndpointRegisters
                 new DeleteCharacterByIdCommand(id.ToUlidFormat()),
                 () =>  Results.NoContent(),
                 cancellationToken));
+        
+        endpointGroup.MapPut("/{soureId}/knows/{targetId}",  async (
+                [FromServices] IResponseResolver responseResolver,
+                [FromRoute] Guid sourceId,
+                [FromRoute] Guid targetId,
+                CancellationToken cancellationToken = default) =>
+            await responseResolver.GetResult(
+                new CreateKnowsCharacterCommand(sourceId, targetId),
+                () => Results.NoContent(),
+                cancellationToken));
     }
 }

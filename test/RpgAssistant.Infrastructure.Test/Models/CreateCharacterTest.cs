@@ -1,6 +1,7 @@
 using RpgAssistant.Domain.Constants;
 using RpgAssistant.Domain.Exceptions;
 using RpgAssistant.Infrastructure.Models;
+using FluentAssertions;
 
 namespace RpgAssistant.Infrastructure.Test.Models;
 
