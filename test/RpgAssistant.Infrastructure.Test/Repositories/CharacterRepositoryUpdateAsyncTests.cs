@@ -1,6 +1,7 @@
 using RpgAssistant.Infrastructure.Models;
 using RpgAssistant.Infrastructure.Repositories;
 using RpgAssistant.Infrastructure.Test.Containers;
+using FluentAssertions;
 
 namespace RpgAssistant.Infrastructure.Test.Repositories;
 
