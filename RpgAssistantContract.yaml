@@ -3,6 +3,12 @@ info:
   title: RPG Assistant API
   version: 1.0.0
 
+servers:
+  - url: https://localhost:7208
+    description:  httpsLocal development server
+  - url: http://localhost:7208
+    description: http Local development 5025
+
 tags:
   - name: characters
     description: Operations related to character management
