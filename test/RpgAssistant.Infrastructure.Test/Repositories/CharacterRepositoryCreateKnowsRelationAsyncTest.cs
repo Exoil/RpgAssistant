@@ -40,7 +40,8 @@ public class CharacterRepositoryCreateKnowsRelationAsyncTest
         await characterRepository.CreateKnowsRelationAsync(sourceId, targetId, CancellationToken.None);
 
         // Assert
-        var query = "MATCH (source:Character {Id: $SourceId})-[:KNOWS]->(target:Character {Id: $TargetId}) RETURN COUNT(*) AS count";
+        var query = @"MATCH (source:Character {Id: $SourceId})-[:"+CharacterConstants.KnowsRelation+@"]->(target:Character {Id: $TargetId}) 
+                    RETURN COUNT(*) AS count";
         var parameters = new { SourceId = sourceId.ToDatabaseId(), TargetId = targetId.ToDatabaseId() };
         var session = _container.Driver.AsyncSession();
         var result = await session.RunAsync(new Query(query, parameters));

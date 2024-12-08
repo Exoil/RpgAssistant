@@ -153,7 +153,7 @@ public class CharacterRepository :
 
         var createRelationQuery = @"
             MATCH (source:Character {Id: $SourceId}), (target:Character {Id: $TargetId})
-            CREATE (source)-[:"+CharacterConstants.KnowsRelation+"]->(target)";
+            CREATE (source)-[:"+CharacterConstants.KnowsRelation+@"]->(target)";
 
         await transaction.RunAsync(new Query(createRelationQuery, parameters));
         await transaction.CommitAsync();
@@ -166,7 +166,7 @@ public class CharacterRepository :
             RETURN COUNT(source) AS SourceCount, COUNT(target) AS TargetCount";
 
         var checkRelationQuery = @"
-            MATCH (source:Character {Id: $SourceId})-[r:KNOWS]->(target:Character {Id: $TargetId})
+            MATCH (source:Character {Id: $SourceId})-[r:"+CharacterConstants.KnowsRelation+@"]->(target:Character {Id: $TargetId})
             RETURN COUNT(r) AS RelationCount";
 
         // Check if both characters exist
