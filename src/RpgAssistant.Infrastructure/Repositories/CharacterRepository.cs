@@ -43,21 +43,23 @@ public class CharacterRepository :
     {
         var queryString = @"
             MATCH (ch:Character {Id: $Id}) 
-            RETURN ch.Id AS Id, ch.Name AS Name, ch.Description AS Description";
+            RETURN ch.Id AS Id, ch.Name AS Name, ch.Description AS Description, 
+                collect(connected.Id) AS ConnectedCharacterIds";
         var query = new Query(queryString, new { Id = id.ToDatabaseId() });
         
         var cursorResult = await _session.RunAsync(query);
         
         try
         {
-            var campaign = await cursorResult
+            var character = await cursorResult
                 .SingleAsync(record
                     => new Character(
                         Ulid.Parse(record["Id"].As<string>()),
                         record["Name"].As<string>(),
-                        record["Description"].As<string>()));
+                        record["Description"].As<string>(),
+                        record["ConnectedCharacterIds"].As<List<string>>().Select(Ulid.Parse).ToList()));
 
-            return campaign ?? throw CharacterErrorMessages.GetNotFoundCharacterMessage("DataSource");
+            return character ?? throw CharacterErrorMessages.GetNotFoundCharacterMessage("DataSource");
         }
         catch
         {
@@ -70,7 +72,8 @@ public class CharacterRepository :
     {
         var queryString = @"
             MATCH (ch:Character) 
-            RETURN ch.Id AS Id, ch.Name AS Name, ch.Description AS Description
+            RETURN ch.Id AS Id, ch.Name AS Name, ch.Description AS Description, 
+                collect(connected.Id) AS ConnectedCharacterIds
             SKIP $Skip
             LIMIT $Limit";
         var query = new Query(queryString, new { Skip = (int)page.Number * (int)page.Size , Limit = (int)page.Size });
@@ -92,7 +95,8 @@ public class CharacterRepository :
         var results = cursorResult.Result.ConvertAll(x => new Character(
             Ulid.Parse(x["Id"].As<string>()),
             x["Name"].As<string>(),
-            x["Description"].As<string>())).AsEnumerable();
+            x["Description"].As<string>(),
+            x["ConnectedCharacterIds"].As<List<string>>().Select(Ulid.Parse).ToList())).AsEnumerable();
         characters.AddRange(results);
 
         return characters.ToImmutableArray();
