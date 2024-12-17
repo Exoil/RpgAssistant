@@ -42,7 +42,7 @@ public class CharacterRepository :
     public async Task<Character> GetAsync(Ulid id, CancellationToken cancellationToken = default)
     {
         var queryString = @"
-            MATCH (ch:Character {Id: $Id}) 
+            MATCH (ch:Character {Id: $Id})-[:"+CharacterConstants.KnowsRelation+@"]->(connected:Character)
             RETURN ch.Id AS Id, ch.Name AS Name, ch.Description AS Description, 
                 collect(connected.Id) AS ConnectedCharacterIds";
         var query = new Query(queryString, new { Id = id.ToDatabaseId() });
@@ -71,7 +71,7 @@ public class CharacterRepository :
     public async Task<ImmutableArray<Character>> GetAsync(Page page, CancellationToken cancellationToken = default)
     {
         var queryString = @"
-            MATCH (ch:Character) 
+            MATCH (ch:Character)-[:"+CharacterConstants.KnowsRelation+@"]->(connected:Character)
             RETURN ch.Id AS Id, ch.Name AS Name, ch.Description AS Description, 
                 collect(connected.Id) AS ConnectedCharacterIds
             SKIP $Skip
