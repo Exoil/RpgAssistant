@@ -18,7 +18,8 @@ public class GetCharacterByIdQueryHandlerTests
         var character = new Character(
             characterId,
             "Test Character",
-            "Test Description"
+            "Test Description",
+            new List<Ulid>()
         );
 
         var repository = Substitute.For<ICharacterRepository>();

@@ -17,8 +17,8 @@ public class GetCharactersQueryHandlerTests
         // Arrange
         var characters = new List<Character>()
         {
-            new(Ulid.NewUlid(), "Character 1", "Description 1"),
-            new(Ulid.NewUlid(), "Character 2", "Description 2"),
+            new(Ulid.NewUlid(), "Character 1", "Description 1", new List<Ulid>()),
+            new(Ulid.NewUlid(), "Character 2", "Description 2", new List<Ulid>()),
         };
 
         var repository = Substitute.For<ICharacterRepository>();
