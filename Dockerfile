@@ -1,3 +1,4 @@
+# Use the official .NET SDK image for building the application
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
@@ -15,9 +16,11 @@ WORKDIR /app
 # Copy the published output from the build stage
 COPY --from=build /app/out .
 
+# Copy the secrets.json file
+COPY ./secrets.json /app/secrets.json
 
 # Set environment variable to use secrets.json
-ENV DOTNET_USER_SECRETS=/app/secrets.json
+ENV DOTNET_USER_SECRETS=$HOME/.microsoft/usersecrets/98d1e339-8186-4a3d-803e-47ecb5804bfb
 
 # Set the entry point for the application
 ENTRYPOINT ["dotnet", "RpgAssistant.Api.dll"]
