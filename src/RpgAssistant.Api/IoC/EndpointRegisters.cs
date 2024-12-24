@@ -13,7 +13,7 @@ public static class EndpointRegisters
         this WebApplication webApplication)
     {
         webApplication
-            .MapGet("/version",  ([FromServices]IConfiguration configuration) =>
+            .MapGet("/",  ([FromServices]IConfiguration configuration) =>
                 configuration.GetSection("AppVersion").Value)
             .Produces<string>();
     }
@@ -22,7 +22,6 @@ public static class EndpointRegisters
         this WebApplication webApplication)
     {
         var endpointGroup = webApplication.MapGroup("/characters");
-
         endpointGroup.MapPost(
             "/", 
             async (
