@@ -13,7 +13,7 @@ public static class EndpointRegisters
         this WebApplication webApplication)
     {
         webApplication
-            .MapGet("/",  ([FromServices]IConfiguration configuration) =>
+            .MapGet("/version",  ([FromServices]IConfiguration configuration) =>
                 configuration.GetSection("AppVersion").Value)
             .Produces<string>();
     }

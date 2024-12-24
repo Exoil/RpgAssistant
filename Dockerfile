@@ -20,7 +20,7 @@ COPY --from=build /app/out .
 COPY ./secrets.json /app/secrets.json
 
 # Set environment variable to use secrets.json
-ENV DOTNET_USER_SECRETS=$HOME/.microsoft/usersecrets/98d1e339-8186-4a3d-803e-47ecb5804bfb
+ENV DOTNET_USER_SECRETS=/app/secrets.json
 
 # Set the entry point for the application
 ENTRYPOINT ["dotnet", "RpgAssistant.Api.dll"]
