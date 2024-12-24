@@ -17,7 +17,7 @@ builder.Services.SetCors();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-
+app.UseCors();
 app.UseHttpsRedirection();
 app.RegisterUtilitiesEndpoints();
 app.RegisterCharacterEndpoints();

@@ -11,6 +11,7 @@ services:
       - ASPNETCORE_HTTP_PORT=8080
       - ASPNETCORE_URLS=http://+:80
       - DOTNET_RUNNING_IN_CONTAINER=true
+      - DOTNET_USER_SECRETS=/app/secrets.json 
       - USER_SECRETS_ID=98d1e339-8186-4a3d-803e-47ecb5804bfb
       - DOTNET_USER_SECRETS=/root/.microsoft/usersecrets/$USER_SECRETS_ID
       - $APPDATA/Microsoft/UserSecrets/$USER_SECRETS_ID:/root/.microsoft/usersecrets/$USER_SECRETS_ID
