@@ -3,9 +3,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddHttpContextAccessor();
-builder.Services.RegisterApi(builder.Configuration);
+
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -13,6 +11,9 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .ReadFrom.Services(services));
+    // Add services to the container.
+builder.Services.AddHttpContextAccessor();
+builder.Services.RegisterApi(builder.Configuration);
 builder.Services.SetCors();
 var app = builder.Build();
 

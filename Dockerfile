@@ -16,11 +16,5 @@ WORKDIR /app
 # Copy the published output from the build stage
 COPY --from=build /app/out .
 
-# Copy the secrets.json file
-COPY ./secrets.json /app/secrets.json
-
-# Set environment variable to use secrets.json
-ENV DOTNET_USER_SECRETS=/app/secrets.json
-
 # Set the entry point for the application
 ENTRYPOINT ["dotnet", "RpgAssistant.Api.dll"]
