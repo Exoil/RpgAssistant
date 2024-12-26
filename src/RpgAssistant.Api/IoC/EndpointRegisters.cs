@@ -79,7 +79,7 @@ public static class EndpointRegisters
                 () =>  Results.NoContent(),
                 cancellationToken));
 
-        endpointGroup.MapPut("/{soureId}/knows/{targetId}",  async (
+        endpointGroup.MapPut("/{sourceId}/knows/{targetId}",  async (
                 [FromServices] IResponseResolver responseResolver,
                 [FromRoute] Guid sourceId,
                 [FromRoute] Guid targetId,
@@ -89,7 +89,7 @@ public static class EndpointRegisters
                 () => Results.NoContent(),
                 cancellationToken));
 
-        endpointGroup.MapDelete("/{soureId}/knows/{targetId}",  async (
+        endpointGroup.MapDelete("/{sourceId}/knows/{targetId}",  async (
                 [FromServices] IResponseResolver responseResolver,
                 [FromRoute] Guid sourceId,
                 [FromRoute] Guid targetId,
