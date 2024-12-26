@@ -13,7 +13,8 @@ public static class EndpointRegisters
         this WebApplication webApplication)
     {
         webApplication
-            .MapGet("api/version",  ([FromServices]IConfiguration configuration) =>
+            .MapGet("version",
+                ([FromServices]IConfiguration configuration) =>
                 configuration.GetSection("AppVersion").Value)
             .Produces<string>();
     }
@@ -22,8 +23,7 @@ public static class EndpointRegisters
         this WebApplication webApplication)
     {
         webApplication
-        .MapGroup("api/characters")
-        .WithTags("Characters Api")
+        .MapGroup("characters")
         .MapCharacterEndpoints();
     }
 
