@@ -6,16 +6,15 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "8080:8080"
     env_file:
       - .env
     environment:
       - ASPNETCORE_HTTP_PORT=8080
-      - ASPNETCORE_URLS=http://+:80
       - DOTNET_RUNNING_IN_CONTAINER=true
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
-      - $HOME/.microsoft/usersecrets:/.microsoft/usersecrets/:ro"
+      - $HOME/.microsoft/usersecrets/98d1e339-8186-4a3d-803e-47ecb5804bfb/secrets.json:/app/secrets.json
     depends_on:
       - neo4j
     networks:
