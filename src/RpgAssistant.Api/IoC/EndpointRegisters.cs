@@ -21,17 +21,24 @@ public static class EndpointRegisters
     public static void RegisterCharacterEndpoints(
         this WebApplication webApplication)
     {
-        var endpointGroup = webApplication.MapGroup("api/characters");
+        webApplication
+        .MapGroup("api/characters")
+        .WithTags("Characters Api")
+        .MapCharacterEndpoints();
+    }
+
+    private static void MapCharacterEndpoints(this RouteGroupBuilder endpointGroup)
+    {
         endpointGroup.MapPost(
             "/", 
             async (
-            [FromServices] IResponseResolver responseResolver,
-            [FromBody] Character character,
-            CancellationToken cancellationToken = default) =>
-            await responseResolver.GetResult(
-                new CreateCharacterCommand(character.Name, character.Description),
-                data =>  Results.Created(string.Empty,data.ToGuid()),
-                cancellationToken));
+                    [FromServices] IResponseResolver responseResolver,
+                    [FromBody] Character character,
+                    CancellationToken cancellationToken = default) =>
+                await responseResolver.GetResult(
+                    new CreateCharacterCommand(character.Name, character.Description),
+                    data =>  Results.Created(string.Empty,data.ToGuid()),
+                    cancellationToken));
 
         endpointGroup.MapGet("/{id}",  async (
                 [FromServices] IResponseResolver responseResolver,
