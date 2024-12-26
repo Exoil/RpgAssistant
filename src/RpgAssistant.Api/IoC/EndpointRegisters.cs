@@ -13,7 +13,8 @@ public static class EndpointRegisters
         this WebApplication webApplication)
     {
         webApplication
-            .MapGet("/",  ([FromServices]IConfiguration configuration) =>
+            .MapGet("version",
+                ([FromServices]IConfiguration configuration) =>
                 configuration.GetSection("AppVersion").Value)
             .Produces<string>();
     }
@@ -21,18 +22,23 @@ public static class EndpointRegisters
     public static void RegisterCharacterEndpoints(
         this WebApplication webApplication)
     {
-        var endpointGroup = webApplication.MapGroup("/characters");
+        webApplication
+        .MapGroup("characters")
+        .MapCharacterEndpoints();
+    }
 
+    private static void MapCharacterEndpoints(this RouteGroupBuilder endpointGroup)
+    {
         endpointGroup.MapPost(
             "/", 
             async (
-            [FromServices] IResponseResolver responseResolver,
-            [FromBody] Character character,
-            CancellationToken cancellationToken = default) =>
-            await responseResolver.GetResult(
-                new CreateCharacterCommand(character.Name, character.Description),
-                data =>  Results.Created(string.Empty,data.ToGuid()),
-                cancellationToken));
+                    [FromServices] IResponseResolver responseResolver,
+                    [FromBody] Character character,
+                    CancellationToken cancellationToken = default) =>
+                await responseResolver.GetResult(
+                    new CreateCharacterCommand(character.Name, character.Description),
+                    data =>  Results.Created(string.Empty,data.ToGuid()),
+                    cancellationToken));
 
         endpointGroup.MapGet("/{id}",  async (
                 [FromServices] IResponseResolver responseResolver,
@@ -72,8 +78,8 @@ public static class EndpointRegisters
                 new DeleteCharacterByIdCommand(id.ToUlidFormat()),
                 () =>  Results.NoContent(),
                 cancellationToken));
-        
-        endpointGroup.MapPut("/{soureId}/knows/{targetId}",  async (
+
+        endpointGroup.MapPut("/{sourceId}/knows/{targetId}",  async (
                 [FromServices] IResponseResolver responseResolver,
                 [FromRoute] Guid sourceId,
                 [FromRoute] Guid targetId,
@@ -83,7 +89,7 @@ public static class EndpointRegisters
                 () => Results.NoContent(),
                 cancellationToken));
 
-        endpointGroup.MapDelete("/{soureId}/knows/{targetId}",  async (
+        endpointGroup.MapDelete("/{sourceId}/knows/{targetId}",  async (
                 [FromServices] IResponseResolver responseResolver,
                 [FromRoute] Guid sourceId,
                 [FromRoute] Guid targetId,

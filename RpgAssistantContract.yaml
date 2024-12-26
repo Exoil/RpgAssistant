@@ -266,6 +266,12 @@ components:
 
     ProblemDetails:
       type: object
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
       properties:
         type:
           type: string

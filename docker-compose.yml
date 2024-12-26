@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_HTTP_PORT=8080
+      - DOTNET_RUNNING_IN_CONTAINER=true
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - $HOME/.microsoft/usersecrets/98d1e339-8186-4a3d-803e-47ecb5804bfb/secrets.json:/app/secrets.json
+    depends_on:
+      - neo4j
+    networks:
+      - rpg_network
+
+  neo4j:
+    image: neo4j:latest
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/s3cr3ts3cr3t
+      - NEO4J_dbms_default__database=RpgCampaignDb
+      - NEO4J_dbms_default__advertised__address=neo4j
+      - NEO4J_dbms_ssl_policy_bolt_client__auth=NONE
+      - NEO4J_dbms_ssl_policy_https_client__auth=NONE
+      - NEO4J_dbms_default__listen__address=0.0.0.0
+      - NEO4J_dbms_security_auth__enabled=false
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+    volumes:
+      - neo4j_data:/data
+    networks:
+      - rpg_network
+
+volumes:
+  neo4j_data:
+    driver: local
+
+networks:
+  rpg_network:
+    driver: bridge

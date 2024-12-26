@@ -1,6 +1,7 @@
 using RpgAssistant.Api.Resolvers;
 using RpgAssistant.Application.IoC;
 using RpgAssistant.Infrastructure.IoC;
+using Serilog;
 
 namespace RpgAssistant.Api.IoC;
 
@@ -9,7 +10,15 @@ public static class ApiServiceRegisters
     public static void RegisterApi(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.RegisterMediator();
-        serviceCollection.RegisterDbNeo4j(configuration);
+        try
+        {
+            serviceCollection.RegisterDbNeo4j(configuration);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error registering Neo4j");
+        }
+
         serviceCollection.RegisterRepositories();
         serviceCollection.RegisterResponseResolver();
     }
