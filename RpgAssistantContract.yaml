@@ -45,6 +45,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+    get:
+      tags:
+        - characters
+      summary: Get list of characters
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of characters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CharacterDetails'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
 
   /{id}:
     get:
@@ -201,38 +231,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-
-  /:
-    get:
-      tags:
-        - characters
-      summary: Get list of characters
-      parameters:
-        - name: number
-          in: query
-          schema:
-            type: integer
-            default: 0
-        - name: size
-          in: query
-          schema:
-            type: integer
-            default: 10
-      responses:
-        '200':
-          description: List of characters
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CharacterDetails'
         '500':
           description: Internal server error
           content:
