@@ -7,5 +7,6 @@
         <PackageReference Include="Ulid" />
         <PackageReference Include="Ulid.SystemTextJson"/>
         <PackageReference Include="System.Text.Json"/>
+        <PackageReference Include="Serilog"/>
     </ItemGroup>
 </Project>
