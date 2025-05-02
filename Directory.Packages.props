@@ -11,6 +11,8 @@
     <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.4" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
+    <PackageVersion Include="Testcontainers" Version="4.4.0" />
+    <PackageVersion Include="Testcontainers.Neo4j" Version="4.4.0" />
     <PackageVersion Include="Ulid" Version="1.3.4" />
     <PackageVersion Include="Ulid.SystemTextJson" Version="1.3.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
