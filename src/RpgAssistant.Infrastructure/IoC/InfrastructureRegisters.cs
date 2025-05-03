@@ -9,7 +9,9 @@ namespace RpgAssistant.Infrastructure.IoC;
 
 public static class InfrastructureRegisters
 {
-
+    private const string PathToConnectionString = "GraphDb:Uri";
+    private const string PathToUserName = "GraphDb:Login";
+    private const string PathToPassword = "GraphDb:Pass";
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration) =>
@@ -18,25 +20,19 @@ public static class InfrastructureRegisters
             .AddRepositories();
 
     public static IHealthChecksBuilder AddInfrastructureHealthChecks(this IHealthChecksBuilder healthChecks)
-    {
-        return healthChecks.AddCheck<GraphDbHealthCheck>("GraphDb");
-    }
+        => healthChecks.AddCheck<GraphDbHealthCheck>(PathToConnectionString);
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
-    {
-        return services;
-    }
+        => services;
 
     private static IServiceCollection AddDataSourceConnection(
         this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        return services.AddSingleton(
+        IConfiguration configuration) =>
+        services.AddSingleton(
             GraphDatabase.Driver(
-                configuration["GraphDb:Uri"],
+                PathToConnectionString,
                 AuthTokens.Basic(
-                    configuration["GraphDb:Login"],
-                    configuration["GraphDb:Pass"]),
+                    PathToUserName,
+                    PathToPassword),
                 config => config.WithEncryptionLevel(EncryptionLevel.None)));
-    }
 }

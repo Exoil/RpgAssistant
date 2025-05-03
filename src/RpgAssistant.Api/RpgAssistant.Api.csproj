@@ -15,4 +15,8 @@
       <ProjectReference Include="..\RpgAssistant.Application\RpgAssistant.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="IoC\" />
+    </ItemGroup>
+
 </Project>
