@@ -11,4 +11,8 @@
         <PackageReference Include="Swashbuckle.AspNetCore"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\RpgAssistant.Application\RpgAssistant.Application.csproj" />
+    </ItemGroup>
+
 </Project>
