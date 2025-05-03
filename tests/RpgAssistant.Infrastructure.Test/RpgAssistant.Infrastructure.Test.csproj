@@ -24,4 +24,8 @@
         <Using Include="Xunit"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\RpgAssistant.Infrastructure\RpgAssistant.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>
