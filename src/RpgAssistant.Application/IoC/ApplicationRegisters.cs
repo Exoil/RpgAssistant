@@ -7,13 +7,14 @@ namespace RpgAssistant.Application.IoC;
 
 public static class ApplicationRegisters
 {
-
     public static IServiceCollection AddApplication(
         this IServiceCollection services,
         IConfiguration configuration) =>
-        services.AddInfrastructure(configuration);
+            services
+                .AddInfrastructure(configuration);
 
-    public static IHealthChecksBuilder AddHealthChecks(
+    public static IHealthChecksBuilder AddApplicationHealthChecks(
         this IHealthChecksBuilder builder) =>
-        builder.AddInfrastructureHealthChecks();
+            builder
+                .AddInfrastructureHealthChecks();
 }
