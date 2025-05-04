@@ -22,7 +22,7 @@ dotnet_separate_import_directive_groups = true
 
 # Use var when the type is apparent
 dotnet_style_qualification_for_field = true:suggestion
-dotnet_style_qualification_for_property = true:suggestion
+dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_method = true:suggestion
 dotnet_style_qualification_for_event = true:suggestion
 

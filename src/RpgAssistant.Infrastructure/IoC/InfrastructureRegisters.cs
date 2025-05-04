@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Neo4j.Driver;
 
 using RpgAssistant.Infrastructure.IoC.HealthChecks;
+using RpgAssistant.Infrastructure.Repositories;
 
 namespace RpgAssistant.Infrastructure.IoC;
 
@@ -23,7 +24,7 @@ public static class InfrastructureRegisters
         => healthChecks.AddCheck<GraphDbHealthCheck>(PathToConnectionString);
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
-        => services;
+        => services.AddScoped<UtilityGraphRepository>();
 
     private static IServiceCollection AddDataSourceConnection(
         this IServiceCollection services,
