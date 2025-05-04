@@ -4,7 +4,7 @@ namespace RpgAssistant.Api.IoC.Endpoints;
 
 public static class UtilityEndpoints
 {
-    private const string PathToAppVersionSection = "endpointRouteBuilder";
+    private const string PathToAppVersionSection = "AppVersion";
     private const string PathToHealthEndpoint = "/health";
     private const string PathToApiVersionEndpoint = "/";
 
@@ -16,7 +16,7 @@ public static class UtilityEndpoints
                 .WithOpenApi();
 
     static internal void AddVersionEndpoint(
-        this RouteGroupBuilder endpointRouteBuilder) =>
+        this IEndpointRouteBuilder endpointRouteBuilder) =>
             endpointRouteBuilder
                 .MapGet(PathToApiVersionEndpoint,
                     ([FromServices] IConfiguration configuration) =>

@@ -31,9 +31,9 @@ public static class InfrastructureRegisters
         IConfiguration configuration) =>
         services.AddSingleton(
             GraphDatabase.Driver(
-                PathToConnectionString,
+                configuration[PathToConnectionString],
                 AuthTokens.Basic(
-                    PathToUserName,
-                    PathToPassword),
+                    configuration[PathToUserName],
+                    configuration[PathToPassword]),
                 config => config.WithEncryptionLevel(EncryptionLevel.None)));
 }
