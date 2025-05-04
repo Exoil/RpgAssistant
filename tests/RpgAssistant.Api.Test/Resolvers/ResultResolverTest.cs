@@ -1,12 +1,15 @@
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using RpgAssistant.Api.Resolvers;
+using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Exceptions;
+using RpgAssistant.Domain.Exceptions.Models;
 
 using Shouldly;
+
+using Exception = System.Exception;
 
 namespace RpgAssistant.Api.Test.Resolvers;
 
@@ -25,31 +28,31 @@ public class HttpResponseResolverTests
 
     [Fact]
     [Trait(Constants.TraitName,Constants.UnitTestTitle)]
-    public async Task ExecuteVoidRequest_Return_Expected_ObjectResult()
+    public void ExecuteVoidRequest_Return_Expected_ObjectResult()
     {
         var httpResolver = new ResultResolver(_mockHttpContextAccessor);
-        var result = await httpResolver.GetResult(
-            new FooRequestVoid(),
+        var result = httpResolver.GetResult(
+            FooResultMethodVoid(),
             () => Results.Ok(),
             CancellationToken.None);
 
-        result.Should().NotBeNull();
-        result.Should().BeOfType<Ok>();
+        result.ShouldNotBeNull();
+        result.ShouldBeOfType<Ok>();
     }
 
     [Theory]
     [Trait(Constants.TraitName,Constants.UnitTestTitle)]
     [MemberData(nameof(GetExceptionsWithResponses))]
-    public async Task ExecuteVoid_Request_Return_Over_400_HttpStatusCode(DomainException exception, int expectedStatusCode)
+    public void ExecuteVoid_Request_Return_Over_400_HttpStatusCode(DomainException exception, int expectedStatusCode)
     {
         // assert
         var httpResolver = new ResultResolver(_mockHttpContextAccessor);
-        var result = await httpResolver.GetResult(
-            new FooRequestVoid(),
+        var result =  httpResolver.GetResult(
+            FooResultMethodReturnExceptionVoid(exception),
             () => Results.Ok(),
             CancellationToken.None);
 
-        result.Should().BeOfType<ProblemHttpResult>();
+        result.ShouldBeOfType<ProblemHttpResult>();
         var problemHttpResult = result as ProblemHttpResult;
         problemHttpResult!.StatusCode.ShouldBe(expectedStatusCode);
         problemHttpResult.ProblemDetails.Detail.ShouldBe(exception.Message);
@@ -59,16 +62,16 @@ public class HttpResponseResolverTests
 
     [Fact]
     [Trait(Constants.TraitName,Constants.UnitTestTitle)]
-    public async Task ExecuteVoid_Request_Return_GeneralException_And_500_HttpStatusCode()
+    public void ExecuteVoid_Request_Return_GeneralException_And_500_HttpStatusCode()
     {
         // assert
         var httpResolver = new ResultResolver(_mockHttpContextAccessor);
-        var result = await httpResolver.GetResult(
-            new FooRequestVoid(),
+        var result =  httpResolver.GetResult(
+            FooResultMethodReturnExceptionVoid(new Exception("Test")),
             () => Results.Ok(),
             CancellationToken.None);
 
-        result.Should().BeOfType<ProblemHttpResult>();
+        result.ShouldBeOfType<ProblemHttpResult>();
         var problemHttpResult = result as ProblemHttpResult;
         problemHttpResult!.StatusCode.ShouldBe((int)HttpStatusCode.InternalServerError);
         problemHttpResult.ProblemDetails.Detail.ShouldBe(
@@ -79,30 +82,32 @@ public class HttpResponseResolverTests
 
     [Fact]
     [Trait(Constants.TraitName,Constants.UnitTestTitle)]
-    public async Task ExecuteIntRequest_Return_Expected_ObjectResult()
+    public void ExecuteIntRequest_Return_Expected_ObjectResult()
     {
+        // acrt
         var httpResolver = new ResultResolver(_mockHttpContextAccessor);
-        var result = await httpResolver.GetResult(
-            new FooRequestInt(),
+        var result = httpResolver.GetResult(
+            FooResultMethod(1),
             data => Results.Ok(data),
             CancellationToken.None);
 
-        result.Should().NotBeNull();
-        result.Should().BeOfType<Ok<int>>();
+        // assert
+        result.ShouldNotBeNull();
+        result.ShouldBeOfType<Ok<int>>();
     }
 
     [Theory]
     [Trait(Constants.TraitName,Constants.UnitTestTitle)]
     [MemberData(nameof(GetExceptionsWithResponses))]
-    public async Task ExecuteInt_Request_Return_Over_400_HttpStatusCode(DomainException exception, int expectedStatusCode)
+    public void ExecuteInt_Request_Return_Over_400_HttpStatusCode(DomainException exception, int expectedStatusCode)
     {
         var httpResolver = new ResultResolver(_mockHttpContextAccessor);
-        var result = await httpResolver.GetResult(
-            new FooRequestInt(),
+        var result = httpResolver.GetResult(
+            FooResultMethodReturnException(exception),
             data => Results.Ok(data),
             CancellationToken.None);
 
-        result.Should().BeOfType<ProblemHttpResult>();
+        result.ShouldBeOfType<ProblemHttpResult>();
         var problemHttpResult = result as ProblemHttpResult;
         problemHttpResult!.StatusCode.ShouldBe(expectedStatusCode);
         problemHttpResult.ProblemDetails.Detail.ShouldBe(exception.Message);
@@ -112,21 +117,21 @@ public class HttpResponseResolverTests
 
     [Fact]
     [Trait(Constants.TraitName,Constants.UnitTestTitle)]
-    public async Task ExecuteInt_Request_Return_GeneralException_And_500_HttpStatusCode()
+    public void ExecuteInt_Request_Return_GeneralException_And_500_HttpStatusCode()
     {
         var httpResolver = new ResultResolver(_mockHttpContextAccessor);
-        var result = await httpResolver.GetResult(
-            new FooRequestInt(),
+        var result =  httpResolver.GetResult(
+            FooResultMethodReturnException(new Exception("SomeException")),
             data => Results.Ok(data),
             CancellationToken.None);
 
-        result.Should().BeOfType<ProblemHttpResult>();
+        result.ShouldBeOfType<ProblemHttpResult>();
         var problemHttpResult = result as ProblemHttpResult;
-        problemHttpResult!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
-        problemHttpResult.ProblemDetails.Detail.Should().Be(
+        problemHttpResult!.StatusCode.ShouldBe((int)HttpStatusCode.InternalServerError);
+        problemHttpResult.ProblemDetails.Detail.ShouldBe(
             $"Internal service exception, please contact with administrator.{Environment.NewLine}test");
-        problemHttpResult.ProblemDetails.Title.Should().Be("Unexpected error");
-        problemHttpResult.ProblemDetails.Instance.Should().Be(_mockEndpoint.DisplayName);
+        problemHttpResult.ProblemDetails.Title.ShouldBe("Unexpected error");
+        problemHttpResult.ProblemDetails.Instance.ShouldBe(_mockEndpoint.DisplayName);
     }
 
 
@@ -134,7 +139,10 @@ public class HttpResponseResolverTests
     {
         yield return new object[]
         {
-            new ValidationException("Text Validation Exception", "errorCode",new List<ValidateException>()),
+            new ValidateException(
+                "Text Validation Exception",
+                "errorCode",
+                new List<ValidationMessage>()),
             (int)HttpStatusCode.BadRequest
         };
         yield return new object[]
@@ -143,4 +151,12 @@ public class HttpResponseResolverTests
             (int)HttpStatusCode.InternalServerError
         };
     }
+
+    private Result<int, Exception> FooResultMethod(int value) => value;
+
+    private Result<Exception> FooResultMethodVoid() => new();
+
+    private Result<int, Exception> FooResultMethodReturnException(Exception exception) => exception;
+
+    private Result<Exception> FooResultMethodReturnExceptionVoid(Exception exception) => exception;
 }
