@@ -17,7 +17,7 @@ public class UtilityGraphRepositoryTest : IClassFixture<Neo4jContainer>
     }
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName,Constants.TestIntegrationTitle)]
     public async Task Should_Return_Ulid_When_CreateAsync_Is_Called_With_Valid_CreateCharacter()
     {
         // Arrange
