@@ -21,7 +21,7 @@ public class CreateCharacterTest : IntegrationTestBase
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/characters", createCharacterRequest);
+        var response = await Client.PostAsJsonAsync("/characters", createCharacterRequest);
 
         // Assert
         response.EnsureSuccessStatusCode();

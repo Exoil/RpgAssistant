@@ -59,7 +59,8 @@ public class Neo4jContainer : IAsyncDisposable
         ExposedHttpPort = _container.GetMappedPublicPort(7474);
         ExposedBoltPort = _container.GetMappedPublicPort(7687);
 
-        await using var session = _driver.AsyncSession();
+        var driver = CreateDriver();
+        await using var session = driver.AsyncSession();
         await using var transaction = await session.BeginTransactionAsync();
 
         await SetConstraintsAsync(transaction);
