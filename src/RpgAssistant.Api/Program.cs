@@ -1,40 +1,43 @@
 using RpgAssistant.Api.IoC;
 using RpgAssistant.Api.IoC.Endpoints;
-
+using RpgAssistant.API.Middleware;
 using Serilog;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+namespace RpgAssistant.Api;
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
-builder.Host.UseSerilog((context, services, configuration) => configuration
-    .ReadFrom.Configuration(context.Configuration)
-    .ReadFrom.Services(services));
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddApi(builder.Configuration);
-builder.Services.AddHealthChecks()
-    .AddApiHealthChecks();
-
-WebApplication app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+public class Program
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    public static async Task Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-app.UseHttpsRedirection();
-app.AddHealthCheckEndpoint();
-app.AddVersionEndpoint();
+        builder
+            .Services
+            .AddSingleton(TimeProvider.System);
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(builder.Configuration)
+            .CreateLogger();
+        builder.Host.UseSerilog((context, services, configuration) => configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services));
 
-app.Run();
+// Use custom Swagger configuration instead of the default
+        builder.Services.AddCustomSwagger();
+        builder.Services.AddApi(builder.Configuration);
+        builder.Services.AddHealthChecks()
+            .AddApiHealthChecks();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        var app = builder.Build();
+
+
+        app.UseCustomSwagger(app.Environment);
+
+        app.UseMiddleware<ValidationExceptionMiddleware>();
+        app.UseHttpsRedirection();
+        app.AddHealthCheckEndpoint();
+        app.AddVersionEndpoint();
+        app.AddCharacterEndpoints();
+
+        await app.RunAsync();
+    }
 }

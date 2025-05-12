@@ -1,0 +1,131 @@
+openapi: 3.1.0
+info:
+    title: RpgAssistant API
+    description: API for RPG Assistant application
+    version: 1.0.0
+servers:
+    - url: 'https://localhost:7298'
+      description: 'HTTPS Development Server'
+    - url: 'http://localhost:5035'
+      description: 'HTTP Development Server'
+    - url: 'http://localhost:10324'
+      description: 'IIS Express (HTTP)'
+    - url: 'https://localhost:44394'
+      description: 'IIS Express (HTTPS)'
+tags:
+  - name: Characters
+    description: Operations related to characters
+  - name: Utility
+    description: Utility endpoints for monitoring and system information
+paths:
+  /characters:
+    post:
+      summary: Create a new character
+      operationId: createCharacter
+      tags:
+        - Characters
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCharacterDto'
+      responses:
+        '200':
+          description: Character created successfully
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+        '400':
+          description: Validation error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetails'
+        '500':
+          description: Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /health:
+    get:
+      summary: Health check endpoint
+      operationId: healthCheck
+      tags:
+        - Utility
+      responses:
+        '200':
+          description: API is healthy
+  /:
+    get:
+      summary: Get API version
+      operationId: getVersion
+      tags:
+        - Utility
+      responses:
+        '200':
+          description: API version
+          content:
+            text/plain:
+              schema:
+                type: string
+
+components:
+  schemas:
+    CreateCharacterDto:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: '^[a-zA-Z0-9 _-]+$'
+          description: Character name (alphanumeric characters, spaces, underscores, and hyphens only)
+        # Add other properties as needed
+      required:
+        - name
+
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+        title:
+          type: string
+          example: "Error title"
+        status:
+          type: integer
+          example: 500
+        detail:
+          type: string
+          example: "Internal service exception, please contact with administrator."
+        instance:
+          type: string
+          example: "/endpoint"
+        errorCode:
+          type: string
+          example: "ErrorCode"
+      required:
+        - type
+        - title
+        - status
+        - detail
+
+    ValidationProblemDetails:
+      allOf:
+        - $ref: '#/components/schemas/ProblemDetails'
+        - type: object
+          properties:
+            errors:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+              example:
+                propertyName: ["Error message 1", "Error message 2"]
+              description: Dictionary of property names and their validation error messages
