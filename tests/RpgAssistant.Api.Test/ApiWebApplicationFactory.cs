@@ -14,13 +14,11 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly Neo4jContainer _neo4jContainer;
     private readonly FakeTimeProvider _timeProvider;
-
-    public Neo4jContainer Neo4jContainer => _neo4jContainer;
     public FakeTimeProvider TimeProvider => _timeProvider;
 
-    public ApiWebApplicationFactory()
+    public ApiWebApplicationFactory(Neo4jContainer neo4jContainer)
     {
-        _neo4jContainer = new Neo4jContainer();
+        _neo4jContainer = neo4jContainer;
         _timeProvider = new FakeTimeProvider();
         _timeProvider.SetUtcNow(new DateTimeOffset(2023, 1, 1, 12, 0, 0, TimeSpan.Zero));
     }

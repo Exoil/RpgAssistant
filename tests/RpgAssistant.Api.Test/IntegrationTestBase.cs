@@ -6,21 +6,23 @@ namespace RpgAssistant.Api.Test;
 
 public abstract class IntegrationTestBase : IAsyncLifetime
 {
-    protected readonly ApiWebApplicationFactory Factory;
-    protected readonly HttpClient Client;
-    protected readonly FakeTimeProvider TimeProvider;
-    protected readonly Neo4jContainer Neo4jContainer;
+    protected ApiWebApplicationFactory Factory = default!;
+    protected HttpClient Client = default!;
+    protected FakeTimeProvider TimeProvider = default!;
+    protected Neo4jContainer Neo4jContainer = default!;
 
     protected IntegrationTestBase()
     {
-        Factory = new ApiWebApplicationFactory();
-        Client = Factory.CreateClient();
-        TimeProvider = Factory.TimeProvider;
-        Neo4jContainer = Factory.Neo4jContainer;
+        Neo4jContainer = new Neo4jContainer();
     }
 
     public virtual async Task InitializeAsync()
-        => await Neo4jContainer.InitializeAsync();
+    {
+        await Neo4jContainer.InitializeAsync();
+        Factory = new ApiWebApplicationFactory(Neo4jContainer);
+        Client = Factory.CreateClient();
+        TimeProvider = Factory.TimeProvider;
+    }
 
     public virtual async Task DisposeAsync()
         => await Neo4jContainer.ResetAsync();
