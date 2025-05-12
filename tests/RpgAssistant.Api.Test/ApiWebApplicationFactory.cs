@@ -12,13 +12,13 @@ namespace RpgAssistant.Api.Test;
 
 public class ApiWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly Neo4jContainer _neo4jContainer;
+    private readonly Neo4jContainerRunner _neo4JContainerRunner;
     private readonly FakeTimeProvider _timeProvider;
     public FakeTimeProvider TimeProvider => _timeProvider;
 
-    public ApiWebApplicationFactory(Neo4jContainer neo4jContainer)
+    public ApiWebApplicationFactory(Neo4jContainerRunner neo4JContainerRunner)
     {
-        _neo4jContainer = neo4jContainer;
+        _neo4JContainerRunner = neo4JContainerRunner;
         _timeProvider = new FakeTimeProvider();
         _timeProvider.SetUtcNow(new DateTimeOffset(2023, 1, 1, 12, 0, 0, TimeSpan.Zero));
     }
@@ -33,9 +33,9 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
             // Override settings with test container values
             var inMemorySettings = new Dictionary<string, string>
             {
-                {"GraphDb:Uri", _neo4jContainer.BoltUri},
-                {"GraphDb:Login", Neo4jContainer.Login},
-                {"GraphDb:Pass", Neo4jContainer.Password}
+                {"GraphDb:Uri", _neo4JContainerRunner.ConnectionString},
+                {"GraphDb:Login", "foo"},
+                {"GraphDb:Pass", "foo"}
             };
 
             config.AddInMemoryCollection(inMemorySettings!);
@@ -49,13 +49,13 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
 
             // Replace Neo4j driver with our test container driver
             services.RemoveAll<IDriver>();
-            services.AddSingleton(_neo4jContainer.CreateDriver());
+            services.AddSingleton(_neo4JContainerRunner.CreateDriver());
         });
     }
 
     public override async ValueTask DisposeAsync()
     {
-        await _neo4jContainer.DisposeAsync();
+        await _neo4JContainerRunner.DisposeAsync();
         await base.DisposeAsync();
     }
 }

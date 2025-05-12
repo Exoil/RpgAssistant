@@ -9,25 +9,25 @@ public abstract class IntegrationTestBase : IAsyncLifetime
     protected ApiWebApplicationFactory Factory = default!;
     protected HttpClient Client = default!;
     protected FakeTimeProvider TimeProvider = default!;
-    protected Neo4jContainer Neo4jContainer = default!;
+    protected Neo4jContainerRunner _neo4JContainerRunner = default!;
 
     protected IntegrationTestBase()
     {
-        Neo4jContainer = new Neo4jContainer();
+        _neo4JContainerRunner = new Neo4jContainerRunner();
     }
 
     public virtual async Task InitializeAsync()
     {
-        await Neo4jContainer.InitializeAsync();
-        Factory = new ApiWebApplicationFactory(Neo4jContainer);
+        await _neo4JContainerRunner.InitializeAsync();
+        Factory = new ApiWebApplicationFactory(_neo4JContainerRunner);
         Client = Factory.CreateClient();
         TimeProvider = Factory.TimeProvider;
     }
 
     public virtual async Task DisposeAsync()
-        => await Neo4jContainer.ResetAsync();
+        => await _neo4JContainerRunner.ResetAsync();
 
-    protected Task<IDriver> GetDriverAsync() => Task.FromResult(Neo4jContainer.CreateDriver());
+    protected Task<IDriver> GetDriverAsync() => Task.FromResult(_neo4JContainerRunner.CreateDriver());
 
 
     protected void SetCurrentTime(DateTimeOffset time) =>
