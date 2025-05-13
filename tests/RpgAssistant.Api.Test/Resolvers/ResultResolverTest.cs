@@ -75,7 +75,7 @@ public class HttpResponseResolverTests
         var problemHttpResult = result as ProblemHttpResult;
         problemHttpResult!.StatusCode.ShouldBe((int)HttpStatusCode.InternalServerError);
         problemHttpResult.ProblemDetails.Detail.ShouldBe(
-            $"Internal service exception, please contact with administrator.{Environment.NewLine}test");
+            $"Internal service exception, please contact with administrator.{Environment.NewLine}Test");
         problemHttpResult.ProblemDetails.Title.ShouldBe("Unexpected error");
         problemHttpResult.ProblemDetails.Instance.ShouldBe(_mockEndpoint.DisplayName);
     }
@@ -129,7 +129,7 @@ public class HttpResponseResolverTests
         var problemHttpResult = result as ProblemHttpResult;
         problemHttpResult!.StatusCode.ShouldBe((int)HttpStatusCode.InternalServerError);
         problemHttpResult.ProblemDetails.Detail.ShouldBe(
-            $"Internal service exception, please contact with administrator.{Environment.NewLine}test");
+            $"Internal service exception, please contact with administrator.{Environment.NewLine}SomeException");
         problemHttpResult.ProblemDetails.Title.ShouldBe("Unexpected error");
         problemHttpResult.ProblemDetails.Instance.ShouldBe(_mockEndpoint.DisplayName);
     }
