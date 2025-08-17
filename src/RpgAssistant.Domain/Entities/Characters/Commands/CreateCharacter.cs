@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 using RpgAssistant.Domain.Models;
@@ -10,6 +11,7 @@ public record CreateCharacter : BaseValueObject
 
     public required Ulid Id { get; init; }
 
+    [StringLength(50, MinimumLength = 1, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     public required string Name { get; init; }
 
     [SetsRequiredMembers]

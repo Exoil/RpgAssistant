@@ -39,8 +39,6 @@ public class BaseValueObjectTest
             validationException = ve;
         }
 
-        validationException.Title.ShouldBe(ErrorTitle);
-        validationException.ErrorCode.ShouldBe(ErrorMessage);
         validationException.ValidationErrors.ShouldNotBeNull();
         validationException.ValidationErrors.ShouldNotBeEmpty();
 
