@@ -22,4 +22,8 @@
       <ProjectReference Include="..\..\src\RpgAssistant.Application\RpgAssistant.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="CQRS\Commands\" />
+    </ItemGroup>
+
 </Project>
