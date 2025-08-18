@@ -20,7 +20,7 @@ public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacte
         CreateCharacterCommand request,
         CancellationToken cancellationToken = new CancellationToken())
     {
-        var transaction = await _transactionFactory.CreateAsync();
+        await using var transaction = await _transactionFactory.CreateAsync();
         var characterRepository = new CharacterRepository(transaction);
 
         try
