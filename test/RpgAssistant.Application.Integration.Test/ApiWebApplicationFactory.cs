@@ -38,9 +38,9 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
             // Override settings with test container values
             var inMemorySettings = new Dictionary<string, string>
             {
-                {"GraphDb:Uri", _neo4JContainerRunner.ConnectionString},
-                {"GraphDb:Login", "foo"},
-                {"GraphDb:Pass", "foo"}
+                {"GraphDb:ConnectionString", _neo4JContainerRunner.ConnectionString},
+                {"GraphDb:Username", "foo"},
+                {"GraphDb:Password", "foo"}
             };
 
             config.AddInMemoryCollection(inMemorySettings!);

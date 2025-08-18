@@ -12,4 +12,8 @@
         <PackageReference Include="Neo4j.Driver" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\RpgAssistant.Domain\RpgAssistant.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
