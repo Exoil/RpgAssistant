@@ -20,7 +20,7 @@ public class CharacterRepository
         const string queryString = @"
             CREATE (ch:Character {Id: $CharacterId, Name: $Name })
             RETURN ID(ch) AS CharacterNodeId";
-        var query = new Query(queryString, new { Id = createCharacter.Id.ToDatabaseId(), Name = createCharacter.Name });
+        var query = new Query(queryString, new { CharacterId = createCharacter.Id.ToDatabaseId(), Name = createCharacter.Name });
 
         await _transaction.RunAsync(query);
     }
