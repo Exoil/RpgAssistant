@@ -6,14 +6,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Time.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Neo4j.Driver;
 using RpgAssistant.Application.Integration.Test.Containers;
 using Microsoft.AspNetCore.Mvc.Testing;
+using SutProgram = RpgAssistant.Application.Program;
 
 namespace RpgAssistant.Application.Integration.Test;
 
-public class ApiWebApplicationFactory : WebApplicationFactory<Program>
+public class ApiWebApplicationFactory : WebApplicationFactory<SutProgram>
 {
     private readonly Neo4jContainerRunner _neo4JContainerRunner;
 
@@ -30,6 +30,8 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseEnvironment("Testing");
+
         builder.ConfigureAppConfiguration((context, config) =>
         {
             // Add test-specific configuration
@@ -38,9 +40,9 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
             // Override settings with test container values
             var inMemorySettings = new Dictionary<string, string>
             {
-                {"GraphDb:Uri", _neo4JContainerRunner.ConnectionString},
-                {"GraphDb:Login", "foo"},
-                {"GraphDb:Pass", "foo"}
+                {"GraphDb:ConnectionString", _neo4JContainerRunner.ConnectionString},
+                {"GraphDb:Username", "foo"},
+                {"GraphDb:Password", "foo"}
             };
 
             config.AddInMemoryCollection(inMemorySettings!);

@@ -2,18 +2,34 @@ using RpgAssistant.Application.Endpoints;
 using RpgAssistant.Application.IoC;
 using RpgAssistant.Infrastructure.IoC;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace RpgAssistant.Application;
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.RegisterGraphDb(builder.Configuration);
-builder.Services.RegisterHandlers();
-builder.Host.ConfigureLogger(builder.Configuration);
-builder.Services.RegisterResultsResolvers();
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var app = BuildApp(args);
+        app.Run();
+    }
 
-var app = builder.Build();
+    // Exposed builder to support tests if needed
+    private static WebApplication BuildApp(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-app.UseHttpsRedirection();
-app.MapUtilityEndpoints();
+        // Services
+        builder.Services.RegisterGraphDb(builder.Configuration);
+        builder.Services.RegisterHandlers();
+        builder.Host.ConfigureLogger(builder.Configuration);
+        builder.Services.RegisterResultsResolvers();
 
-app.Run();
+        var app = builder.Build();
+
+        // Middleware and endpoints
+        app.UseHttpsRedirection();
+        app.MapUtilityEndpoints();
+        app.MapCharacterEndpoints();
+
+        return app;
+    }
+}

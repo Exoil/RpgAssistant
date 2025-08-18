@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Neo4j.Driver;
 
+using RpgAssistant.Infrastructure.Factories;
+using RpgAssistant.Infrastructure.Repositories;
+
 namespace RpgAssistant.Infrastructure.IoC;
 
 public static class RegisterDatabase
@@ -22,7 +25,9 @@ public static class RegisterDatabase
                     configuration[_configurationPathToGraphDbPassword]),
                 config => config.WithEncryptionLevel(EncryptionLevel.None)));
 
-        serviceCollection.AddScoped<IAsyncSession>(serviceProvider =>
-            serviceProvider.GetRequiredService<IDriver>().AsyncSession());
+        serviceCollection
+            .AddScoped<IAsyncSession>(serviceProvider =>
+                serviceProvider.GetRequiredService<IDriver>().AsyncSession())
+            .AddScoped<TransactionFactory>();
     }
 }
