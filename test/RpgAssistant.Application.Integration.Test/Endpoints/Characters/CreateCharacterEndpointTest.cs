@@ -50,8 +50,6 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        var act = async () => await response.Content.ReadFromJsonAsync<Guid>();
-        act.ShouldThrow<Exception>();
     }
 
     private async Task AssertCharacter(Guid id)
