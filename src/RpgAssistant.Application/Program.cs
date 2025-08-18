@@ -15,5 +15,6 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.MapUtilityEndpoints();
+app.MapCharacterEndpoints();
 
 app.Run();
