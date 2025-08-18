@@ -18,7 +18,7 @@ public class CharacterRepository
     public async Task CreateAsync(CreateCharacter createCharacter)
     {
         const string queryString = @"
-            CREATE (ch:Character {Id: $CharacterId, Name: $Name n})
+            CREATE (ch:Character {Id: $CharacterId, Name: $Name })
             RETURN ID(ch) AS CharacterNodeId";
         var query = new Query(queryString, new { Id = createCharacter.Id.ToDatabaseId(), Name = createCharacter.Name });
 
