@@ -3,7 +3,6 @@ using RpgAssistant.Application.CQRS.Commands;
 using RpgAssistant.Application.Dtos;
 using RpgAssistant.Application.ResultResolvers;
 using RpgAssistant.Domain.Extensions;
-using RpgAssistant.Domain.Models;
 
 namespace RpgAssistant.Application.Endpoints;
 
@@ -25,9 +24,9 @@ public static class CharacterEndpoints
                     [FromServices] ResultsToHttpResponses responseResolver,
                     [FromBody] CharacterDto character,
                     CancellationToken cancellationToken = default) =>
-                await responseResolver.GetResult<CreateCharacterCommand, Result<Ulid, Exception>>(
+                await responseResolver.GetResult<CreateCharacterCommand, Ulid>(
                     character.ToCommand(),
-                    data =>  Results.Created(string.Empty, data.Value.UlidToGuid()),
+                    data =>  Results.Created(string.Empty, data.UlidToGuid()),
                     cancellationToken));
     }
 }

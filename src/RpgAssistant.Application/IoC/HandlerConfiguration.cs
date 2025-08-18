@@ -1,4 +1,7 @@
 using MessagePipe;
+using RpgAssistant.Application.CQRS.Commands;
+using RpgAssistant.Application.CQRS.Commands.CommandHandlers;
+using RpgAssistant.Domain.Models;
 
 namespace RpgAssistant.Application.IoC;
 
@@ -12,6 +15,6 @@ public static class HandlerConfiguration
             options.RequestHandlerLifetime = InstanceLifetime.Scoped;
         });
 
-        return services;
+        return services.AddScoped<IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>, CreateCharacterCommandHandler>();
     }
 }
