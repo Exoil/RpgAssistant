@@ -27,9 +27,11 @@ public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacte
         {
             var createCharacter = new CreateCharacter(request.Id, request.Name);
             await characterRepository.CreateAsync(createCharacter);
+            await transaction.CommitAsync();
         }
         catch(Exception exception)
         {
+            await transaction.RollbackAsync();
             return exception;
         }
 
