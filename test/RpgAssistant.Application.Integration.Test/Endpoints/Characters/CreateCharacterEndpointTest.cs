@@ -15,6 +15,7 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
     public const string Endpoint = "/characters";
 
     [Fact]
+    [Trait(Constants.TraitName,Constants.TestTitle)]
     public async Task Create_Character()
     {
         // Arrange
@@ -29,24 +30,13 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
         var id = await response.Content.ReadFromJsonAsync<Guid>();
-        await AsssertCharacter(id);
-    }
-
-    private async Task AsssertCharacter(Guid id)
-    {
-        await using var driver = await GetDriverAsync();
-        await using var session = driver.AsyncSession();
-        await using var transaction = await session.BeginTransactionAsync();
-
-        var characterRepository = new CharacterRepository(transaction);
-        var character =  await characterRepository.GetAsync(id.GuidToUlid());
-
-        character.Name.ShouldBe(character.Name);
+        await AssertCharacter(id);
     }
 
     [Theory]
     [InlineData(0)]
     [InlineData(100)]
+    [Trait(Constants.TraitName,Constants.TestTitle)]
     public async Task Create_Character_With_Invalid_Name(int nameLength)
     {
         // Arrange
@@ -62,5 +52,17 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         var act = async () => await response.Content.ReadFromJsonAsync<Guid>();
         act.ShouldThrow<Exception>();
+    }
+
+    private async Task AssertCharacter(Guid id)
+    {
+        await using var driver = await GetDriverAsync();
+        await using var session = driver.AsyncSession();
+        await using var transaction = await session.BeginTransactionAsync();
+
+        var characterRepository = new CharacterRepository(transaction);
+        var character =  await characterRepository.GetAsync(id.GuidToUlid());
+
+        character.Name.ShouldBe(character.Name);
     }
 }
