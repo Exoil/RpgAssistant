@@ -40,6 +40,51 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         await AssertCharacter(characterId, dataWithUpdate.Name);
     }
 
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(100)]
+    [Trait(Constants.TraitName,Constants.TestTitle)]
+    public async Task UpdateCharacterWithInvalidNameLength(int stringLength)
+    {
+        // Arrange
+        var dataWithUpdate = new
+        {
+            Name = new string('*', stringLength)
+        };
+        var dataForCreateCharacter = new
+        {
+            Name = "Test"
+        };
+
+        var response = await Client.PostAsJsonAsync(Endpoint, dataForCreateCharacter, CancellationToken.None);
+        var characterId = await response.Content.ReadFromJsonAsync<Guid>();
+
+        // Act
+        var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
+
+        // Assert
+        responseUpdate.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
+    public async Task UpdateNotExistingCharacterName()
+    {
+        // Arrange
+        var characterId = Ulid.NewUlid().ToGuid();
+        var dataWithUpdate = new
+        {
+            Name = "Test"
+        };
+
+        // Act
+        var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
+
+        // Assert
+        responseUpdate.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
     private async Task AssertCharacter(Guid id, string name)
     {
         await using var driver = await GetDriverAsync();
