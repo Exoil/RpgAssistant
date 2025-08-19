@@ -30,7 +30,7 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
         var id = await response.Content.ReadFromJsonAsync<Guid>();
-        await AssertCharacter(id);
+        await AssertCharacter(id, requestPayload.Name);
     }
 
     [Theory]
@@ -52,7 +52,7 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
-    private async Task AssertCharacter(Guid id)
+    private async Task AssertCharacter(Guid id, string name)
     {
         await using var driver = await GetDriverAsync();
         await using var session = driver.AsyncSession();
@@ -61,6 +61,6 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
         var characterRepository = new CharacterRepository(transaction);
         var character =  await characterRepository.GetAsync(id.GuidToUlid());
 
-        character.Name.ShouldBe(character.Name);
+        character.Name.ShouldBe(name);
     }
 }
