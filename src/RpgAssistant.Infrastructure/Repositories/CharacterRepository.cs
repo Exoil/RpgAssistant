@@ -54,11 +54,9 @@ public class CharacterRepository
             return (false, -1);
         }
 
+        var record = records[0];
 
-        var result = await cursorResult
-            .SingleAsync(record => (record["Exists"].As<bool>(), record["Version"].As<int>()));
-
-        return result;
+        return (record["Exists"].As<bool>(), record["Version"].As<int>());
     }
 
     public async Task<Character> GetAsync(Ulid id)
