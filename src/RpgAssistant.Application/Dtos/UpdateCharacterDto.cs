@@ -8,5 +8,5 @@ public record UpdateCharacterDto(
     [property: JsonPropertyName("name")]
     string Name)
 {
-    public UpdateCharacterCommand ToCommand() => new(Guid.NewGuid(), Name);
+    public UpdateCharacterCommand ToCommand(Guid id) => new(id, Name);
 }

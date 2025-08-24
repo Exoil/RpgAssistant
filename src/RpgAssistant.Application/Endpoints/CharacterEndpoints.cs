@@ -39,7 +39,7 @@ public static class CharacterEndpoints
                         [FromBody] UpdateCharacterDto updateCharacter,
                         CancellationToken cancellationToken = default) =>
                     await responseResolver.GetResult<UpdateCharacterCommand>(
-                        updateCharacter.ToCommand(),
+                        updateCharacter.ToCommand(id),
                         Results.NoContent,
                         cancellationToken));
     }
