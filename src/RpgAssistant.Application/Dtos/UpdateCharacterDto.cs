@@ -6,7 +6,9 @@ namespace RpgAssistant.Application.Dtos;
 
 public record UpdateCharacterDto(
     [property: JsonPropertyName("name")]
-    string Name)
+    string Name,
+    [property: JsonPropertyName("version")]
+    int Version)
 {
-    public UpdateCharacterCommand ToCommand(Guid id) => new(id, Name);
+    public UpdateCharacterCommand ToCommand(Guid id) => new(id, Name, Version);
 }

@@ -22,7 +22,8 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         // Arrange
         var dataWithUpdate = new
         {
-            Name = "UpdatedName"
+            Name = "UpdatedName",
+            Version = 1
         };
         var dataForCreateCharacter = new
         {
@@ -50,7 +51,8 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         // Arrange
         var dataWithUpdate = new
         {
-            Name = new string('*', stringLength)
+            Name = new string('*', stringLength),
+            Version = 1
         };
         var dataForCreateCharacter = new
         {
@@ -68,6 +70,31 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
     }
 
     [Fact]
+    [Trait(Constants.TraitName,Constants.TestTitle)]
+    public async Task UpdateCharacterWithOldVersion()
+    {
+        // Arrange
+        var dataWithUpdate = new
+        {
+            Name = new string('*', 10),
+            Version = 0
+        };
+        var dataForCreateCharacter = new
+        {
+            Name = "Test"
+        };
+
+        var response = await Client.PostAsJsonAsync(Endpoint, dataForCreateCharacter, CancellationToken.None);
+        var characterId = await response.Content.ReadFromJsonAsync<Guid>();
+
+        // Act
+        var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
+
+        // Assert
+        responseUpdate.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+    }
+
+    [Fact]
     [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task UpdateNotExistingCharacterName()
     {
@@ -75,7 +102,8 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         var characterId = Ulid.NewUlid().ToGuid();
         var dataWithUpdate = new
         {
-            Name = "Test"
+            Name = "Test",
+            Verson = 1
         };
 
         // Act

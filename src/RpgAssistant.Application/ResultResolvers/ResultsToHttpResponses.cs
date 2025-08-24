@@ -74,6 +74,13 @@ public class ResultsToHttpResponses
                 (int)HttpStatusCode.NotFound,
                 notFoundException.Title,
                 notFoundException.ErrorCode),
+        ConflictException conflictException
+            => Results.Problem(
+                conflictException.Message,
+                _endpointDisplayName,
+                (int)HttpStatusCode.Conflict,
+                conflictException.Title,
+                conflictException.ErrorCode),
         _ => exception.ToResult(_endpointDisplayName)
     };
 }

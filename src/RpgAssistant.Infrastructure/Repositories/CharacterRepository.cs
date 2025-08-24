@@ -18,7 +18,7 @@ public class CharacterRepository
     public async Task CreateAsync(CreateCharacter createCharacter)
     {
         const string queryString = @"
-            CREATE (ch:Character {Id: $CharacterId, Name: $Name })
+            CREATE (ch:Character {Id: $CharacterId, Name: $Name, Version: 1})
             RETURN ID(ch) AS CharacterNodeId";
         var query = new Query(queryString, new { CharacterId = createCharacter.Id.ToDatabaseId(), Name = createCharacter.Name });
 
@@ -30,33 +30,34 @@ public class CharacterRepository
         const string queryString = @"
             MATCH (ch:Character {Id: $CharacterId })
             SET
-                ch.Name = $Name
+                ch.Name = $Name,
+                ch.Version = ch.Version + 1
             RETURN ID(ch) AS CharacterNodeId";
         var query = new Query(queryString, new { CharacterId = id.ToDatabaseId(), Name = updateCharacter.Name });
 
         await _transaction.RunAsync(query);
     }
 
-    public async Task<bool> ExistsAsync(Ulid id)
+    public async Task<(bool Exists, int Version)> ExistsAsync(Ulid id)
     {
         const string queryString = @"
-            MATCH (ch:Character {Id: $Id})
-            RETURN COUNT(ch) > 0 AS Exists";
-        var query = new Query(queryString, new { Id = id.ToDatabaseId() });
+            MATCH (ch:Character {Id: $Id })
+            RETURN ch IS NOT NULL AS Exists, coalesce(ch.Version, -1) AS Version";
+        var query = new Query(queryString, new { Id = id.ToDatabaseId()});
 
         var cursorResult = await _transaction.RunAsync(query);
 
-        var exists = await cursorResult
-            .SingleAsync(record => record["Exists"].As<bool>());
+        var result = await cursorResult
+            .SingleAsync(record => (record["Exists"].As<bool>(), record["Version"].As<int>()));
 
-        return exists;
+        return result;
     }
 
     public async Task<Character> GetAsync(Ulid id)
     {
         const string queryString = @"
             MATCH (ch:Character {Id: $Id})
-            RETURN ch.Id AS Id, ch.Name AS Name";
+            RETURN ch.Id AS Id, ch.Name AS Name, ch.Version AS Version";
         var query = new Query(queryString, new { Id = id.ToDatabaseId() });
 
         var cursorResult = await _transaction.RunAsync(query);
