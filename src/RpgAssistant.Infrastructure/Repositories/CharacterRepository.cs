@@ -47,6 +47,14 @@ public class CharacterRepository
 
         var cursorResult = await _transaction.RunAsync(query);
 
+        var records = await cursorResult.ToListAsync();
+
+        if (records.Count == 0)
+        {
+            return (false, -1);
+        }
+
+
         var result = await cursorResult
             .SingleAsync(record => (record["Exists"].As<bool>(), record["Version"].As<int>()));
 
