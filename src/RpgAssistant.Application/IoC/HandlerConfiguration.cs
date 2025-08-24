@@ -15,6 +15,8 @@ public static class HandlerConfiguration
             options.RequestHandlerLifetime = InstanceLifetime.Scoped;
         });
 
-        return services.AddScoped<IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>, CreateCharacterCommandHandler>();
+        return services
+            .AddScoped<IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>, CreateCharacterCommandHandler>()
+            .AddScoped<IAsyncRequestHandler<UpdateCharacterCommand, Result<Exception>>, UpdateCharacterCommandHandler>();
     }
 }

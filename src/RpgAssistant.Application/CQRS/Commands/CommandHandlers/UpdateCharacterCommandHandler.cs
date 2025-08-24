@@ -1,6 +1,8 @@
 using MessagePipe;
 
 using RpgAssistant.Domain.Entities.Characters.Commands;
+using RpgAssistant.Domain.Exceptions;
+using RpgAssistant.Domain.Exceptions.Enums;
 using RpgAssistant.Domain.Extensions;
 using RpgAssistant.Domain.Models;
 using RpgAssistant.Infrastructure.Factories;
@@ -23,11 +25,20 @@ public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacte
     {
         await using var transaction = await _transactionFactory.CreateAsync();
         var characterRepository = new CharacterRepository(transaction);
+        var idAsUlid = request.Id.GuidToUlid();
 
         try
         {
+            var exists = await characterRepository.ExistsAsync(idAsUlid);
+
+            if (!exists)
+            {
+                return new NotFoundException(Entities.Character);
+            }
+
             var updateCharacter = new UpdateCharacter(request.Name);
-            await characterRepository.UpdateAsync(request.Id.GuidToUlid(), updateCharacter);
+
+            await characterRepository.UpdateAsync(idAsUlid, updateCharacter);
             await transaction.CommitAsync();
         }
         catch(Exception exception)

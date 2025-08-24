@@ -36,7 +36,7 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
 
         // Assert
-        responseUpdate.StatusCode.ShouldBe(HttpStatusCode.OK);
+        responseUpdate.StatusCode.ShouldBe(HttpStatusCode.NoContent);
         await AssertCharacter(characterId, dataWithUpdate.Name);
     }
 

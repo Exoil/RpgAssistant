@@ -18,7 +18,8 @@ public static class CharacterEndpoints
 
     private static void MapCharacterEndpoints(this RouteGroupBuilder endpointGroup)
     {
-        endpointGroup.MapPost(
+        endpointGroup
+            .MapPost(
             "/",
             async (
                     [FromServices] ResultsToHttpResponses responseResolver,
@@ -28,5 +29,18 @@ public static class CharacterEndpoints
                     character.ToCommand(),
                     data =>  Results.Created(string.Empty, data.UlidToGuid()),
                     cancellationToken));
+
+        endpointGroup
+            .MapPut(
+                "/{id:guid}",
+                async (
+                        [FromServices] ResultsToHttpResponses responseResolver,
+                        [FromRoute] Guid id,
+                        [FromBody] UpdateCharacterDto updateCharacter,
+                        CancellationToken cancellationToken = default) =>
+                    await responseResolver.GetResult<UpdateCharacterCommand>(
+                        updateCharacter.ToCommand(),
+                        Results.NoContent,
+                        cancellationToken));
     }
 }
