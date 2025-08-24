@@ -25,6 +25,33 @@ public class CharacterRepository
         await _transaction.RunAsync(query);
     }
 
+    public async Task UpdateAsync(Ulid id, UpdateCharacter updateCharacter)
+    {
+        const string queryString = @"
+            MATCH (ch:Character {Id: $CharacterId })
+            SET
+                ch.Name = $Name
+            RETURN ID(ch) AS CharacterNodeId";
+        var query = new Query(queryString, new { CharacterId = id.ToDatabaseId(), Name = updateCharacter.Name });
+
+        await _transaction.RunAsync(query);
+    }
+
+    public async Task<bool> ExistsAsync(Ulid id)
+    {
+        const string queryString = @"
+            MATCH (ch:Character {Id: $Id})
+            RETURN COUNT(ch) > 0 AS Exists";
+        var query = new Query(queryString, new { Id = id.ToDatabaseId() });
+
+        var cursorResult = await _transaction.RunAsync(query);
+
+        var exists = await cursorResult
+            .SingleAsync(record => record["Exists"].As<bool>());
+
+        return exists;
+    }
+
     public async Task<Character> GetAsync(Ulid id)
     {
         const string queryString = @"

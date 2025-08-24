@@ -67,6 +67,13 @@ public class ResultsToHttpResponses
                 validationException.Title,
                 validationException.ErrorCode,
                 validationException.ValidationErrors!),
+        NotFoundException notFoundException
+                => Results.Problem(
+        notFoundException.Message,
+                _endpointDisplayName,
+                (int)HttpStatusCode.NotFound,
+                notFoundException.Title,
+                notFoundException.ErrorCode),
         _ => exception.ToResult(_endpointDisplayName)
     };
 }

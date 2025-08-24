@@ -18,7 +18,7 @@ public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacte
 
     public async ValueTask<Result<Ulid, Exception>> InvokeAsync(
         CreateCharacterCommand request,
-        CancellationToken cancellationToken = new CancellationToken())
+        CancellationToken cancellationToken = default)
     {
         await using var transaction = await _transactionFactory.CreateAsync();
         var characterRepository = new CharacterRepository(transaction);
