@@ -14,6 +14,6 @@ public static class RecordExtensions
             record["Id"].As<string>().DatabaseIdToUlid(),
             record["Name"].As<string>());
 
-        return new Character(createCharacter);
+        return new Character(createCharacter, record["Version"].As<int>());
     }
 }

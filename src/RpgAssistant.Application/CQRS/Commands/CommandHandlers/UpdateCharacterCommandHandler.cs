@@ -31,9 +31,14 @@ public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacte
         {
             var exists = await characterRepository.ExistsAsync(idAsUlid);
 
-            if (!exists)
+            if (!exists.Exists)
             {
                 return new NotFoundException(Entities.Character);
+            }
+
+            if (exists.Version != request.Version)
+            {
+                return new ConflictException();
             }
 
             var updateCharacter = new UpdateCharacter(request.Name);
