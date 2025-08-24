@@ -25,6 +25,18 @@ public class CharacterRepository
         await _transaction.RunAsync(query);
     }
 
+    public async Task UpdateAsync(Ulid id, UpdateCharacter updateCharacter)
+    {
+        const string queryString = @"
+            MATCH (ch:Character {Id: $CharacterId })
+            SET
+                ch.Name = $Name
+            RETURN ID(ch) AS CharacterNodeId";
+        var query = new Query(queryString, new { CharacterId = id.ToDatabaseId(), Name = updateCharacter.Name });
+
+        await _transaction.RunAsync(query);
+    }
+
     public async Task<Character> GetAsync(Ulid id)
     {
         const string queryString = @"

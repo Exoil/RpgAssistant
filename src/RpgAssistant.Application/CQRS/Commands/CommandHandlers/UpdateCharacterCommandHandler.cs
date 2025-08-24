@@ -1,23 +1,24 @@
 using MessagePipe;
+
 using RpgAssistant.Domain.Entities.Characters.Commands;
+using RpgAssistant.Domain.Extensions;
 using RpgAssistant.Domain.Models;
 using RpgAssistant.Infrastructure.Factories;
 using RpgAssistant.Infrastructure.Repositories;
 
 namespace RpgAssistant.Application.CQRS.Commands.CommandHandlers;
 
-public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>
+public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacterCommand, Result<Exception>>
 {
     private readonly TransactionFactory _transactionFactory;
 
-    public CreateCharacterCommandHandler(TransactionFactory transactionFactory)
+    public UpdateCharacterCommandHandler(TransactionFactory transactionFactory)
     {
         _transactionFactory = transactionFactory;
     }
 
-
-    public async ValueTask<Result<Ulid, Exception>> InvokeAsync(
-        CreateCharacterCommand request,
+    public async ValueTask<Result<Exception>> InvokeAsync(
+        UpdateCharacterCommand request,
         CancellationToken cancellationToken = default)
     {
         await using var transaction = await _transactionFactory.CreateAsync();
@@ -25,8 +26,8 @@ public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacte
 
         try
         {
-            var createCharacter = new CreateCharacter(request.Id, request.Name);
-            await characterRepository.CreateAsync(createCharacter);
+            var updateCharacter = new UpdateCharacter(request.Name);
+            await characterRepository.UpdateAsync(request.Id.GuidToUlid(), updateCharacter);
             await transaction.CommitAsync();
         }
         catch(Exception exception)
@@ -35,6 +36,6 @@ public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacte
             return exception;
         }
 
-        return request.Id;
+        return new Result<Exception>();
     }
 }
