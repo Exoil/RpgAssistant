@@ -17,9 +17,7 @@ public record GetCharacterPage : BaseValueObject
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     public string SortType { get; init; }
 
-    [StringLength(4, MinimumLength = 1, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     [RegularExpression("^(Asc|Desc)$", ErrorMessage = "Value for {0} must match one of: Asc, Desc.")]
-
     public string SortOrder { get; init; }
 
     public GetCharacterPage(uint page, uint size, string sortType, string sortOrder)

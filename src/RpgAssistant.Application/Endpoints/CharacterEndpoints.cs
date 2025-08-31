@@ -78,7 +78,7 @@ public static class CharacterEndpoints
                         [FromQuery] string sortType,
                         [FromQuery] string sortOrder,
                         CancellationToken cancellationToken = default) =>
-                    await responseResolver.GetResult<GetCharacterPageQuery, IEnumerable<CharacterPayload>>(
+                    await responseResolver.GetResult<GetCharacterPageQuery, IReadOnlyCollection<CharacterPayload>>(
                         new GetCharacterPageQuery(pageNumber, pageSize, sortType, sortOrder),
                         data => Results.Ok(data),
                         cancellationToken));
