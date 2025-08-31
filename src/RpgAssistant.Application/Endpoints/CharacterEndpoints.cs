@@ -63,9 +63,9 @@ public static class CharacterEndpoints
                         [FromServices] ResultsToHttpResponses responseResolver,
                         [FromRoute] Guid id,
                         CancellationToken cancellationToken = default) =>
-                    await responseResolver.GetResult<GetCharacterByIdQuery>(
+                    await responseResolver.GetResult<GetCharacterByIdQuery, CharacterPayload>(
                         new GetCharacterByIdQuery(id),
-                        Results.NoContent,
+                        data => Results.Ok(data),
                         cancellationToken));
     }
 }

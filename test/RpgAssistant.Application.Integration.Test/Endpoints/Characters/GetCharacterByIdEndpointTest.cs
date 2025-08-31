@@ -36,4 +36,17 @@ public class GetCharacterByIdEndpointTest : IntegrationTestBase
         payload.Id.ShouldBe(characterId);
         payload.Name.ShouldBe(requestPayload.Name);
     }
+
+    [Fact]
+    public async Task GetCharacter_GetNotFound()
+    {
+        // Arrange
+        var characterId = Ulid.NewUlid().ToGuid();
+
+        // Act
+        var responseGet = await Client.GetAsync($"{Endpoint}/{characterId}", CancellationToken.None);
+
+        // Assert
+        responseGet.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
 }
