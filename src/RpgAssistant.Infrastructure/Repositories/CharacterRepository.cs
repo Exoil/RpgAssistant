@@ -84,4 +84,37 @@ public class CharacterRepository
 
         return character;
     }
+
+    public async Task<IReadOnlyCollection<Character>> GetAsync(GetCharacterPage characterPage)
+    {
+        var skip = (int)((characterPage.Page - 1) * characterPage.Size);
+        var limit = (int)characterPage.Size;
+
+        const string queryString = @"
+            MATCH (ch:Character)
+            RETURN ch.Id AS Id, ch.Name AS Name, ch.Version AS Version
+            ORDER BY
+                CASE WHEN $SortType = 'Id' AND $SortOrder = 'Asc' THEN ch.Id END ASC,
+                CASE WHEN $SortType = 'Id' AND $SortOrder = 'Desc' THEN ch.Id END DESC,
+                CASE WHEN $SortType = 'Name' AND $SortOrder = 'Asc' THEN ch.Name END ASC,
+                CASE WHEN $SortType = 'Name' AND $SortOrder = 'Desc' THEN ch.Name END DESC,
+                CASE WHEN $SortType = 'Version' AND $SortOrder = 'Asc' THEN ch.Version END ASC,
+                CASE WHEN $SortType = 'Version' AND $SortOrder = 'Desc' THEN ch.Version END DESC
+            SKIP $Skip
+            LIMIT $Limit";
+
+        var query = new Query(queryString, new
+        {
+            SortType = characterPage.SortType,
+            SortOrder = characterPage.SortOrder,
+            Skip = skip,
+            Limit = limit
+        });
+
+        var cursorResult = await _transaction.RunAsync(query);
+
+        var characters = await cursorResult.ToListAsync(record => record.ToCharacter());
+
+        return characters.AsReadOnly();
+    }
 }
