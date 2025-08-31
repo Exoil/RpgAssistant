@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RpgAssistant.Application.CQRS.Commands;
+using RpgAssistant.Application.CQRS.Queries;
 using RpgAssistant.Application.Dtos;
 using RpgAssistant.Application.ResultResolvers;
 using RpgAssistant.Domain.Extensions;
@@ -23,10 +24,10 @@ public static class CharacterEndpoints
             "/",
             async (
                     [FromServices] ResultsToHttpResponses responseResolver,
-                    [FromBody] CharacterDto character,
+                    [FromBody] CreateCharacterDto createCharacter,
                     CancellationToken cancellationToken = default) =>
                 await responseResolver.GetResult<CreateCharacterCommand, Ulid>(
-                    character.ToCommand(),
+                    createCharacter.ToCommand(),
                     data =>  Results.Created(string.Empty, data.UlidToGuid()),
                     cancellationToken));
 
@@ -53,6 +54,18 @@ public static class CharacterEndpoints
                     await responseResolver.GetResult<DeleteCharacterCommand>(
                         new DeleteCharacterCommand(id),
                         Results.NoContent,
+                        cancellationToken));
+
+        endpointGroup
+            .MapGet(
+                "/{id:guid}",
+                async (
+                        [FromServices] ResultsToHttpResponses responseResolver,
+                        [FromRoute] Guid id,
+                        CancellationToken cancellationToken = default) =>
+                    await responseResolver.GetResult<GetCharacterByIdQuery, CharacterPayload>(
+                        new GetCharacterByIdQuery(id),
+                        data => Results.Ok(data),
                         cancellationToken));
     }
 }
