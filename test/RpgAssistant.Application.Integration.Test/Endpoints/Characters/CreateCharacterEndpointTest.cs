@@ -16,7 +16,7 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
 
     [Fact]
     [Trait(Constants.TraitName,Constants.TestTitle)]
-    public async Task Create_Character()
+    public async Task Create_Character_Get_CreatedStatusCode()
     {
         // Arrange
         var requestPayload = new
@@ -37,7 +37,7 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
     [InlineData(0)]
     [InlineData(100)]
     [Trait(Constants.TraitName,Constants.TestTitle)]
-    public async Task Create_Character_With_Invalid_Name(int nameLength)
+    public async Task Create_Character_With_Invalid_Name_GetBadRequest(int nameLength)
     {
         // Arrange
         var requestPayload = new

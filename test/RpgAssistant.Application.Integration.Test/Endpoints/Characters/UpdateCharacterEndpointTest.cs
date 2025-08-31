@@ -17,7 +17,7 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
 
     [Fact]
     [Trait(Constants.TraitName, Constants.TestTitle)]
-    public async Task UpdateCharacterName()
+    public async Task UpdateCharacterName_GetNoContent()
     {
         // Arrange
         var dataWithUpdate = new
@@ -46,7 +46,7 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
     [InlineData(0)]
     [InlineData(100)]
     [Trait(Constants.TraitName,Constants.TestTitle)]
-    public async Task UpdateCharacterWithInvalidNameLength(int stringLength)
+    public async Task UpdateCharacterWithInvalidNameLength_GetBadRequest(int stringLength)
     {
         // Arrange
         var dataWithUpdate = new
@@ -71,7 +71,7 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
 
     [Fact]
     [Trait(Constants.TraitName,Constants.TestTitle)]
-    public async Task UpdateCharacterWithOldVersion()
+    public async Task UpdateCharacterWithOldVersion_GetConflict()
     {
         // Arrange
         var dataWithUpdate = new

@@ -16,7 +16,7 @@ public class DeleteCharacterEndpointTest : IntegrationTestBase
     public const string Endpoint = "/characters";
 
     [Fact]
-    public async Task DeleteCharacter()
+    public async Task DeleteCharacter_GetNoContent()
     {
         // Arrange
         var dataForCreateCharacter = new
@@ -36,7 +36,7 @@ public class DeleteCharacterEndpointTest : IntegrationTestBase
     }
 
     [Fact]
-    public async Task DeleteCharacter_With_Not_Existing_Id()
+    public async Task DeleteCharacter_With_Not_Existing_Id_GetNotFound()
     {
         // Arrange
         var characterId = Ulid.NewUlid().ToGuid();
@@ -46,6 +46,19 @@ public class DeleteCharacterEndpointTest : IntegrationTestBase
 
         // Assert
         responseDelete.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task DeleteCharacter_With_Guid_Empty_GetBadRequest()
+    {
+        // Arrange
+        var characterId = Guid.Empty;
+
+        // Act
+        var responseDelete = await Client.DeleteAsync($"{Endpoint}/{characterId}", CancellationToken.None);
+
+        // Assert
+        responseDelete.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     private async Task CheckCharacterDeleted(Guid id)
