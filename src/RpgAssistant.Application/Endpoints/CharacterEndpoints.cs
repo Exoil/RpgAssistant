@@ -67,5 +67,20 @@ public static class CharacterEndpoints
                         new GetCharacterByIdQuery(id),
                         data => Results.Ok(data),
                         cancellationToken));
+
+        endpointGroup
+            .MapGet(
+                "",
+                async (
+                        [FromServices] ResultsToHttpResponses responseResolver,
+                        [FromQuery] uint pageNumber,
+                        [FromQuery] uint pageSize,
+                        [FromQuery] string sortType,
+                        [FromQuery] string sortOrder,
+                        CancellationToken cancellationToken = default) =>
+                    await responseResolver.GetResult<GetCharacterPageQuery, IReadOnlyCollection<CharacterPayload>>(
+                        new GetCharacterPageQuery(pageNumber, pageSize, sortType, sortOrder),
+                        data => Results.Ok(data),
+                        cancellationToken));
     }
 }

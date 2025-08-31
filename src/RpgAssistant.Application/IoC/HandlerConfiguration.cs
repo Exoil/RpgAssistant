@@ -19,9 +19,13 @@ public static class HandlerConfiguration
         });
 
         return services
-            .AddScoped<IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>, CreateCharacterCommandHandler>()
+            .AddScoped<IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>,
+                CreateCharacterCommandHandler>()
             .AddScoped<IAsyncRequestHandler<UpdateCharacterCommand, Result<Exception>>, UpdateCharacterCommandHandler>()
             .AddScoped<IAsyncRequestHandler<DeleteCharacterCommand, Result<Exception>>, DeleteCharacterCommandHandler>()
-            .AddScoped<IAsyncRequestHandler<GetCharacterByIdQuery, Result<CharacterPayload, Exception>>, GetCharacterByIdQueryHandler>();
+            .AddScoped<IAsyncRequestHandler<GetCharacterByIdQuery, Result<CharacterPayload, Exception>>,
+                GetCharacterByIdQueryHandler>()
+            .AddScoped<IAsyncRequestHandler<GetCharacterPageQuery, Result<IReadOnlyCollection<CharacterPayload>, Exception>>,
+                GetCharacterPageQueryHandler>();
     }
 }
