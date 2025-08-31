@@ -17,6 +17,7 @@ public static class HandlerConfiguration
 
         return services
             .AddScoped<IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>, CreateCharacterCommandHandler>()
-            .AddScoped<IAsyncRequestHandler<UpdateCharacterCommand, Result<Exception>>, UpdateCharacterCommandHandler>();
+            .AddScoped<IAsyncRequestHandler<UpdateCharacterCommand, Result<Exception>>, UpdateCharacterCommandHandler>()
+            .AddScoped<IAsyncRequestHandler<DeleteCharacterCommand, Result<Exception>>, DeleteCharacterCommandHandler>();
     }
 }
