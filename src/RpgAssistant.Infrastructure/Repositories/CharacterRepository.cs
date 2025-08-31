@@ -59,6 +59,16 @@ public class CharacterRepository
         return (record["Exists"].As<bool>(), record["Version"].As<int>());
     }
 
+    public async Task DeleteAsync(DeleteCharacter deleteCharacter)
+    {
+        const string queryString = @"
+            MATCH (ch:Character {Id: $Id })
+            DETACH DELETE ch";
+        var query = new Query(queryString, new { Id = deleteCharacter.Id.ToDatabaseId()});
+
+        await _transaction.RunAsync(query);
+    }
+
     public async Task<Character> GetAsync(Ulid id)
     {
         const string queryString = @"

@@ -1,6 +1,13 @@
+using RpgAssistant.Domain.Models;
+
 namespace RpgAssistant.Domain.Entities.Characters.Commands;
 
-public class DeleteCharacter
+public record DeleteCharacter : BaseValueObject
 {
-    
+    public Ulid Id { get; init; }
+
+    public DeleteCharacter(Ulid id)
+    {
+        Id = id;
+    }
 }

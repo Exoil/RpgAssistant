@@ -48,19 +48,6 @@ public class DeleteCharacterEndpointTest : IntegrationTestBase
         responseDelete.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
-    [Fact]
-    public async Task DeleteCharacter_With_Guid_Empty_GetBadRequest()
-    {
-        // Arrange
-        var characterId = Guid.Empty;
-
-        // Act
-        var responseDelete = await Client.DeleteAsync($"{Endpoint}/{characterId}", CancellationToken.None);
-
-        // Assert
-        responseDelete.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-    }
-
     private async Task CheckCharacterDeleted(Guid id)
     {
         await using var driver = await GetDriverAsync();

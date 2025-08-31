@@ -42,5 +42,17 @@ public static class CharacterEndpoints
                         updateCharacter.ToCommand(id),
                         Results.NoContent,
                         cancellationToken));
+
+        endpointGroup
+            .MapDelete(
+                "/{id:guid}",
+                async (
+                        [FromServices] ResultsToHttpResponses responseResolver,
+                        [FromRoute] Guid id,
+                        CancellationToken cancellationToken = default) =>
+                    await responseResolver.GetResult<DeleteCharacterCommand>(
+                        new DeleteCharacterCommand(id),
+                        Results.NoContent,
+                        cancellationToken));
     }
 }
