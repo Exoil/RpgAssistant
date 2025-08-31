@@ -1,0 +1,39 @@
+using System;
+using System.Net;
+using System.Net.Http.Json;
+using System.Threading;
+using System.Threading.Tasks;
+
+using RpgAssistant.Application.Dtos;
+
+using Shouldly;
+
+namespace RpgAssistant.Application.Integration.Test.Endpoints.Characters;
+
+public class GetCharacterByIdEndpointTest : IntegrationTestBase
+{
+    public const string Endpoint = "/characters";
+
+    [Fact]
+    public async Task GetCharacter_GetOk()
+    {
+        // Arrange
+        var requestPayload = new
+        {
+            Name = "Test"
+        };
+
+        var response = await Client.PostAsJsonAsync(Endpoint, requestPayload, CancellationToken.None);
+        var characterId = await response.Content.ReadFromJsonAsync<Guid>();
+
+        // Act
+        var responseGet = await Client.GetAsync($"{Endpoint}/{characterId}", CancellationToken.None);
+
+        // Assert
+        responseGet.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var payload = await responseGet.Content.ReadFromJsonAsync<CharacterPayload>();
+
+        payload.Id.ShouldBe(characterId);
+        payload.Name.ShouldBe(requestPayload.Name);
+    }
+}

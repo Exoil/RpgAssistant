@@ -4,7 +4,7 @@ using RpgAssistant.Application.CQRS.Commands;
 
 namespace RpgAssistant.Application.Dtos;
 
-public record CharacterDto(
+public record CreateCharacterDto(
     [property: JsonPropertyName("name")]
     string Name)
 {
