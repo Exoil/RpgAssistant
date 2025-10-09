@@ -12,7 +12,7 @@ namespace RpgAssistant.Application.Integration.Test.Endpoints.Characters;
 
 public class GetCharacterByIdEndpointTest : IntegrationTestBase
 {
-    public const string Endpoint = "/characters";
+    public const string Endpoint = "/v1/characters";
 
     [Fact]
     public async Task GetCharacter_GetOk()

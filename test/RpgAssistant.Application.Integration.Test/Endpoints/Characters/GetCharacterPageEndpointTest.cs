@@ -14,7 +14,7 @@ namespace RpgAssistant.Application.Integration.Test.Endpoints.Characters;
 
 public class GetCharacterPageEndpointTest : IntegrationTestBase
 {
-    public const string Endpoint = "/characters";
+    public const string Endpoint = "/v1/characters";
 
     [Theory]
     [InlineData(1,10,"Name", "Asc")]

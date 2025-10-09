@@ -13,7 +13,7 @@ namespace RpgAssistant.Application.Integration.Test.Endpoints.Characters;
 
 public class DeleteCharacterEndpointTest : IntegrationTestBase
 {
-    public const string Endpoint = "/characters";
+    public const string Endpoint = "/v1/characters";
 
     [Fact]
     public async Task DeleteCharacter_GetNoContent()
