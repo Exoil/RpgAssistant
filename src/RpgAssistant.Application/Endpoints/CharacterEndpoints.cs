@@ -13,7 +13,7 @@ public static class CharacterEndpoints
         this WebApplication webApplication)
     {
         webApplication
-            .MapGroup("characters")
+            .MapGroup("v1/characters")
             .MapCharacterEndpoints();
     }
 

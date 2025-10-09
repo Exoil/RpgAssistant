@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+    title: RpgAssistant Character API
+    version: 1.0.0
+servers:
+    - url: https://localhost:7048
+paths:
+    /v1/characters:
+        get:
+            summary: Get paged characters
+            parameters:
+                - $ref: '#/components/parameters/PageNumber'
+                - $ref: '#/components/parameters/PageSize'
+                - $ref: '#/components/parameters/SortType'
+                - $ref: '#/components/parameters/SortOrder'
+            responses:
+                '200':
+                    description: List of characters
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/CharacterPayload'
+                '400':
+                    description: Bad Request
+        post:
+            summary: Create a character
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateCharacterDto'
+            responses:
+                '201':
+                    description: Created
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                                format: uuid
+                '400':
+                    description: Validation error
+
+    /v1/characters/{id}:
+        get:
+            summary: Get character by id
+            parameters:
+                - $ref: '#/components/parameters/Id'
+            responses:
+                '200':
+                    description: Character found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterPayload'
+                '404':
+                    description: Not Found
+        put:
+            summary: Update character
+            parameters:
+                - $ref: '#/components/parameters/Id'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateCharacterDto'
+            responses:
+                '204':
+                    description: No Content
+                '400':
+                    description: Validation error
+                '404':
+                    description: Not Found
+        delete:
+            summary: Delete character
+            parameters:
+                - $ref: '#/components/parameters/Id'
+            responses:
+                '204':
+                    description: No Content
+                '404':
+                    description: Not Found
+
+components:
+    parameters:
+        Id:
+            name: id
+            in: path
+            required: true
+            description: Character identifier
+            schema:
+                type: string
+                format: uuid
+        PageNumber:
+            name: pageNumber
+            in: query
+            required: true
+            description: Page number (0-based or 1-based depending on server configuration)
+            schema:
+                type: integer
+                format: int32
+                minimum: 0
+        PageSize:
+            name: pageSize
+            in: query
+            required: true
+            description: Page size
+            schema:
+                type: integer
+                format: int32
+                minimum: 0
+        SortType:
+            name: sortType
+            in: query
+            required: true
+            description: Field to sort by
+            schema:
+                type: string
+        SortOrder:
+            name: sortOrder
+            in: query
+            required: true
+            description: Sort direction (e.g., asc, desc)
+            schema:
+                type: string
+    schemas:
+        CharacterPayload:
+            type: object
+            required: [id, name, version]
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                name:
+                    type: string
+                    minLength: 1
+                    maxLength: 50
+                version:
+                    type: integer
+                    format: int32
+                    minimum: 1
+                    maximum: 100
+        CreateCharacterDto:
+            type: object
+            required: [name]
+            properties:
+                name:
+                    type: string
+                    minLength: 1
+                    maxLength: 50
+        UpdateCharacterDto:
+            type: object
+            required: [name, version]
+            properties:
+                name:
+                    type: string
+                    minLength: 1
+                    maxLength: 50
+                version:
+                    type: integer
+                    format: int32
+                    minimum: 1
+                    maximum: 100
