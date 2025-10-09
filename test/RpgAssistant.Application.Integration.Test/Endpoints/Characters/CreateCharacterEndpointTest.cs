@@ -12,7 +12,7 @@ namespace RpgAssistant.Application.Integration.Test.Endpoints.Characters;
 
 public class CreateCharacterEndpointTest : IntegrationTestBase
 {
-    public const string Endpoint = "/characters";
+    public const string Endpoint = "/v1/characters";
 
     [Fact]
     [Trait(Constants.TraitName,Constants.TestTitle)]
