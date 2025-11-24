@@ -5,10 +5,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { CharacterNode } from '@/models/CharacterNode'
 import { KnowEdge } from '@/models/KnowEdge'
 import type * as vNG from 'v-network-graph'
+import { RpgAssistantService } from './services/RpgAssistant'
+
+let rpgAssistantService: RpgAssistantService
+
+onBeforeMount(() => {
+  rpgAssistantService = new RpgAssistantService('https://localhost:5051')
+})
 
 // --- Nodes --- //
 const nodes = ref<CharacterNode[]>([
