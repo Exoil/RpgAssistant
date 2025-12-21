@@ -8,10 +8,7 @@ namespace RpgAssistant.Application.Dtos;
 public record UpdateCharacterDto(
     [property: JsonPropertyName("name")]
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
-    string Name,
-    [property: JsonPropertyName("version")]
-    [Range(minimum: 1, maximum:100, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
-    int Version)
+    string Name)
 {
-    public UpdateCharacterCommand ToCommand(Guid id) => new(id, Name, Version);
+    public UpdateCharacterCommand ToCommand(Guid id, string version) => new(id, Name, version);
 }

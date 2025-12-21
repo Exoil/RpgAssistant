@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
+
+using RpgAssistant.Application.Constants;
 using RpgAssistant.Application.CQRS.Commands;
 using RpgAssistant.Application.CQRS.Queries;
 using RpgAssistant.Application.Dtos;
@@ -37,10 +40,11 @@ public static class CharacterEndpoints
                 async (
                         [FromServices] ResultsToHttpResponses responseResolver,
                         [FromRoute] Guid id,
+                        [FromHeader(Name = HeadersConstants.IfMatch)] string version,
                         [FromBody] UpdateCharacterDto updateCharacter,
                         CancellationToken cancellationToken = default) =>
                     await responseResolver.GetResult<UpdateCharacterCommand>(
-                        updateCharacter.ToCommand(id),
+                        updateCharacter.ToCommand(id, version),
                         Results.NoContent,
                         cancellationToken));
 
@@ -60,12 +64,18 @@ public static class CharacterEndpoints
             .MapGet(
                 "/{id:guid}",
                 async (
+                        [FromServices] IHttpContextAccessor httpContextAccessor,
                         [FromServices] ResultsToHttpResponses responseResolver,
                         [FromRoute] Guid id,
                         CancellationToken cancellationToken = default) =>
                     await responseResolver.GetResult<GetCharacterByIdQuery, CharacterPayload>(
                         new GetCharacterByIdQuery(id),
-                        data => Results.Ok(data),
+                        data =>
+                        {
+                            httpContextAccessor.HttpContext!.Response.Headers.IfMatch = new StringValues(data.Etag);
+
+                            return Results.Ok(data);
+                        },
                         cancellationToken));
 
         endpointGroup
