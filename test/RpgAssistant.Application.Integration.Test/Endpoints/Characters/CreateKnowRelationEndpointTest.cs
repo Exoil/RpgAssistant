@@ -142,10 +142,27 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
     [Trait(Constants.TraitName,Constants.TestTitle)]
     public async Task Create_KnowRelation_BadRequest(int descriptionLenght)
     {
+        // Arrange
+        var requestCreateCharacterFrom = new
+        {
+            Name = "From"
+        };
+
+        var requestCreateCharacterTo = new
+        {
+            Name = "To"
+        };
+
+        var fromCharacterCreateResponse = await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterFrom, CancellationToken.None);
+        var toCharacterCreateResponse = await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterTo, CancellationToken.None);
+
+        var fromCharacterId =  await fromCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
+        var toCharacterId = await toCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
+
         var createRelationRequest = new
         {
-            FromCharacterId = Ulid.NewUlid().UlidToGuid(),
-            ToCharacterId = Ulid.NewUlid().UlidToGuid(),
+            FromCharacterId = fromCharacterId,
+            ToCharacterId = toCharacterId,
             Description = new string('*', descriptionLenght)
         };
 
