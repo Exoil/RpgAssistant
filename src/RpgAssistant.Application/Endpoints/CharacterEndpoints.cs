@@ -82,5 +82,19 @@ public static class CharacterEndpoints
                         new GetCharacterPageQuery(pageNumber, pageSize, sortType, sortOrder),
                         data => Results.Ok(data),
                         cancellationToken));
+
+        endpointGroup
+            .MapPost(
+                "/knows",
+                async (
+                    [FromServices] ResultsToHttpResponses responseResolver,
+                    [FromBody] CreateKnowsDto createKnowsDto,
+                    CancellationToken cancellationToken = default) =>
+                    await responseResolver.GetResult<CreateKnowRelationCommand, Ulid>(
+                        createKnowsDto.ToCommand(),
+                        data => Results.Created(
+                            new Uri($"/knows/{data.UlidToGuid()}", UriKind.Relative), data.UlidToGuid()),
+                        cancellationToken)
+                );
     }
 }

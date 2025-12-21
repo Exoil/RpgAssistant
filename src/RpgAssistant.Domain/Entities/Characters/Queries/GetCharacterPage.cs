@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using RpgAssistant.Domain.Models;
 
-namespace RpgAssistant.Domain.Entities.Characters.Commands;
+namespace RpgAssistant.Domain.Entities.Characters.Queries;
 
 public record GetCharacterPage : BaseValueObject
 {

@@ -81,6 +81,13 @@ public class ResultsToHttpResponses
                 (int)HttpStatusCode.Conflict,
                 conflictException.Title,
                 conflictException.ErrorCode),
+        UnprocessableContentException unprocessableContentException
+            => Results.Problem(
+                unprocessableContentException.Message,
+                _endpointDisplayName,
+                (int)HttpStatusCode.UnprocessableEntity,
+                unprocessableContentException.Title,
+                unprocessableContentException.ErrorCode),
         _ => exception.ToResult(_endpointDisplayName)
     };
 }

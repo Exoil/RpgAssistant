@@ -1,0 +1,28 @@
+namespace RpgAssistant.Domain.Entities.Knows;
+
+public class KnowRelation
+{
+    public Ulid Id { get; private init; }
+
+    public string Description { get; private set; }
+
+    public Ulid FromCharacterId { get; private set; }
+
+    public Ulid ToCharacterId { get; private set; }
+
+    public int Version { get; private set; }
+
+    public KnowRelation(
+        Ulid id,
+        string description,
+        Ulid fromCharacterId,
+        Ulid toCharacterId,
+        int version)
+    {
+        Id = id;
+        Description = description;
+        FromCharacterId = fromCharacterId;
+        ToCharacterId = toCharacterId;
+        Version = version;
+    }
+}
