@@ -6,7 +6,7 @@ public class DomainException : Exception
 
     public readonly string ErrorCode;
 
-    public int StatusCode { get; private set; } = 500;
+    public int StatusCode { get; protected set; } = 500;
 
     public DomainException(string title, string errorCode,  string message)
         : base(message, null)
