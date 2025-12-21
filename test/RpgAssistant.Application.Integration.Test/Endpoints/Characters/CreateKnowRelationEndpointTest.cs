@@ -4,6 +4,8 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
+using RpgAssistant.Domain.Extensions;
+
 using Shouldly;
 
 namespace RpgAssistant.Application.Integration.Test.Endpoints.Characters;
@@ -45,8 +47,28 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
         // Act
         var response = await Client.PostAsJsonAsync(KnowEndpoint, createRelationRequest, CancellationToken.None);
 
+        // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
         var id = await response.Content.ReadFromJsonAsync<Guid>();
         id.ShouldNotBe(Guid.Empty);
+    }
+
+    [Theory]
+    [InlineData(51)]
+    [Trait(Constants.TraitName,Constants.TestTitle)]
+    public async Task Create_KnowRelation_BadRequest(int descriptionLenght)
+    {
+        var createRelationRequest = new
+        {
+            FromCharacterId = Ulid.NewUlid().UlidToGuid(),
+            ToCharacterId = Ulid.NewUlid().UlidToGuid(),
+            Description = new string('*', descriptionLenght)
+        };
+
+        // Act
+        var response = await Client.PostAsJsonAsync(KnowEndpoint, createRelationRequest, CancellationToken.None);
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 }
