@@ -1,6 +1,8 @@
 using Neo4j.Driver;
 using RpgAssistant.Domain.Entities.Characters;
 using RpgAssistant.Domain.Entities.Characters.Commands;
+using RpgAssistant.Domain.Entities.Characters.Queries;
+using RpgAssistant.Domain.Entities.Knows.Commands;
 using RpgAssistant.Domain.Extensions;
 using RpgAssistant.Infrastructure.Repositories.Extensions;
 
@@ -116,5 +118,25 @@ public class CharacterRepository
         var characters = await cursorResult.ToListAsync(record => record.ToCharacter());
 
         return characters.AsReadOnly();
+    }
+
+    public async Task CreateKnowRelationAsync(CreateKnowRelation createKnowRelation)
+    {
+        const string queryString = @"
+            MATCH (fromCh:Character {Id: $FromCharacterId}), (toCh:Character {Id: $ToCharacterId})
+            MERGE (fromCh)-[r:KNOWS]->(toCh)
+            SET  r.Id = $Id, r.Version = $Version, r.Description = $Description";
+        var query = new Query(
+            queryString,
+            new
+            {
+                Id = createKnowRelation.Id.ToDatabaseId(),
+                FromCharacterId = createKnowRelation.FromCharacterId.ToDatabaseId(),
+                ToCharacterId = createKnowRelation.ToCharacterId.ToDatabaseId(),
+                Description = createKnowRelation.Description,
+                Version = 1
+            });
+
+        await _transaction.RunAsync(query);
     }
 }

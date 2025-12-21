@@ -2,6 +2,7 @@ using MessagePipe;
 
 using RpgAssistant.Application.Dtos;
 using RpgAssistant.Domain.Entities.Characters.Commands;
+using RpgAssistant.Domain.Entities.Characters.Queries;
 using RpgAssistant.Domain.Exceptions;
 using RpgAssistant.Domain.Exceptions.Enums;
 using RpgAssistant.Domain.Models;
