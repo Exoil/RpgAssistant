@@ -20,10 +20,12 @@ public record CreateKnowRelation : BaseValueObject
 
     [SetsRequiredMembers]
     public CreateKnowRelation(
+        Ulid id,
         Ulid fromCharacterId,
         Ulid toCharacterId,
         string description)
     {
+        Id = id;
         FromCharacterId = fromCharacterId;
         ToCharacterId = toCharacterId;
         Description = description;
