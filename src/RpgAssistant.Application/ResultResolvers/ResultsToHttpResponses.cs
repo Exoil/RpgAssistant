@@ -74,7 +74,7 @@ public class ResultsToHttpResponses
                 (int)HttpStatusCode.NotFound,
                 notFoundException.Title,
                 notFoundException.ErrorCode),
-        ConflictException conflictException
+        PreconditionException conflictException
             => Results.Problem(
                 conflictException.Message,
                 _endpointDisplayName,
