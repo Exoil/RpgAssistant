@@ -10,5 +10,12 @@ public record UpdateCharacterDto(
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     string Name)
 {
-    public UpdateCharacterCommand ToCommand(Guid id, string version) => new(id, Name, version);
+    public UpdateCharacterCommand ToCommand(Guid id, string version) => new(
+        id,
+        Name,
+        int.Parse(
+            version
+                .Replace(
+                    "\"",
+                    string.Empty)));
 }

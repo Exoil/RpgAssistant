@@ -10,7 +10,7 @@ public record CharacterPayload(
     string Name,
     [property: JsonPropertyName("version")]
     [Range(minimum: 1, maximum: 100, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
-    string Version)
+    int Version)
 {
     public string Etag => $"\"{Version}\"";
 };

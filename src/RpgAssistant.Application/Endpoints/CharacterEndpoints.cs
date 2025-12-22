@@ -72,7 +72,7 @@ public static class CharacterEndpoints
                         new GetCharacterByIdQuery(id),
                         data =>
                         {
-                            httpContextAccessor.HttpContext!.Response.Headers.IfMatch = new StringValues(data.Etag);
+                            httpContextAccessor.HttpContext!.Response.Headers.ETag = new StringValues(data.Etag);
 
                             return Results.Ok(data);
                         },
