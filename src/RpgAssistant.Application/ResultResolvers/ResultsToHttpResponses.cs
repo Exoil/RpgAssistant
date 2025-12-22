@@ -78,7 +78,7 @@ public class ResultsToHttpResponses
             => Results.Problem(
                 conflictException.Message,
                 _endpointDisplayName,
-                (int)HttpStatusCode.Conflict,
+                (int)HttpStatusCode.PreconditionFailed,
                 conflictException.Title,
                 conflictException.ErrorCode),
         UnprocessableContentException unprocessableContentException
