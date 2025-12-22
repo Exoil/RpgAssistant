@@ -94,7 +94,7 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
 
         var response = await Client.PostAsJsonAsync(Endpoint, dataForCreateCharacter, CancellationToken.None);
         var characterId = await response.Content.ReadFromJsonAsync<Guid>();
-        const int expectedVersion = 1;
+        const int expectedVersion = 0;
         Client.DefaultRequestHeaders.IfMatch.Add(
             new EntityTagHeaderValue($"\"{expectedVersion}\""));
 
@@ -118,6 +118,10 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         };
 
         // Act
+        const int expectedVersion = 1;
+        Client.DefaultRequestHeaders.IfMatch.Add(
+            new EntityTagHeaderValue($"\"{expectedVersion}\""));
+
         var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
 
         // Assert
