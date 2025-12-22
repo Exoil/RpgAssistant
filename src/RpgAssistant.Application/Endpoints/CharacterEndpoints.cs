@@ -74,7 +74,7 @@ public static class CharacterEndpoints
                         {
                             httpContextAccessor.HttpContext!.Response.Headers.ETag = new StringValues(data.Etag);
 
-                            return Results.Ok(data);
+                            return Results.Ok(data.ToDto());
                         },
                         cancellationToken));
 
@@ -90,7 +90,8 @@ public static class CharacterEndpoints
                         CancellationToken cancellationToken = default) =>
                     await responseResolver.GetResult<GetCharacterPageQuery, IReadOnlyCollection<CharacterPayload>>(
                         new GetCharacterPageQuery(pageNumber, pageSize, sortType, sortOrder),
-                        data => Results.Ok(data),
+                        data => Results.Ok(
+                            data.Select(x => x.ToDto())),
                         cancellationToken));
 
         endpointGroup
