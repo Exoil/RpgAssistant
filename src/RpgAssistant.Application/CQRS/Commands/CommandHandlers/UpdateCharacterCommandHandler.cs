@@ -49,6 +49,7 @@ public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacte
         catch(Exception exception)
         {
             await transaction.RollbackAsync();
+
             return exception;
         }
 
