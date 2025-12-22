@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,6 +33,9 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
 
         var response = await Client.PostAsJsonAsync(Endpoint, dataForCreateCharacter, CancellationToken.None);
         var characterId = await response.Content.ReadFromJsonAsync<Guid>();
+        const int expectedVersion = 1;
+        Client.DefaultRequestHeaders.IfMatch.Add(
+            new EntityTagHeaderValue($"\"{expectedVersion}\""));
 
         // Act
         var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
@@ -63,6 +67,10 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         var characterId = await response.Content.ReadFromJsonAsync<Guid>();
 
         // Act
+        const int expectedVersion = 1;
+        Client.DefaultRequestHeaders.IfMatch.Add(
+            new EntityTagHeaderValue($"\"{expectedVersion}\""));
+
         var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
 
         // Assert
@@ -71,7 +79,7 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
 
     [Fact]
     [Trait(Constants.TraitName,Constants.TestTitle)]
-    public async Task UpdateCharacterWithOldVersion_GetConflict()
+    public async Task UpdateCharacterWithOldVersion_GetPreconditionFailed()
     {
         // Arrange
         var dataWithUpdate = new
@@ -86,12 +94,15 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
 
         var response = await Client.PostAsJsonAsync(Endpoint, dataForCreateCharacter, CancellationToken.None);
         var characterId = await response.Content.ReadFromJsonAsync<Guid>();
+        const int expectedVersion = 0;
+        Client.DefaultRequestHeaders.IfMatch.Add(
+            new EntityTagHeaderValue($"\"{expectedVersion}\""));
 
         // Act
         var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
 
         // Assert
-        responseUpdate.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+        responseUpdate.StatusCode.ShouldBe(HttpStatusCode.PreconditionFailed);
     }
 
     [Fact]
@@ -107,6 +118,10 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         };
 
         // Act
+        const int expectedVersion = 1;
+        Client.DefaultRequestHeaders.IfMatch.Add(
+            new EntityTagHeaderValue($"\"{expectedVersion}\""));
+
         var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
 
         // Assert

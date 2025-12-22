@@ -38,7 +38,7 @@ public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacte
 
             if (exists.Version != request.Version)
             {
-                return new ConflictException();
+                return new PreconditionException();
             }
 
             var updateCharacter = new UpdateCharacter(request.Name);
