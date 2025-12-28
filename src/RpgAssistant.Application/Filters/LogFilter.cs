@@ -7,7 +7,7 @@ namespace RpgAssistant.Application.Filters;
 
 public class LogFilter<T> : AsyncMessageHandlerFilter<T>
 {
-    private const string MessageTypePropertyName = "MessageType";
+    private const string MessageTypePropertyName = "Command/Query Type";
 
     private readonly ILogger _logger;
 
