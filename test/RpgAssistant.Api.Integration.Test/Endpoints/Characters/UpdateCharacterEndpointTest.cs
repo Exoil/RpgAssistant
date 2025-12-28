@@ -134,8 +134,8 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         await using var session = driver.AsyncSession();
         await using var transaction = await session.BeginTransactionAsync();
 
-        var characterRepository = new CharacterRepository(transaction);
-        var character =  await characterRepository.GetAsync(id.GuidToUlid());
+        var characterRepository = new CharacterRepository();
+        var character =  await characterRepository.GetAsync(transaction, id.GuidToUlid());
 
         character.Name.ShouldBe(name);
     }

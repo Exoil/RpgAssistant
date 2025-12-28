@@ -1,8 +1,10 @@
 using Neo4j.Driver;
 
+using RpgAssistant.Domain.Factories;
+
 namespace RpgAssistant.Infrastructure.Factories;
 
-public class TransactionFactory : IAsyncDisposable, IDisposable
+public class TransactionFactory : ITransactionFactory<IAsyncTransaction>
 {
     private IAsyncSession _session;
     private bool _disposed;

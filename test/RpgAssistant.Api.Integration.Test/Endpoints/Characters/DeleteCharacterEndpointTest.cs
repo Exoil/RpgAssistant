@@ -54,8 +54,8 @@ public class DeleteCharacterEndpointTest : IntegrationTestBase
         await using var session = driver.AsyncSession();
         await using var transaction = await session.BeginTransactionAsync();
 
-        var characterRepository = new CharacterRepository(transaction);
-        var exists =  await characterRepository.ExistsAsync(id.GuidToUlid());
+        var characterRepository = new CharacterRepository();
+        var exists =  await characterRepository.ExistsAsync(transaction, id.GuidToUlid());
 
         exists.Exists.ShouldBeFalse();
     }

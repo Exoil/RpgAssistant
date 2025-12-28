@@ -1,20 +1,28 @@
 using MessagePipe;
 
+using Neo4j.Driver;
+
 using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Entities.Characters.Commands;
 using RpgAssistant.Domain.Exceptions;
 using RpgAssistant.Domain.Exceptions.Enums;
 using RpgAssistant.Domain.Extensions;
+using RpgAssistant.Domain.Factories;
+using RpgAssistant.Domain.Repositories;
 
 namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacterCommand, Result<Exception>>
 {
-    private readonly TransactionFactory _transactionFactory;
+    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
+    private readonly ICharacterRepository _characterRepository;
 
-    public UpdateCharacterCommandHandler(TransactionFactory transactionFactory)
+    public UpdateCharacterCommandHandler(
+        ITransactionFactory<IAsyncTransaction> transactionFactory,
+        ICharacterRepository characterRepository)
     {
         _transactionFactory = transactionFactory;
+        _characterRepository = characterRepository;
     }
 
     public async ValueTask<Result<Exception>> InvokeAsync(
@@ -22,12 +30,11 @@ public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacte
         CancellationToken cancellationToken = default)
     {
         await using var transaction = await _transactionFactory.CreateAsync();
-        var characterRepository = new CharacterRepository(transaction);
         var idAsUlid = request.Id.GuidToUlid();
 
         try
         {
-            var exists = await characterRepository.ExistsAsync(idAsUlid);
+            var exists = await _characterRepository.ExistsAsync(transaction, idAsUlid);
 
             if (!exists.Exists)
             {
@@ -41,7 +48,7 @@ public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacte
 
             var updateCharacter = new UpdateCharacter(request.Name);
 
-            await characterRepository.UpdateAsync(idAsUlid, updateCharacter);
+            await _characterRepository.UpdateAsync(transaction, idAsUlid, updateCharacter);
             await transaction.CommitAsync();
         }
         catch(Exception exception)

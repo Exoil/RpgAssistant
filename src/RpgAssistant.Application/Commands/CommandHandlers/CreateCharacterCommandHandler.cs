@@ -1,17 +1,25 @@
 using MessagePipe;
 
+using Neo4j.Driver;
+
 using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Entities.Characters.Commands;
+using RpgAssistant.Domain.Factories;
+using RpgAssistant.Domain.Repositories;
 
 namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>
 {
-    private readonly TransactionFactory _transactionFactory;
+    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
+    private readonly ICharacterRepository _characterRepository;
 
-    public CreateCharacterCommandHandler(TransactionFactory transactionFactory)
+    public CreateCharacterCommandHandler(
+        ITransactionFactory<IAsyncTransaction> transactionFactory,
+        ICharacterRepository characterRepository)
     {
         _transactionFactory = transactionFactory;
+        _characterRepository = characterRepository;
     }
 
 
@@ -20,12 +28,11 @@ public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacte
         CancellationToken cancellationToken = default)
     {
         await using var transaction = await _transactionFactory.CreateAsync();
-        var characterRepository = new CharacterRepository(transaction);
 
         try
         {
             var createCharacter = new CreateCharacter(request.Id, request.Name);
-            await characterRepository.CreateAsync(createCharacter);
+            await _characterRepository.CreateAsync(transaction, createCharacter);
             await transaction.CommitAsync();
         }
         catch(Exception exception)
