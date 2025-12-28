@@ -4,30 +4,24 @@ using RpgAssistant.Domain.Entities.Characters.Commands;
 using RpgAssistant.Domain.Entities.Characters.Queries;
 using RpgAssistant.Domain.Entities.Knows.Commands;
 using RpgAssistant.Domain.Extensions;
+using RpgAssistant.Domain.Repositories;
 using RpgAssistant.Infrastructure.Repositories.Extensions;
 
 namespace RpgAssistant.Infrastructure.Repositories;
 
-public class CharacterRepository
+public class CharacterRepository : ICharacterRepository
 {
-    private readonly IAsyncTransaction _transaction;
-
-    public CharacterRepository(IAsyncTransaction transaction)
-    {
-        _transaction = transaction;
-    }
-
-    public async Task CreateAsync(CreateCharacter createCharacter)
+    public async Task CreateAsync(IAsyncTransaction transaction, CreateCharacter createCharacter)
     {
         const string queryString = @"
             CREATE (ch:Character {Id: $CharacterId, Name: $Name, Version: 1})
             RETURN ID(ch) AS CharacterNodeId";
         var query = new Query(queryString, new { CharacterId = createCharacter.Id.ToDatabaseId(), Name = createCharacter.Name });
 
-        await _transaction.RunAsync(query);
+        await transaction.RunAsync(query);
     }
 
-    public async Task UpdateAsync(Ulid id, UpdateCharacter updateCharacter)
+    public async Task UpdateAsync(IAsyncTransaction transaction, Ulid id, UpdateCharacter updateCharacter)
     {
         const string queryString = @"
             MATCH (ch:Character {Id: $CharacterId })
@@ -37,17 +31,17 @@ public class CharacterRepository
             RETURN ID(ch) AS CharacterNodeId";
         var query = new Query(queryString, new { CharacterId = id.ToDatabaseId(), Name = updateCharacter.Name });
 
-        await _transaction.RunAsync(query);
+        await transaction.RunAsync(query);
     }
 
-    public async Task<(bool Exists, int Version)> ExistsAsync(Ulid id)
+    public async Task<(bool Exists, int Version)> ExistsAsync(IAsyncTransaction transaction, Ulid id)
     {
         const string queryString = @"
             MATCH (ch:Character {Id: $Id })
             RETURN ch IS NOT NULL AS Exists, coalesce(ch.Version, -1) AS Version";
         var query = new Query(queryString, new { Id = id.ToDatabaseId()});
 
-        var cursorResult = await _transaction.RunAsync(query);
+        var cursorResult = await transaction.RunAsync(query);
 
         var records = await cursorResult.ToListAsync();
 
@@ -61,24 +55,24 @@ public class CharacterRepository
         return (record["Exists"].As<bool>(), record["Version"].As<int>());
     }
 
-    public async Task DeleteAsync(DeleteCharacter deleteCharacter)
+    public async Task DeleteAsync(IAsyncTransaction transaction, DeleteCharacter deleteCharacter)
     {
         const string queryString = @"
             MATCH (ch:Character {Id: $Id })
             DETACH DELETE ch";
         var query = new Query(queryString, new { Id = deleteCharacter.Id.ToDatabaseId()});
 
-        await _transaction.RunAsync(query);
+        await transaction.RunAsync(query);
     }
 
-    public async Task<Character> GetAsync(Ulid id)
+    public async Task<Character> GetAsync(IAsyncTransaction transaction, Ulid id)
     {
         const string queryString = @"
             MATCH (ch:Character {Id: $Id})
             RETURN ch.Id AS Id, ch.Name AS Name, ch.Version AS Version";
         var query = new Query(queryString, new { Id = id.ToDatabaseId() });
 
-        var cursorResult = await _transaction.RunAsync(query);
+        var cursorResult = await transaction.RunAsync(query);
 
         var character = await cursorResult
             .SingleAsync(record
@@ -87,7 +81,7 @@ public class CharacterRepository
         return character;
     }
 
-    public async Task<IReadOnlyCollection<Character>> GetAsync(GetCharacterPage characterPage)
+    public async Task<IReadOnlyCollection<Character>> GetAsync(IAsyncTransaction transaction, GetCharacterPage characterPage)
     {
         var skip = (int)((characterPage.Page - 1) * characterPage.Size);
         var limit = (int)characterPage.Size;
@@ -113,14 +107,14 @@ public class CharacterRepository
             Limit = limit
         });
 
-        var cursorResult = await _transaction.RunAsync(query);
+        var cursorResult = await transaction.RunAsync(query);
 
         var characters = await cursorResult.ToListAsync(record => record.ToCharacter());
 
         return characters.AsReadOnly();
     }
 
-    public async Task CreateKnowRelationAsync(CreateKnowRelation createKnowRelation)
+    public async Task CreateKnowRelationAsync(IAsyncTransaction transaction, CreateKnowRelation createKnowRelation)
     {
         const string queryString = @"
             MATCH (fromCh:Character {Id: $FromCharacterId}), (toCh:Character {Id: $ToCharacterId})
@@ -137,10 +131,10 @@ public class CharacterRepository
                 Version = 1
             });
 
-        await _transaction.RunAsync(query);
+        await transaction.RunAsync(query);
     }
 
-    public async Task DeleteKnowRelationAsync(DeleteKnowRelation createKnowRelation)
+    public async Task DeleteKnowRelationAsync(IAsyncTransaction transaction, DeleteKnowRelation createKnowRelation)
     {
         const string queryString = @"
             MATCH (fromCh:Character {Id: $FromCharacterId})-[r:KNOWS]->(toCh:Character {Id: $ToCharacterId})
@@ -153,6 +147,6 @@ public class CharacterRepository
                 ToCharacterId = createKnowRelation.ToCharacterId.ToDatabaseId(),
             });
 
-        await _transaction.RunAsync(query);
+        await transaction.RunAsync(query);
     }
 }
