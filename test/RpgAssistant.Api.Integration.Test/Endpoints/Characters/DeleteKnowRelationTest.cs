@@ -47,10 +47,8 @@ public class DeleteKnowRelationTest : IntegrationTestBase
             Description = "Test"
         };
 
-
         await Client
             .PostAsJsonAsync(KnowEndpoint, createRelationRequest, CancellationToken.None);
-
 
         // Act
         var response = await Client.DeleteAsync(
