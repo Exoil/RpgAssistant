@@ -58,6 +58,20 @@ public class DeleteKnowRelationTest : IntegrationTestBase
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
+    }
 
+    [Fact]
+    [Trait(Constants.TraitName,Constants.TestTitle)]
+    public async Task Delete_KnowRelation_WhenIds_Are_Same_BadRequestCode()
+    {
+        // Act
+        var response = await Client.DeleteAsync(
+            GetDeleteKnowRelationEndpoint(
+                Ulid.NewUlid().ToGuid(),
+                Ulid.NewUlid().ToGuid()),
+            CancellationToken.None);
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 }
