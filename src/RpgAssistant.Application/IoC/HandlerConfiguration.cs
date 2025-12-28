@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using RpgAssistant.Application.Commands;
 using RpgAssistant.Application.Commands.CommandHandlers;
+using RpgAssistant.Application.Filters;
 using RpgAssistant.Application.Models;
 using RpgAssistant.Application.Queries;
 using RpgAssistant.Application.Queries.QueryHandlers;
@@ -18,6 +19,7 @@ public static class HandlerConfiguration
         {
             options.InstanceLifetime = InstanceLifetime.Scoped;
             options.RequestHandlerLifetime = InstanceLifetime.Scoped;
+            options.AddGlobalAsyncMessageHandlerFilter(typeof(LogFilter<>), order: 0);
         });
 
         return services
