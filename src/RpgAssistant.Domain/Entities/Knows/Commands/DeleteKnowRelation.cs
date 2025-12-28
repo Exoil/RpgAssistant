@@ -18,6 +18,12 @@ public record DeleteKnowRelation : BaseValueObject
         Ulid fromCharacterId,
         Ulid toCharacterId)
     {
+
+        if (fromCharacterId == toCharacterId)
+        {
+            throw new ArgumentException("From and To cannot be the same character id", "fromCharacterId, toCharacterId");
+        }
+
         FromCharacterId = fromCharacterId;
         ToCharacterId = toCharacterId;
 
