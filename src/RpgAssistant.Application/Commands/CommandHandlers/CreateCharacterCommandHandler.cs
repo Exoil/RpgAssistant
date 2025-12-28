@@ -7,19 +7,24 @@ using RpgAssistant.Domain.Entities.Characters.Commands;
 using RpgAssistant.Domain.Factories;
 using RpgAssistant.Domain.Repositories;
 
+using ILogger = Serilog.ILogger;
+
 namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
     private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
+    private readonly Serilog.ILogger _logger;
 
     public CreateCharacterCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,
-        ICharacterRepository characterRepository)
+        ICharacterRepository characterRepository,
+        ILogger logger)
     {
         _transactionFactory = transactionFactory;
         _characterRepository = characterRepository;
+        _logger = logger;
     }
 
 
@@ -34,10 +39,13 @@ public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacte
             var createCharacter = new CreateCharacter(request.Id, request.Name);
             await _characterRepository.CreateAsync(transaction, createCharacter);
             await transaction.CommitAsync();
+            _logger.Information("Character created: {Name}", request.Name);
         }
         catch (Exception exception)
         {
             await transaction.RollbackAsync();
+            _logger.Error(exception, "Error creating character: {Name}", request.Name);
+
             return exception;
         }
 

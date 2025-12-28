@@ -8,19 +8,24 @@ using RpgAssistant.Domain.Exceptions;
 using RpgAssistant.Domain.Factories;
 using RpgAssistant.Domain.Repositories;
 
+using ILogger = Serilog.ILogger;
+
 namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowRelationCommand, Result<Ulid, Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
     private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
+    private readonly Serilog.ILogger _logger;
 
     public CreateKnowRelationCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,
-        ICharacterRepository characterRepository)
+        ICharacterRepository characterRepository,
+        ILogger logger)
     {
         _transactionFactory = transactionFactory;
         _characterRepository = characterRepository;
+        _logger = logger;
     }
 
     public async ValueTask<Result<Ulid, Exception>> InvokeAsync(
@@ -44,23 +49,40 @@ public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowR
                 createKnowRelation.FromCharacterId);
 
             if (!fromCharacterExists.Exists)
+            {
+                _logger.Error("CreateKnowRelation fails for not existing character: {Id}", createKnowRelation.FromCharacterId);
                 return UnprocessableContentException.CreateKnowRelationFailsForNotExistingCharacter(createKnowRelation
                     .FromCharacterId);
+            }
 
             var toCharacterExists = await _characterRepository.ExistsAsync(
                 transaction,
                 createKnowRelation.ToCharacterId);
+
             if (!toCharacterExists.Exists)
+            {
+                _logger.Error("CreateKnowRelation fails for not existing character: {Id}", createKnowRelation.ToCharacterId);
                 return UnprocessableContentException.CreateKnowRelationFailsForNotExistingCharacter(createKnowRelation
                     .ToCharacterId);
+            }
 
             await _characterRepository.CreateKnowRelationAsync(
                 transaction,
                 createKnowRelation);
+            await transaction.CommitAsync();
+            _logger.Information("Know relation created: {FromCharacterId} knows {ToCharacterId}",
+                createKnowRelation.FromCharacterId,
+                createKnowRelation.ToCharacterId);
         }
         catch (Exception exception)
         {
             await transaction.RollbackAsync();
+            _logger.Error(
+                exception,
+                "Error creating know relation: {FromCharacterId} knows {ToCharacterId}",
+                request.FromCharacterId,
+                request.ToCharacterId);
+
             return exception;
         }
 

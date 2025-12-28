@@ -7,6 +7,8 @@ using RpgAssistant.Domain.Entities.Characters.Queries;
 using RpgAssistant.Domain.Factories;
 using RpgAssistant.Domain.Repositories;
 
+using ILogger = Serilog.ILogger;
+
 namespace RpgAssistant.Application.Queries.QueryHandlers;
 
 public class GetCharacterPageQueryHandler
@@ -14,13 +16,16 @@ public class GetCharacterPageQueryHandler
 {
     private readonly ICharacterRepository _characterRepository;
     private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
+    private readonly Serilog.ILogger _logger;
 
     public GetCharacterPageQueryHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,
-        ICharacterRepository characterRepository)
+        ICharacterRepository characterRepository,
+        ILogger logger)
     {
         _transactionFactory = transactionFactory;
         _characterRepository = characterRepository;
+        _logger = logger;
     }
 
     public async ValueTask<Result<IReadOnlyCollection<CharacterPayload>, Exception>> InvokeAsync(
@@ -38,6 +43,11 @@ public class GetCharacterPageQueryHandler
                     request.SortType,
                     request.SortOrder));
 
+            _logger.Information(
+                "Character page found: {Number} - {Size}",
+                request.Number,
+                request.Size);
+
             return character
                 .Select(x => new CharacterPayload(x.Id.ToGuid(), x.Name, x.Version))
                 .ToList()
@@ -45,6 +55,11 @@ public class GetCharacterPageQueryHandler
         }
         catch (Exception exception)
         {
+            _logger.Error(
+                exception,
+                "Error getting character page: {Number} - {Size}",
+                request.Number,
+                request.Size);
             return exception;
         }
     }

@@ -7,19 +7,24 @@ using RpgAssistant.Domain.Entities.Knows.Commands;
 using RpgAssistant.Domain.Factories;
 using RpgAssistant.Domain.Repositories;
 
+using ILogger = Serilog.ILogger;
+
 namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class DeleteKnowRelationCommandHandler : IAsyncRequestHandler<DeleteKnowRelationCommand, Result<Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
     private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
+    private readonly Serilog.ILogger _logger;
 
     public DeleteKnowRelationCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,
-        ICharacterRepository characterRepository)
+        ICharacterRepository characterRepository,
+        ILogger logger)
     {
         _transactionFactory = transactionFactory;
         _characterRepository = characterRepository;
+        _logger = logger;
     }
 
     public async ValueTask<Result<Exception>> InvokeAsync(
@@ -36,10 +41,20 @@ public class DeleteKnowRelationCommandHandler : IAsyncRequestHandler<DeleteKnowR
                     request.FromCharacterId,
                     request.ToCharacterId));
             await transaction.CommitAsync();
+            _logger.Information(
+                "Know relation deleted: {FromCharacterId} knows {ToCharacterId}",
+                request.FromCharacterId,
+                request.ToCharacterId
+            );
         }
         catch (Exception exception)
         {
             await transaction.RollbackAsync();
+            _logger.Error(
+                exception,
+                "Error deleting know relation: {FromCharacterId} knows {ToCharacterId}",
+                request.FromCharacterId,
+                request.ToCharacterId);
             return exception;
         }
 
