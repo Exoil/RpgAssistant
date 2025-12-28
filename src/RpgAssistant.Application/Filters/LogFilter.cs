@@ -11,7 +11,10 @@ public class LogFilter<T> : AsyncMessageHandlerFilter<T>
 
     private readonly ILogger _logger;
 
-    public LogFilter(ILogger logger) => _logger = logger;
+    public LogFilter(ILogger logger)
+    {
+        _logger = logger;
+    }
 
     public override async ValueTask HandleAsync(T message, CancellationToken cancellationToken,
         Func<T, CancellationToken, ValueTask> next)
