@@ -13,6 +13,8 @@ trim_trailing_whitespace = true
 # C# files
 [*.cs]
 # Use 4 spaces for indentation
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
 indent_style = space
 indent_size = 4
 
