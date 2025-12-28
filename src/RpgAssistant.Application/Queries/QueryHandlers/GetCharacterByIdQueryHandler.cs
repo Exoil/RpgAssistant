@@ -17,8 +17,8 @@ public class
     GetCharacterByIdQueryHandler : IAsyncRequestHandler<GetCharacterByIdQuery, Result<CharacterPayload, Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
+    private readonly ILogger _logger;
     private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
-    private readonly Serilog.ILogger _logger;
 
     public GetCharacterByIdQueryHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,

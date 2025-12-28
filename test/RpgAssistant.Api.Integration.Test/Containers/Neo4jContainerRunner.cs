@@ -33,7 +33,9 @@ public class Neo4jContainerRunner : IAsyncDisposable
     public async Task InitializeAsync()
     {
         if (_isInitialized)
+        {
             return;
+        }
 
         await _container.StartAsync();
 

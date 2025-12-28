@@ -19,7 +19,7 @@ public static class HandlerConfiguration
         {
             options.InstanceLifetime = InstanceLifetime.Scoped;
             options.RequestHandlerLifetime = InstanceLifetime.Scoped;
-            options.AddGlobalAsyncMessageHandlerFilter(typeof(LogFilter<>), order: 0);
+            options.AddGlobalAsyncMessageHandlerFilter(typeof(LogFilter<>), 0);
         });
 
         return services

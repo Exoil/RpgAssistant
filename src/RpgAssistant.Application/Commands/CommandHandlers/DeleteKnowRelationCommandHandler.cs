@@ -14,8 +14,8 @@ namespace RpgAssistant.Application.Commands.CommandHandlers;
 public class DeleteKnowRelationCommandHandler : IAsyncRequestHandler<DeleteKnowRelationCommand, Result<Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
+    private readonly ILogger _logger;
     private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
-    private readonly Serilog.ILogger _logger;
 
     public DeleteKnowRelationCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,

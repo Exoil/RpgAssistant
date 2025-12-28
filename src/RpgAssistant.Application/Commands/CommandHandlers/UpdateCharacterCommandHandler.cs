@@ -17,8 +17,8 @@ namespace RpgAssistant.Application.Commands.CommandHandlers;
 public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacterCommand, Result<Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
+    private readonly ILogger _logger;
     private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
-    private readonly Serilog.ILogger _logger;
 
     public UpdateCharacterCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,

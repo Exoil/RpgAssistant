@@ -24,14 +24,22 @@ public class GetCharacterPageEndpointTest : IntegrationTestBase
         // Arrange
         await _neo4JContainerRunner.ResetAsync();
         var expectedNames = Enumerable.Range(0, pageSize).Select(i => $"Test{i}").ToList();
-        if (sortOrder == "Desc") expectedNames.Reverse();
+
+        if (sortOrder == "Desc")
+        {
+            expectedNames.Reverse();
+        }
+
         var dataToCreateCharacter = new List<object>();
 
         foreach (var name in expectedNames)
+        {
             dataToCreateCharacter.Add(new
             {
                 Name = name
             });
+        }
+
         var charadterIds = new List<Guid>();
 
         foreach (var dataToCreate in dataToCreateCharacter)

@@ -15,8 +15,8 @@ namespace RpgAssistant.Application.Commands.CommandHandlers;
 public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowRelationCommand, Result<Ulid, Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
+    private readonly ILogger _logger;
     private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
-    private readonly Serilog.ILogger _logger;
 
     public CreateKnowRelationCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,
@@ -50,7 +50,8 @@ public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowR
 
             if (!fromCharacterExists.Exists)
             {
-                _logger.Error("CreateKnowRelation fails for not existing character: {Id}", createKnowRelation.FromCharacterId);
+                _logger.Error("CreateKnowRelation fails for not existing character: {Id}",
+                    createKnowRelation.FromCharacterId);
                 return UnprocessableContentException.CreateKnowRelationFailsForNotExistingCharacter(createKnowRelation
                     .FromCharacterId);
             }

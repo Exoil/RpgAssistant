@@ -14,8 +14,8 @@ namespace RpgAssistant.Application.Commands.CommandHandlers;
 public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
+    private readonly ILogger _logger;
     private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
-    private readonly Serilog.ILogger _logger;
 
     public CreateCharacterCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,

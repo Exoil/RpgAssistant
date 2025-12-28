@@ -17,8 +17,8 @@ namespace RpgAssistant.Application.Commands.CommandHandlers;
 public class DeleteCharacterCommandHandler : IAsyncRequestHandler<DeleteCharacterCommand, Result<Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
+    private readonly ILogger _logger;
     private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
-    private readonly Serilog.ILogger _logger;
 
     public DeleteCharacterCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,

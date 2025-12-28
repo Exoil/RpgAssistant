@@ -58,7 +58,10 @@ public class CharacterRepository : ICharacterRepository
 
         var records = await cursorResult.ToListAsync();
 
-        if (records.Count == 0) return (false, -1);
+        if (records.Count == 0)
+        {
+            return (false, -1);
+        }
 
         var record = records[0];
 

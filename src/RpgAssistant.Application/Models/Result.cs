@@ -42,7 +42,9 @@ public readonly struct Result<TValue, TError>
         get
         {
             if (_isError)
+            {
                 throw Error!;
+            }
 
             return _value!;
         }

@@ -9,12 +9,9 @@ public class LogFilter<T> : AsyncMessageHandlerFilter<T>
 {
     private const string MessageTypePropertyName = "MessageType";
 
-    private readonly Serilog.ILogger _logger;
+    private readonly ILogger _logger;
 
-    public LogFilter(ILogger logger)
-    {
-        _logger = logger;
-    }
+    public LogFilter(ILogger logger) => _logger = logger;
 
     public override async ValueTask HandleAsync(T message, CancellationToken cancellationToken,
         Func<T, CancellationToken, ValueTask> next)
