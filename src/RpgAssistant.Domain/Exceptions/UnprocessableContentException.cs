@@ -4,10 +4,8 @@ public class UnprocessableContentException : DomainException
 {
     protected UnprocessableContentException(
         string title, string message, string errorCode)
-        : base(title, errorCode, message)
-    {
+        : base(title, errorCode, message) =>
         StatusCode = 422;
-    }
 
     public static UnprocessableContentException CreateKnowRelationFailsForNotExistingCharacter(Ulid characterId) =>
         new(

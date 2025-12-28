@@ -12,18 +12,14 @@ namespace RpgAssistant.Api.Integration.Test;
 
 public abstract class IntegrationTestBase : IAsyncLifetime
 {
-    protected ApiWebApplicationFactory Factory = default!;
+    protected Neo4jContainerRunner _neo4JContainerRunner = default!;
 
     protected HttpClient Client = default!;
+    protected ApiWebApplicationFactory Factory = default!;
 
     protected FakeTimeProvider TimeProvider = default!;
 
-    protected Neo4jContainerRunner _neo4JContainerRunner = default!;
-
-    protected IntegrationTestBase()
-    {
-        _neo4JContainerRunner = new Neo4jContainerRunner();
-    }
+    protected IntegrationTestBase() => _neo4JContainerRunner = new Neo4jContainerRunner();
 
     public virtual async Task InitializeAsync()
     {

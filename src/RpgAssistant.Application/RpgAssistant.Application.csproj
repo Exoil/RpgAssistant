@@ -5,13 +5,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="MessagePipe"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <ProjectReference Include="..\RpgAssistant.Domain\RpgAssistant.Domain.csproj" />
+        <ProjectReference Include="..\RpgAssistant.Domain\RpgAssistant.Domain.csproj"/>
     </ItemGroup>
 
 </Project>

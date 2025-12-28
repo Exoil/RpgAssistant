@@ -38,7 +38,8 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
             new EntityTagHeaderValue($"\"{expectedVersion}\""));
 
         // Act
-        var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
+        var responseUpdate =
+            await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
 
         // Assert
         responseUpdate.StatusCode.ShouldBe(HttpStatusCode.NoContent);
@@ -49,7 +50,7 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
     [Theory]
     [InlineData(0)]
     [InlineData(100)]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task UpdateCharacterWithInvalidNameLength_GetBadRequest(int stringLength)
     {
         // Arrange
@@ -71,14 +72,15 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         Client.DefaultRequestHeaders.IfMatch.Add(
             new EntityTagHeaderValue($"\"{expectedVersion}\""));
 
-        var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
+        var responseUpdate =
+            await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
 
         // Assert
         responseUpdate.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task UpdateCharacterWithOldVersion_GetPreconditionFailed()
     {
         // Arrange
@@ -99,7 +101,8 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
             new EntityTagHeaderValue($"\"{expectedVersion}\""));
 
         // Act
-        var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
+        var responseUpdate =
+            await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
 
         // Assert
         responseUpdate.StatusCode.ShouldBe(HttpStatusCode.PreconditionFailed);
@@ -122,7 +125,8 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         Client.DefaultRequestHeaders.IfMatch.Add(
             new EntityTagHeaderValue($"\"{expectedVersion}\""));
 
-        var responseUpdate = await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
+        var responseUpdate =
+            await Client.PutAsJsonAsync($"{Endpoint}/{characterId}", dataWithUpdate, CancellationToken.None);
 
         // Assert
         responseUpdate.StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -135,7 +139,7 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         await using var transaction = await session.BeginTransactionAsync();
 
         var characterRepository = new CharacterRepository();
-        var character =  await characterRepository.GetAsync(transaction, id.GuidToUlid());
+        var character = await characterRepository.GetAsync(transaction, id.GuidToUlid());
 
         character.Name.ShouldBe(name);
     }

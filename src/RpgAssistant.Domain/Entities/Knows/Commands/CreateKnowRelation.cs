@@ -7,7 +7,26 @@ namespace RpgAssistant.Domain.Entities.Knows.Commands;
 
 public record CreateKnowRelation : BaseValueObject
 {
-    protected override string ModelName  => nameof(CreateKnowRelation);
+    [SetsRequiredMembers]
+    public CreateKnowRelation(
+        Ulid id,
+        Ulid fromCharacterId,
+        Ulid toCharacterId,
+        string description)
+    {
+        if (fromCharacterId == toCharacterId)
+            throw new ArgumentException("From and To cannot be the same character id",
+                "fromCharacterId, toCharacterId");
+
+        Id = id;
+        FromCharacterId = fromCharacterId;
+        ToCharacterId = toCharacterId;
+        Description = description;
+
+        Validate();
+    }
+
+    protected override string ModelName => nameof(CreateKnowRelation);
 
     public required Ulid Id { get; init; }
 
@@ -17,24 +36,4 @@ public record CreateKnowRelation : BaseValueObject
 
     [StringLength(50, MinimumLength = 0, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     public required string Description { get; init; }
-
-    [SetsRequiredMembers]
-    public CreateKnowRelation(
-        Ulid id,
-        Ulid fromCharacterId,
-        Ulid toCharacterId,
-        string description)
-    {
-        if (fromCharacterId == toCharacterId)
-        {
-            throw new ArgumentException("From and To cannot be the same character id", "fromCharacterId, toCharacterId");
-        }
-
-        Id = id;
-        FromCharacterId = fromCharacterId;
-        ToCharacterId = toCharacterId;
-        Description = description;
-
-        Validate();
-    }
 }

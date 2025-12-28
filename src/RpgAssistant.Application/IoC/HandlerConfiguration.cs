@@ -27,7 +27,8 @@ public static class HandlerConfiguration
             .AddScoped<IAsyncRequestHandler<DeleteCharacterCommand, Result<Exception>>, DeleteCharacterCommandHandler>()
             .AddScoped<IAsyncRequestHandler<GetCharacterByIdQuery, Result<CharacterPayload, Exception>>,
                 GetCharacterByIdQueryHandler>()
-            .AddScoped<IAsyncRequestHandler<GetCharacterPageQuery, Result<IReadOnlyCollection<CharacterPayload>, Exception>>,
+            .AddScoped<IAsyncRequestHandler<GetCharacterPageQuery,
+                    Result<IReadOnlyCollection<CharacterPayload>, Exception>>,
                 GetCharacterPageQueryHandler>()
             .AddScoped<IAsyncRequestHandler<CreateKnowRelationCommand, Result<Ulid, Exception>>,
                 CreateKnowRelationCommandHandler>()

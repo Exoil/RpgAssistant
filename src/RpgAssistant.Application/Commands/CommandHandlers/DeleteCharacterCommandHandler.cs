@@ -14,8 +14,8 @@ namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class DeleteCharacterCommandHandler : IAsyncRequestHandler<DeleteCharacterCommand, Result<Exception>>
 {
-    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
     private readonly ICharacterRepository _characterRepository;
+    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
 
     public DeleteCharacterCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,
@@ -27,7 +27,7 @@ public class DeleteCharacterCommandHandler : IAsyncRequestHandler<DeleteCharacte
 
     public async ValueTask<Result<Exception>> InvokeAsync(
         DeleteCharacterCommand request,
-        CancellationToken cancellationToken = new CancellationToken())
+        CancellationToken cancellationToken = new())
     {
         await using var transaction = await _transactionFactory.CreateAsync();
 
@@ -36,10 +36,7 @@ public class DeleteCharacterCommandHandler : IAsyncRequestHandler<DeleteCharacte
             var userId = request.Id.GuidToUlid();
             var exists = await _characterRepository.ExistsAsync(transaction, userId);
 
-            if (!exists.Exists)
-            {
-                return new NotFoundException(Entities.Character);
-            }
+            if (!exists.Exists) return new NotFoundException(Entities.Character);
 
             var deleteCharacter = new DeleteCharacter(request.Id.GuidToUlid());
             await _characterRepository.DeleteAsync(transaction, deleteCharacter);

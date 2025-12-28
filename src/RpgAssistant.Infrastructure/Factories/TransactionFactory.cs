@@ -6,20 +6,14 @@ namespace RpgAssistant.Infrastructure.Factories;
 
 public class TransactionFactory : ITransactionFactory<IAsyncTransaction>
 {
-    private IAsyncSession _session;
     private bool _disposed;
+    private IAsyncSession _session;
 
-    public TransactionFactory(IAsyncSession session)
-    {
-        _session = session;
-    }
+    public TransactionFactory(IAsyncSession session) => _session = session;
 
     public Task<IAsyncTransaction> CreateAsync()
     {
-        if (_disposed)
-        {
-            throw new ObjectDisposedException(nameof(TransactionFactory));
-        }
+        if (_disposed) throw new ObjectDisposedException(nameof(TransactionFactory));
 
         return _session.BeginTransactionAsync();
     }
@@ -38,10 +32,7 @@ public class TransactionFactory : ITransactionFactory<IAsyncTransaction>
 
     protected virtual void Dispose(bool disposing)
     {
-        if (_disposed)
-        {
-            return;
-        }
+        if (_disposed) return;
 
         if (disposing)
         {
@@ -54,10 +45,7 @@ public class TransactionFactory : ITransactionFactory<IAsyncTransaction>
 
     protected virtual async ValueTask DisposeAsync(bool disposing)
     {
-        if (_disposed)
-        {
-            return;
-        }
+        if (_disposed) return;
 
         if (disposing)
         {

@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
+
 using RpgAssistant.Domain.Extensions;
 using RpgAssistant.Infrastructure.Repositories;
 
@@ -15,7 +16,7 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
     public const string Endpoint = "/v1/characters";
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task Create_Character_Get_CreatedStatusCode()
     {
         // Arrange
@@ -36,7 +37,7 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
     [Theory]
     [InlineData(0)]
     [InlineData(100)]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task Create_Character_With_Invalid_Name_GetBadRequest(int nameLength)
     {
         // Arrange
@@ -59,7 +60,7 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
         await using var transaction = await session.BeginTransactionAsync();
 
         var characterRepository = new CharacterRepository();
-        var character =  await characterRepository.GetAsync(transaction, id.GuidToUlid());
+        var character = await characterRepository.GetAsync(transaction, id.GuidToUlid());
 
         character.Name.ShouldBe(name);
     }

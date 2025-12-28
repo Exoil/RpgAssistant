@@ -11,8 +11,8 @@ namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>
 {
-    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
     private readonly ICharacterRepository _characterRepository;
+    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
 
     public CreateCharacterCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,
@@ -35,7 +35,7 @@ public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacte
             await _characterRepository.CreateAsync(transaction, createCharacter);
             await transaction.CommitAsync();
         }
-        catch(Exception exception)
+        catch (Exception exception)
         {
             await transaction.RollbackAsync();
             return exception;

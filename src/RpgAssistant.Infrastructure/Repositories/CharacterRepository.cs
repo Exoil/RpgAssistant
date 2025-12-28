@@ -1,4 +1,5 @@
 using Neo4j.Driver;
+
 using RpgAssistant.Domain.Entities.Characters;
 using RpgAssistant.Domain.Entities.Characters.Commands;
 using RpgAssistant.Domain.Entities.Characters.Queries;
@@ -16,7 +17,8 @@ public class CharacterRepository : ICharacterRepository
         const string queryString = @"
             CREATE (ch:Character {Id: $CharacterId, Name: $Name, Version: 1})
             RETURN ID(ch) AS CharacterNodeId";
-        var query = new Query(queryString, new { CharacterId = createCharacter.Id.ToDatabaseId(), Name = createCharacter.Name });
+        var query = new Query(queryString,
+            new { CharacterId = createCharacter.Id.ToDatabaseId(), createCharacter.Name });
 
         await transaction.RunAsync(query);
     }
@@ -29,7 +31,7 @@ public class CharacterRepository : ICharacterRepository
                 ch.Name = $Name,
                 ch.Version = ch.Version + 1
             RETURN ID(ch) AS CharacterNodeId";
-        var query = new Query(queryString, new { CharacterId = id.ToDatabaseId(), Name = updateCharacter.Name });
+        var query = new Query(queryString, new { CharacterId = id.ToDatabaseId(), updateCharacter.Name });
 
         await transaction.RunAsync(query);
     }
@@ -39,16 +41,13 @@ public class CharacterRepository : ICharacterRepository
         const string queryString = @"
             MATCH (ch:Character {Id: $Id })
             RETURN ch IS NOT NULL AS Exists, coalesce(ch.Version, -1) AS Version";
-        var query = new Query(queryString, new { Id = id.ToDatabaseId()});
+        var query = new Query(queryString, new { Id = id.ToDatabaseId() });
 
         var cursorResult = await transaction.RunAsync(query);
 
         var records = await cursorResult.ToListAsync();
 
-        if (records.Count == 0)
-        {
-            return (false, -1);
-        }
+        if (records.Count == 0) return (false, -1);
 
         var record = records[0];
 
@@ -60,7 +59,7 @@ public class CharacterRepository : ICharacterRepository
         const string queryString = @"
             MATCH (ch:Character {Id: $Id })
             DETACH DELETE ch";
-        var query = new Query(queryString, new { Id = deleteCharacter.Id.ToDatabaseId()});
+        var query = new Query(queryString, new { Id = deleteCharacter.Id.ToDatabaseId() });
 
         await transaction.RunAsync(query);
     }
@@ -81,7 +80,8 @@ public class CharacterRepository : ICharacterRepository
         return character;
     }
 
-    public async Task<IReadOnlyCollection<Character>> GetAsync(IAsyncTransaction transaction, GetCharacterPage characterPage)
+    public async Task<IReadOnlyCollection<Character>> GetAsync(IAsyncTransaction transaction,
+        GetCharacterPage characterPage)
     {
         var skip = (int)((characterPage.Page - 1) * characterPage.Size);
         var limit = (int)characterPage.Size;
@@ -101,8 +101,8 @@ public class CharacterRepository : ICharacterRepository
 
         var query = new Query(queryString, new
         {
-            SortType = characterPage.SortType,
-            SortOrder = characterPage.SortOrder,
+            characterPage.SortType,
+            characterPage.SortOrder,
             Skip = skip,
             Limit = limit
         });
@@ -127,7 +127,7 @@ public class CharacterRepository : ICharacterRepository
                 Id = createKnowRelation.Id.ToDatabaseId(),
                 FromCharacterId = createKnowRelation.FromCharacterId.ToDatabaseId(),
                 ToCharacterId = createKnowRelation.ToCharacterId.ToDatabaseId(),
-                Description = createKnowRelation.Description,
+                createKnowRelation.Description,
                 Version = 1
             });
 
@@ -144,7 +144,7 @@ public class CharacterRepository : ICharacterRepository
             new
             {
                 FromCharacterId = createKnowRelation.FromCharacterId.ToDatabaseId(),
-                ToCharacterId = createKnowRelation.ToCharacterId.ToDatabaseId(),
+                ToCharacterId = createKnowRelation.ToCharacterId.ToDatabaseId()
             });
 
         await transaction.RunAsync(query);

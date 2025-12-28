@@ -1,5 +1,7 @@
 using MessagePipe;
+
 using Neo4j.Driver;
+
 using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Entities.Characters.Queries;
 using RpgAssistant.Domain.Factories;
@@ -10,8 +12,8 @@ namespace RpgAssistant.Application.Queries.QueryHandlers;
 public class GetCharacterPageQueryHandler
     : IAsyncRequestHandler<GetCharacterPageQuery, Result<IReadOnlyCollection<CharacterPayload>, Exception>>
 {
-    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
     private readonly ICharacterRepository _characterRepository;
+    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
 
     public GetCharacterPageQueryHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,
@@ -23,7 +25,7 @@ public class GetCharacterPageQueryHandler
 
     public async ValueTask<Result<IReadOnlyCollection<CharacterPayload>, Exception>> InvokeAsync(
         GetCharacterPageQuery request,
-        CancellationToken cancellationToken = new CancellationToken())
+        CancellationToken cancellationToken = new())
     {
         await using var transaction = await _transactionFactory.CreateAsync();
 
@@ -39,9 +41,9 @@ public class GetCharacterPageQueryHandler
             return character
                 .Select(x => new CharacterPayload(x.Id.ToGuid(), x.Name, x.Version))
                 .ToList()
-                .AsReadOnly() ;
+                .AsReadOnly();
         }
-        catch(Exception exception)
+        catch (Exception exception)
         {
             return exception;
         }

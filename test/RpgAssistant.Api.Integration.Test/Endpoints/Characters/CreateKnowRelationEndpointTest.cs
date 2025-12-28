@@ -17,7 +17,7 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
     public const string KnowEndpoint = "/v1/characters/knows";
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task Create_KnowRelation_CreatedStatusCode()
     {
         // Arrange
@@ -31,10 +31,12 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
             Name = "To"
         };
 
-        var fromCharacterCreateResponse = await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterFrom, CancellationToken.None);
-        var toCharacterCreateResponse = await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterTo, CancellationToken.None);
+        var fromCharacterCreateResponse =
+            await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterFrom, CancellationToken.None);
+        var toCharacterCreateResponse =
+            await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterTo, CancellationToken.None);
 
-        var fromCharacterId =  await fromCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
+        var fromCharacterId = await fromCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
         var toCharacterId = await toCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
 
         var createRelationRequest = new
@@ -54,7 +56,7 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
     }
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task Create_KnowRelation_For_Same_CharacterId_BadRequestStatusCode()
     {
         // Arrange
@@ -63,9 +65,10 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
             Name = "From"
         };
 
-        var fromCharacterCreateResponse = await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterFrom, CancellationToken.None);
+        var fromCharacterCreateResponse =
+            await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterFrom, CancellationToken.None);
 
-        var fromCharacterId =  await fromCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
+        var fromCharacterId = await fromCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
 
         var createRelationRequest = new
         {
@@ -82,7 +85,7 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
     }
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task Create_KnowRelation_For_NotExisting_ToCharacter_UnprocessableStatusCode()
     {
         // Arrange
@@ -91,9 +94,10 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
             Name = "From"
         };
 
-        var fromCharacterCreateResponse = await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterFrom, CancellationToken.None);
+        var fromCharacterCreateResponse =
+            await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterFrom, CancellationToken.None);
 
-        var fromCharacterId =  await fromCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
+        var fromCharacterId = await fromCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
 
         var createRelationRequest = new
         {
@@ -110,7 +114,7 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
     }
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task Create_KnowRelation_For_NotExisting_FromCharacter_UnprocessableStatusCode()
     {
         // Arrange
@@ -119,9 +123,10 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
             Name = "To"
         };
 
-        var toCharacterCreateResponse = await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterTo, CancellationToken.None);
+        var toCharacterCreateResponse =
+            await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterTo, CancellationToken.None);
 
-        var toCharacterId =  await toCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
+        var toCharacterId = await toCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
 
         var createRelationRequest = new
         {
@@ -139,7 +144,7 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
 
     [Theory]
     [InlineData(51)]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task Create_KnowRelation_Description_Is_Too_Long_BadRequest(int descriptionLenght)
     {
         // Arrange
@@ -153,10 +158,12 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
             Name = "To"
         };
 
-        var fromCharacterCreateResponse = await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterFrom, CancellationToken.None);
-        var toCharacterCreateResponse = await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterTo, CancellationToken.None);
+        var fromCharacterCreateResponse =
+            await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterFrom, CancellationToken.None);
+        var toCharacterCreateResponse =
+            await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterTo, CancellationToken.None);
 
-        var fromCharacterId =  await fromCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
+        var fromCharacterId = await fromCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
         var toCharacterId = await toCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
 
         var createRelationRequest = new

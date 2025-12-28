@@ -15,26 +15,24 @@ namespace RpgAssistant.Api.Endpoints;
 public static class CharacterEndpoints
 {
     public static void MapCharacterEndpoints(
-        this WebApplication webApplication)
-    {
+        this WebApplication webApplication) =>
         webApplication
             .MapGroup("v1/characters")
             .MapCharacterEndpoints();
-    }
 
     private static void MapCharacterEndpoints(this RouteGroupBuilder endpointGroup)
     {
         endpointGroup
             .MapPost(
-            "/",
-            async (
-                    [FromServices] ResultsToHttpResponses responseResolver,
-                    [FromBody] CreateCharacterDto createCharacter,
-                    CancellationToken cancellationToken = default) =>
-                await responseResolver.GetResult<CreateCharacterCommand, Ulid>(
-                    createCharacter.ToCommand(),
-                    data =>  Results.Created(string.Empty, data.UlidToGuid()),
-                    cancellationToken));
+                "/",
+                async (
+                        [FromServices] ResultsToHttpResponses responseResolver,
+                        [FromBody] CreateCharacterDto createCharacter,
+                        CancellationToken cancellationToken = default) =>
+                    await responseResolver.GetResult<CreateCharacterCommand, Ulid>(
+                        createCharacter.ToCommand(),
+                        data => Results.Created(string.Empty, data.UlidToGuid()),
+                        cancellationToken));
 
         endpointGroup
             .MapPut(
@@ -42,7 +40,8 @@ public static class CharacterEndpoints
                 async (
                         [FromServices] ResultsToHttpResponses responseResolver,
                         [FromRoute] Guid id,
-                        [FromHeader(Name = HeadersConstants.IfMatch)] string version,
+                        [FromHeader(Name = HeadersConstants.IfMatch)]
+                        string version,
                         [FromBody] UpdateCharacterDto updateCharacter,
                         CancellationToken cancellationToken = default) =>
                     await responseResolver.GetResult<UpdateCharacterCommand>(
@@ -100,15 +99,15 @@ public static class CharacterEndpoints
             .MapPost(
                 "/knows",
                 async (
-                    [FromServices] ResultsToHttpResponses responseResolver,
-                    [FromBody] CreateKnowsDto createKnowsDto,
-                    CancellationToken cancellationToken = default) =>
+                        [FromServices] ResultsToHttpResponses responseResolver,
+                        [FromBody] CreateKnowsDto createKnowsDto,
+                        CancellationToken cancellationToken = default) =>
                     await responseResolver.GetResult<CreateKnowRelationCommand, Ulid>(
                         createKnowsDto.ToCommand(),
                         data => Results.Created(
                             new Uri($"/knows/{data.UlidToGuid()}", UriKind.Relative), data.UlidToGuid()),
                         cancellationToken)
-                );
+            );
 
         endpointGroup
             .MapDelete(

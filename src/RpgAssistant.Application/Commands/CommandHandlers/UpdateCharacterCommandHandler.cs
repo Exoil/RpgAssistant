@@ -14,8 +14,8 @@ namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacterCommand, Result<Exception>>
 {
-    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
     private readonly ICharacterRepository _characterRepository;
+    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
 
     public UpdateCharacterCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,
@@ -36,22 +36,16 @@ public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacte
         {
             var exists = await _characterRepository.ExistsAsync(transaction, idAsUlid);
 
-            if (!exists.Exists)
-            {
-                return new NotFoundException(Entities.Character);
-            }
+            if (!exists.Exists) return new NotFoundException(Entities.Character);
 
-            if (exists.Version != request.Version)
-            {
-                return new PreconditionException();
-            }
+            if (exists.Version != request.Version) return new PreconditionException();
 
             var updateCharacter = new UpdateCharacter(request.Name);
 
             await _characterRepository.UpdateAsync(transaction, idAsUlid, updateCharacter);
             await transaction.CommitAsync();
         }
-        catch(Exception exception)
+        catch (Exception exception)
         {
             await transaction.RollbackAsync();
             return exception;

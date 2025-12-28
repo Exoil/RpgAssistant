@@ -13,14 +13,21 @@ public class Neo4jContainerRunner : IAsyncDisposable
 
     private bool _isInitialized;
 
-    public string ConnectionString => _container.GetConnectionString();
-
-    public Neo4jContainerRunner()
-    {
+    public Neo4jContainerRunner() =>
         _container = new Neo4jBuilder()
             .WithImage("neo4j:latest")
             .WithCleanUp(true)
             .Build();
+
+    public string ConnectionString => _container.GetConnectionString();
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_container != null)
+        {
+            await _container.StopAsync();
+            await _container.DisposeAsync();
+        }
     }
 
     public async Task InitializeAsync()
@@ -40,11 +47,9 @@ public class Neo4jContainerRunner : IAsyncDisposable
         _isInitialized = true;
     }
 
-    private async Task SetConstraintsAsync(IAsyncTransaction transaction)
-    {
+    private async Task SetConstraintsAsync(IAsyncTransaction transaction) =>
         await transaction.RunAsync(new Query(
             "CREATE CONSTRAINT character_UQ_characterid FOR (ch:Character) REQUIRE ch.Id IS UNIQUE"));
-    }
 
     public async Task ResetAsync()
     {
@@ -57,13 +62,4 @@ public class Neo4jContainerRunner : IAsyncDisposable
         GraphDatabase.Driver(
             ConnectionString,
             AuthTokens.None);
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_container != null)
-        {
-            await _container.StopAsync();
-            await _container.DisposeAsync();
-        }
-    }
 }

@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using Neo4j.Driver;
+
 using RpgAssistant.Domain.Factories;
 using RpgAssistant.Domain.Repositories;
 using RpgAssistant.Infrastructure.Factories;

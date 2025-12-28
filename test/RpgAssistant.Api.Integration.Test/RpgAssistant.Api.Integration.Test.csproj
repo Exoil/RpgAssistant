@@ -7,13 +7,13 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-        <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
+        <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="Neo4j.Driver" />
-        <PackageReference Include="Shouldly" />
-        <PackageReference Include="Testcontainers" />
-        <PackageReference Include="Testcontainers.Neo4j" />
+        <PackageReference Include="Neo4j.Driver"/>
+        <PackageReference Include="Shouldly"/>
+        <PackageReference Include="Testcontainers"/>
+        <PackageReference Include="Testcontainers.Neo4j"/>
         <PackageReference Include="xunit"/>
         <PackageReference Include="xunit.runner.visualstudio"/>
     </ItemGroup>
@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\RpgAssistant.Api\RpgAssistant.Api.csproj" />
+        <ProjectReference Include="..\..\src\RpgAssistant.Api\RpgAssistant.Api.csproj"/>
     </ItemGroup>
 
 </Project>

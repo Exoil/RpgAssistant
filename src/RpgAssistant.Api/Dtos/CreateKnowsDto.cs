@@ -16,4 +16,4 @@ public record CreateKnowsDto(
             FromCharacterId.GuidToUlid(),
             ToCharacterId.GuidToUlid(),
             Description);
-};
+}

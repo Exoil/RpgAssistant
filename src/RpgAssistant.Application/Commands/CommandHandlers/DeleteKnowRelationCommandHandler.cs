@@ -11,8 +11,8 @@ namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class DeleteKnowRelationCommandHandler : IAsyncRequestHandler<DeleteKnowRelationCommand, Result<Exception>>
 {
-    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
     private readonly ICharacterRepository _characterRepository;
+    private readonly ITransactionFactory<IAsyncTransaction> _transactionFactory;
 
     public DeleteKnowRelationCommandHandler(
         ITransactionFactory<IAsyncTransaction> transactionFactory,
@@ -24,9 +24,9 @@ public class DeleteKnowRelationCommandHandler : IAsyncRequestHandler<DeleteKnowR
 
     public async ValueTask<Result<Exception>> InvokeAsync(
         DeleteKnowRelationCommand request,
-        CancellationToken cancellationToken = new CancellationToken())
+        CancellationToken cancellationToken = new())
     {
-        await using var transaction =  await _transactionFactory.CreateAsync();
+        await using var transaction = await _transactionFactory.CreateAsync();
 
         try
         {

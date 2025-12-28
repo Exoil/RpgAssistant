@@ -6,7 +6,6 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-using RpgAssistant.Api.Dtos;
 using RpgAssistant.Application.Models;
 
 using Shouldly;
@@ -18,26 +17,21 @@ public class GetCharacterPageEndpointTest : IntegrationTestBase
     public const string Endpoint = "/v1/characters";
 
     [Theory]
-    [InlineData(1,10,"Name", "Asc")]
-    [InlineData(1,10,"Name", "Desc")]
+    [InlineData(1, 10, "Name", "Asc")]
+    [InlineData(1, 10, "Name", "Desc")]
     public async Task GetCharacterPage_GetOk(int pageNumber, int pageSize, string sortType, string sortOrder)
     {
         // Arrange
         await _neo4JContainerRunner.ResetAsync();
         var expectedNames = Enumerable.Range(0, pageSize).Select(i => $"Test{i}").ToList();
-        if (sortOrder == "Desc")
-        {
-            expectedNames.Reverse();
-        }
+        if (sortOrder == "Desc") expectedNames.Reverse();
         var dataToCreateCharacter = new List<object>();
 
         foreach (var name in expectedNames)
-        {
             dataToCreateCharacter.Add(new
             {
                 Name = name
             });
-        }
         var charadterIds = new List<Guid>();
 
         foreach (var dataToCreate in dataToCreateCharacter)
@@ -47,7 +41,8 @@ public class GetCharacterPageEndpointTest : IntegrationTestBase
             charadterIds.Add(characterId);
         }
 
-        var endpoint = $"{Endpoint}?pageNumber={pageNumber}&pageSize={pageSize}&sortType={sortType}&sortOrder={sortOrder}";
+        var endpoint =
+            $"{Endpoint}?pageNumber={pageNumber}&pageSize={pageSize}&sortType={sortType}&sortOrder={sortOrder}";
 
         // Act
         var reponse = await Client.GetAsync(endpoint);
@@ -65,14 +60,15 @@ public class GetCharacterPageEndpointTest : IntegrationTestBase
 
 
     [Theory]
-    [InlineData(1,10,"Name", "Ascc")]
-    [InlineData(1,10,"Name", "Descc")]
-    [InlineData(0,10,"Name", "Desc")]
-    [InlineData(1,0,"Name", "Desc")]
+    [InlineData(1, 10, "Name", "Ascc")]
+    [InlineData(1, 10, "Name", "Descc")]
+    [InlineData(0, 10, "Name", "Desc")]
+    [InlineData(1, 0, "Name", "Desc")]
     public async Task GetCharacterPage_GetBadRequest(int pageNumber, int pageSize, string sortType, string sortOrder)
     {
         // Arrange
-        var endpoint = $"{Endpoint}?pageNumber={pageNumber}&pageSize={pageSize}&sortType={sortType}&sortOrder={sortOrder}";
+        var endpoint =
+            $"{Endpoint}?pageNumber={pageNumber}&pageSize={pageSize}&sortType={sortType}&sortOrder={sortOrder}";
 
         // Act
         var reponse = await Client.GetAsync(endpoint);

@@ -7,13 +7,6 @@ namespace RpgAssistant.Domain.Entities.Characters.Commands;
 
 public record CreateCharacter : BaseValueObject
 {
-    protected override string ModelName  => nameof(CreateCharacter);
-
-    public required Ulid Id { get; init; }
-
-    [StringLength(50, MinimumLength = 1, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
-    public required string Name { get; init; }
-
     [SetsRequiredMembers]
     public CreateCharacter(
         Ulid id,
@@ -24,4 +17,11 @@ public record CreateCharacter : BaseValueObject
 
         Validate();
     }
+
+    protected override string ModelName => nameof(CreateCharacter);
+
+    public required Ulid Id { get; init; }
+
+    [StringLength(50, MinimumLength = 1, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
+    public required string Name { get; init; }
 }

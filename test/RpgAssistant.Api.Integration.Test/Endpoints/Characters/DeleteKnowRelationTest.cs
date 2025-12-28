@@ -10,7 +10,6 @@ namespace RpgAssistant.Api.Integration.Test.Endpoints.Characters;
 
 public class DeleteKnowRelationTest : IntegrationTestBase
 {
-
     public const string CharacterEndpoint = "/v1/characters";
 
     public const string KnowEndpoint = "/v1/characters/knows";
@@ -19,7 +18,7 @@ public class DeleteKnowRelationTest : IntegrationTestBase
         new($"{KnowEndpoint}/{from}/to/{to}", UriKind.Relative);
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task Delete_KnowRelation_NotContentCode()
     {
         // Arrange
@@ -33,10 +32,12 @@ public class DeleteKnowRelationTest : IntegrationTestBase
             Name = "To"
         };
 
-        var fromCharacterCreateResponse = await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterFrom, CancellationToken.None);
-        var toCharacterCreateResponse = await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterTo, CancellationToken.None);
+        var fromCharacterCreateResponse =
+            await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterFrom, CancellationToken.None);
+        var toCharacterCreateResponse =
+            await Client.PostAsJsonAsync(CharacterEndpoint, requestCreateCharacterTo, CancellationToken.None);
 
-        var fromCharacterId =  await fromCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
+        var fromCharacterId = await fromCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
         var toCharacterId = await toCharacterCreateResponse.Content.ReadFromJsonAsync<Guid>();
 
         var createRelationRequest = new
@@ -61,7 +62,7 @@ public class DeleteKnowRelationTest : IntegrationTestBase
     }
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task Delete_KnowRelation_WhenIds_Are_Same_BadRequestCode()
     {
         // Arrange

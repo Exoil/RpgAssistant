@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using NSubstitute;
-using RpgAssistant.Api.ResultResolvers;
-using RpgAssistant.Domain.Exceptions;
-using RpgAssistant.Domain.Models;
+
 using MessagePipe;
 
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+
+using NSubstitute;
+
+using RpgAssistant.Api.ResultResolvers;
 using RpgAssistant.Application.Models;
+using RpgAssistant.Domain.Exceptions;
 
 using Shouldly;
 
@@ -19,9 +21,8 @@ namespace RpgAssistant.Api.Test.ResultResolvers;
 
 public class ResultsToHttpResponsesTest
 {
-    private readonly IHttpContextAccessor _mockHttpContextAccessor;
-
     private readonly Endpoint _mockEndpoint = new(null, null, "TestEndpoint");
+    private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
     public ResultsToHttpResponsesTest()
     {
@@ -59,7 +60,8 @@ public class ResultsToHttpResponsesTest
     [Theory]
     [Trait(Constants.TraitName, Constants.TestTitle)]
     [MemberData(nameof(GetExceptionsWithResponses))]
-    public async Task ExecuteVoid_Request_Return_Over_400_HttpStatusCode(DomainException exception, int expectedStatusCode)
+    public async Task ExecuteVoid_Request_Return_Over_400_HttpStatusCode(DomainException exception,
+        int expectedStatusCode)
     {
         // Arrange
         var serviceProvider = Substitute.For<IServiceProvider>();
@@ -88,7 +90,7 @@ public class ResultsToHttpResponsesTest
     }
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task ExecuteVoid_Request_Return_GeneralException_And_500_HttpStatusCode()
     {
         // Arrange
@@ -102,7 +104,7 @@ public class ResultsToHttpResponsesTest
         var httpResolver = new ResultsToHttpResponses(serviceProvider, _mockHttpContextAccessor);
 
         // Act
-        var result =  await httpResolver.GetResult(
+        var result = await httpResolver.GetResult(
             new VoidRequest(),
             () => Results.Ok(),
             CancellationToken.None);
@@ -114,7 +116,7 @@ public class ResultsToHttpResponsesTest
     }
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task ExecuteIntRequest_Return_Expected_ObjectResult()
     {
         // Arrange
@@ -139,9 +141,10 @@ public class ResultsToHttpResponsesTest
     }
 
     [Theory]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     [MemberData(nameof(GetExceptionsWithResponses))]
-    public async Task ExecuteInt_Request_Return_Over_400_HttpStatusCode(DomainException exception, int expectedStatusCode)
+    public async Task ExecuteInt_Request_Return_Over_400_HttpStatusCode(DomainException exception,
+        int expectedStatusCode)
     {
         // Arrange
         var serviceProvider = Substitute.For<IServiceProvider>();
@@ -169,7 +172,7 @@ public class ResultsToHttpResponsesTest
     }
 
     [Fact]
-    [Trait(Constants.TraitName,Constants.TestTitle)]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
     public async Task ExecuteInt_Request_Return_GeneralException_And_500_HttpStatusCode()
     {
         // Arrange
@@ -183,7 +186,7 @@ public class ResultsToHttpResponsesTest
         var httpResolver = new ResultsToHttpResponses(serviceProvider, _mockHttpContextAccessor);
 
         // Act
-        var result =  await httpResolver.GetResult(
+        var result = await httpResolver.GetResult(
             7,
             (int data) => Results.Ok(data),
             CancellationToken.None);
@@ -208,5 +211,7 @@ public class ResultsToHttpResponsesTest
     }
 
     // Marker request type for void-style requests must be public for proxy generation
-    public readonly struct VoidRequest { }
+    public readonly struct VoidRequest
+    {
+    }
 }

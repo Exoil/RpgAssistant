@@ -1,20 +1,19 @@
 using System.Net;
+
 using MessagePipe;
 
 using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Exceptions;
-using RpgAssistant.Domain.Models;
 
 namespace RpgAssistant.Api.ResultResolvers;
 
 public class ResultsToHttpResponses
 {
+    private readonly string _endpointDisplayName;
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly string _endpointDisplayName;
-
     /// <summary>
-    /// Constructor for the HttpResponseResolver class. Initializes the class with a sender (mediator) and HTTP context.
+    ///     Constructor for the HttpResponseResolver class. Initializes the class with a sender (mediator) and HTTP context.
     /// </summary>
     public ResultsToHttpResponses(
         IServiceProvider serviceProvider,
@@ -24,26 +23,32 @@ public class ResultsToHttpResponses
         _endpointDisplayName = (
             httpContextAccessorAccessor.HttpContext is not null &&
             httpContextAccessorAccessor.HttpContext.GetEndpoint() is not null &&
-            !string.IsNullOrEmpty(httpContextAccessorAccessor.HttpContext.GetEndpoint()?.DisplayName) ?
-                httpContextAccessorAccessor.HttpContext.GetEndpoint()!.DisplayName : string.Empty)!;
+            !string.IsNullOrEmpty(httpContextAccessorAccessor.HttpContext.GetEndpoint()?.DisplayName)
+                ? httpContextAccessorAccessor.HttpContext.GetEndpoint()!.DisplayName
+                : string.Empty)!;
     }
+
     /// <summary>
-    /// This function will take a request, and a function to transform the request’s payload into a result.
-    /// It will then resolve a MessagePipe async request handler and call the provided function on the result to get an IResult object.
+    ///     This function will take a request, and a function to transform the request’s payload into a result.
+    ///     It will then resolve a MessagePipe async request handler and call the provided function on the result to get an
+    ///     IResult object.
     /// </summary>
     public async Task<IResult> GetResult<TRequest, TPayload>(
         TRequest request,
         Func<TPayload, IResult> resultFunc,
         CancellationToken cancellationToken = default)
     {
-        var handler = _serviceProvider.GetRequiredService<IAsyncRequestHandler<TRequest, Result<TPayload, Exception>>>();
+        var handler =
+            _serviceProvider.GetRequiredService<IAsyncRequestHandler<TRequest, Result<TPayload, Exception>>>();
         var result = await handler.InvokeAsync(request, cancellationToken);
 
         return !result.IsSuccess ? GetErrorBadRequest(result.Error!) : resultFunc.Invoke(result.Value);
     }
+
     /// <summary>
-    /// This function will take a request, and a function to transform the request’s payload into a result.
-    /// It will then resolve a MessagePipe async request handler and call the provided function on the result to get an IResult object.
+    ///     This function will take a request, and a function to transform the request’s payload into a result.
+    ///     It will then resolve a MessagePipe async request handler and call the provided function on the result to get an
+    ///     IResult object.
     /// </summary>
     public async Task<IResult> GetResult<TRequest>(
         TRequest request,
@@ -55,9 +60,10 @@ public class ResultsToHttpResponses
 
         return !result.IsSuccess ? GetErrorBadRequest(result.Error!) : resultFunc.Invoke();
     }
+
     /// <summary>
-    /// This private function takes an Exception as a parameter and returns an IResult according to the type of exception.
-    /// This function essentially maps specific exception types to a particular HTTP response.
+    ///     This private function takes an Exception as a parameter and returns an IResult according to the type of exception.
+    ///     This function essentially maps specific exception types to a particular HTTP response.
     /// </summary>
     private IResult GetErrorBadRequest(Exception exception) => exception switch
     {
@@ -70,8 +76,8 @@ public class ResultsToHttpResponses
                 validationException.ErrorCode,
                 validationException.ValidationErrors!),
         NotFoundException notFoundException
-                => Results.Problem(
-        notFoundException.Message,
+            => Results.Problem(
+                notFoundException.Message,
                 _endpointDisplayName,
                 (int)HttpStatusCode.NotFound,
                 notFoundException.Title,

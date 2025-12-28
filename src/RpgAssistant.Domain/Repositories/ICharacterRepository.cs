@@ -1,4 +1,5 @@
 using Neo4j.Driver;
+
 using RpgAssistant.Domain.Entities.Characters;
 using RpgAssistant.Domain.Entities.Characters.Commands;
 using RpgAssistant.Domain.Entities.Characters.Queries;
