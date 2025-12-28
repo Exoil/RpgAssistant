@@ -1,15 +1,9 @@
 using MessagePipe;
 
-using RpgAssistant.Api.Dtos;
-using RpgAssistant.Domain.Entities.Characters.Commands;
+using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Entities.Characters.Queries;
-using RpgAssistant.Domain.Exceptions;
-using RpgAssistant.Domain.Exceptions.Enums;
-using RpgAssistant.Domain.Models;
-using RpgAssistant.Infrastructure.Factories;
-using RpgAssistant.Infrastructure.Repositories;
 
-namespace RpgAssistant.Api.CQRS.Queries.QueryHandlers;
+namespace RpgAssistant.Application.Queries.QueryHandlers;
 
 public class GetCharacterPageQueryHandler
     : IAsyncRequestHandler<GetCharacterPageQuery, Result<IReadOnlyCollection<CharacterPayload>, Exception>>

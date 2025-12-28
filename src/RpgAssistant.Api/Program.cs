@@ -1,5 +1,6 @@
 using RpgAssistant.Api.Endpoints;
 using RpgAssistant.Api.IoC;
+using RpgAssistant.Application.IoC;
 using RpgAssistant.Infrastructure.IoC;
 
 namespace RpgAssistant.Api;

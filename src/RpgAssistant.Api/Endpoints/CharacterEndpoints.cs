@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
 using RpgAssistant.Api.Constants;
-using RpgAssistant.Api.CQRS.Commands;
-using RpgAssistant.Api.CQRS.Queries;
 using RpgAssistant.Api.Dtos;
+using RpgAssistant.Api.Dtos.Maps;
 using RpgAssistant.Api.ResultResolvers;
+using RpgAssistant.Application.Commands;
+using RpgAssistant.Application.Models;
+using RpgAssistant.Application.Queries;
 using RpgAssistant.Domain.Extensions;
 
 namespace RpgAssistant.Api.Endpoints;
@@ -91,7 +93,7 @@ public static class CharacterEndpoints
                     await responseResolver.GetResult<GetCharacterPageQuery, IReadOnlyCollection<CharacterPayload>>(
                         new GetCharacterPageQuery(pageNumber, pageSize, sortType, sortOrder),
                         data => Results.Ok(
-                            data.Select(x => x.ToDto())),
+                            data.Select(x => x.ToCharacterDto())),
                         cancellationToken));
 
         endpointGroup

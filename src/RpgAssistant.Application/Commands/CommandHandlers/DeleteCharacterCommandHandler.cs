@@ -1,14 +1,12 @@
 using MessagePipe;
 
+using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Entities.Characters.Commands;
 using RpgAssistant.Domain.Exceptions;
 using RpgAssistant.Domain.Exceptions.Enums;
 using RpgAssistant.Domain.Extensions;
-using RpgAssistant.Domain.Models;
-using RpgAssistant.Infrastructure.Factories;
-using RpgAssistant.Infrastructure.Repositories;
 
-namespace RpgAssistant.Api.CQRS.Commands.CommandHandlers;
+namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class DeleteCharacterCommandHandler : IAsyncRequestHandler<DeleteCharacterCommand, Result<Exception>>
 {

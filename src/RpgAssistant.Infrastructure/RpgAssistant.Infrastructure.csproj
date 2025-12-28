@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RpgAssistant.Domain\RpgAssistant.Domain.csproj" />
+      <ProjectReference Include="..\RpgAssistant.Application\RpgAssistant.Application.csproj" />
     </ItemGroup>
 
 </Project>

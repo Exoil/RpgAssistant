@@ -1,4 +1,4 @@
-namespace RpgAssistant.Api.CQRS.Commands;
+namespace RpgAssistant.Application.Commands;
 
 public record CreateKnowRelationCommand(
     Ulid FromCharacterId,

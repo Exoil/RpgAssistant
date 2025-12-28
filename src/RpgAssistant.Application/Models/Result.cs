@@ -1,4 +1,4 @@
-namespace RpgAssistant.Domain.Models;
+namespace RpgAssistant.Application.Models;
 
 /// <summary>
 /// Result TError  is a readonly struct, that can be used to wrap the result

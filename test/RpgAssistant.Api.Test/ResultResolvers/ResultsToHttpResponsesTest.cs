@@ -10,6 +10,9 @@ using RpgAssistant.Api.ResultResolvers;
 using RpgAssistant.Domain.Exceptions;
 using RpgAssistant.Domain.Models;
 using MessagePipe;
+
+using RpgAssistant.Application.Models;
+
 using Shouldly;
 
 namespace RpgAssistant.Api.Test.ResultResolvers;

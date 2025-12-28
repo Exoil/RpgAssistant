@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using RpgAssistant.Api.Dtos;
+using RpgAssistant.Application.Models;
 
 using Shouldly;
 

@@ -1,13 +1,14 @@
 using MessagePipe;
 
-using RpgAssistant.Api.CQRS.Commands;
-using RpgAssistant.Api.CQRS.Commands.CommandHandlers;
-using RpgAssistant.Api.CQRS.Queries;
-using RpgAssistant.Api.CQRS.Queries.QueryHandlers;
-using RpgAssistant.Api.Dtos;
-using RpgAssistant.Domain.Models;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace RpgAssistant.Api.IoC;
+using RpgAssistant.Application.Commands;
+using RpgAssistant.Application.Commands.CommandHandlers;
+using RpgAssistant.Application.Models;
+using RpgAssistant.Application.Queries;
+using RpgAssistant.Application.Queries.QueryHandlers;
+
+namespace RpgAssistant.Application.IoC;
 
 public static class HandlerConfiguration
 {

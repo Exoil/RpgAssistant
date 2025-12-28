@@ -1,5 +1,7 @@
 using System.Net;
 using MessagePipe;
+
+using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Exceptions;
 using RpgAssistant.Domain.Models;
 

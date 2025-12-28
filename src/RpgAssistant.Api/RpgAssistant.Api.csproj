@@ -10,14 +10,17 @@
         <PackageReference Include="Serilog.AspNetCore" />
         <PackageReference Include="Serilog.Settings.Configuration" />
         <PackageReference Include="Serilog.Sinks.Console" />
-        <PackageReference Include="MessagePipe"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
         <PackageReference Include="Swashbuckle.AspNetCore"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RpgAssistant.Domain\RpgAssistant.Domain.csproj" />
+      <ProjectReference Include="..\RpgAssistant.Application\RpgAssistant.Application.csproj" />
       <ProjectReference Include="..\RpgAssistant.Infrastructure\RpgAssistant.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="CQRS\" />
     </ItemGroup>
 
 </Project>

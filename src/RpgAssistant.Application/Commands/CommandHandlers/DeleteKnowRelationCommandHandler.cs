@@ -1,10 +1,9 @@
 using MessagePipe;
-using RpgAssistant.Domain.Entities.Knows.Commands;
-using RpgAssistant.Domain.Models;
-using RpgAssistant.Infrastructure.Factories;
-using RpgAssistant.Infrastructure.Repositories;
 
-namespace RpgAssistant.Api.CQRS.Commands.CommandHandlers;
+using RpgAssistant.Application.Models;
+using RpgAssistant.Domain.Entities.Knows.Commands;
+
+namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class DeleteKnowRelationCommandHandler : IAsyncRequestHandler<DeleteKnowRelationCommand, Result<Exception>>
 {

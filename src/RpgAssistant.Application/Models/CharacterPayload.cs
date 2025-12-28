@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace RpgAssistant.Api.Dtos;
+namespace RpgAssistant.Application.Models;
 
 public record CharacterPayload(
     [property: JsonPropertyName("id")] Guid Id,
@@ -13,6 +13,4 @@ public record CharacterPayload(
     int Version)
 {
     public string Etag => $"\"{Version}\"";
-
-    public CharacterDto ToDto() => new CharacterDto(Id, Name);
-};
+}

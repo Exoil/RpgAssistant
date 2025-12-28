@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-using RpgAssistant.Api.CQRS.Commands;
+using RpgAssistant.Application.Commands;
 using RpgAssistant.Domain.Extensions;
 
 namespace RpgAssistant.Api.Dtos;

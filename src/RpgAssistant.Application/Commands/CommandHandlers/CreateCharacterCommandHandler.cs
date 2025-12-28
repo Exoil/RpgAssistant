@@ -1,10 +1,9 @@
 using MessagePipe;
-using RpgAssistant.Domain.Entities.Characters.Commands;
-using RpgAssistant.Domain.Models;
-using RpgAssistant.Infrastructure.Factories;
-using RpgAssistant.Infrastructure.Repositories;
 
-namespace RpgAssistant.Api.CQRS.Commands.CommandHandlers;
+using RpgAssistant.Application.Models;
+using RpgAssistant.Domain.Entities.Characters.Commands;
+
+namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>
 {

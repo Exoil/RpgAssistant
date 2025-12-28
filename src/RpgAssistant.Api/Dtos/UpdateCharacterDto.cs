@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-using RpgAssistant.Api.CQRS.Commands;
+using RpgAssistant.Application.Commands;
 
 namespace RpgAssistant.Api.Dtos;
 

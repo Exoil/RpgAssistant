@@ -1,13 +1,10 @@
 using MessagePipe;
 
+using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Entities.Knows.Commands;
 using RpgAssistant.Domain.Exceptions;
-using RpgAssistant.Domain.Exceptions.Enums;
-using RpgAssistant.Domain.Models;
-using RpgAssistant.Infrastructure.Factories;
-using RpgAssistant.Infrastructure.Repositories;
 
-namespace RpgAssistant.Api.CQRS.Commands.CommandHandlers;
+namespace RpgAssistant.Application.Commands.CommandHandlers;
 
 public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowRelationCommand, Result<Ulid, Exception>>
 {

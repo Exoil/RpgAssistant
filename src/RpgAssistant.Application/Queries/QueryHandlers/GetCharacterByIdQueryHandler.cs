@@ -1,14 +1,11 @@
 using MessagePipe;
 
-using RpgAssistant.Api.Dtos;
+using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Exceptions;
 using RpgAssistant.Domain.Exceptions.Enums;
 using RpgAssistant.Domain.Extensions;
-using RpgAssistant.Domain.Models;
-using RpgAssistant.Infrastructure.Factories;
-using RpgAssistant.Infrastructure.Repositories;
 
-namespace RpgAssistant.Api.CQRS.Queries.QueryHandlers;
+namespace RpgAssistant.Application.Queries.QueryHandlers;
 
 public class GetCharacterByIdQueryHandler : IAsyncRequestHandler<GetCharacterByIdQuery, Result<CharacterPayload, Exception>>
 {

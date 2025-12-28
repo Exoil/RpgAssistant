@@ -1,3 +1,3 @@
-namespace RpgAssistant.Api.CQRS.Commands;
+namespace RpgAssistant.Application.Commands;
 
 public record DeleteCharacterCommand(Guid Id);
