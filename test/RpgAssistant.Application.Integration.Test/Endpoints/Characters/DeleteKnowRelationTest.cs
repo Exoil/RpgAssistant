@@ -64,11 +64,14 @@ public class DeleteKnowRelationTest : IntegrationTestBase
     [Trait(Constants.TraitName,Constants.TestTitle)]
     public async Task Delete_KnowRelation_WhenIds_Are_Same_BadRequestCode()
     {
+        // Arrange
+        var id = Ulid.NewUlid().ToGuid();
+
         // Act
         var response = await Client.DeleteAsync(
             GetDeleteKnowRelationEndpoint(
-                Ulid.NewUlid().ToGuid(),
-                Ulid.NewUlid().ToGuid()),
+                id,
+                id),
             CancellationToken.None);
 
         // Assert

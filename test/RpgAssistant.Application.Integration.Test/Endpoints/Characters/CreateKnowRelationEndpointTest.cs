@@ -140,7 +140,7 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
     [Theory]
     [InlineData(51)]
     [Trait(Constants.TraitName,Constants.TestTitle)]
-    public async Task Create_KnowRelation_BadRequest(int descriptionLenght)
+    public async Task Create_KnowRelation_Description_Is_Too_Long_BadRequest(int descriptionLenght)
     {
         // Arrange
         var requestCreateCharacterFrom = new

@@ -24,17 +24,18 @@ public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowR
         CancellationToken cancellationToken = new CancellationToken())
     {
         var id = Ulid.NewUlid();
-        var createKnowRelation = new CreateKnowRelation(
-            id,
-            request.FromCharacterId,
-            request.ToCharacterId,
-            request.Description);
 
         await using var transaction =  await _transactionFactory.CreateAsync();
         var characterRepository = new CharacterRepository(transaction);
 
         try
         {
+            var createKnowRelation = new CreateKnowRelation(
+                id,
+                request.FromCharacterId,
+                request.ToCharacterId,
+                request.Description);
+
             var fromCharacterExists = await characterRepository.ExistsAsync(createKnowRelation.FromCharacterId);
 
             if (!fromCharacterExists.Exists)
