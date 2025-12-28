@@ -107,5 +107,19 @@ public static class CharacterEndpoints
                             new Uri($"/knows/{data.UlidToGuid()}", UriKind.Relative), data.UlidToGuid()),
                         cancellationToken)
                 );
+
+        endpointGroup
+            .MapDelete(
+                "/knows/{from:guid}/to/{to:guid}",
+                async (
+                        [FromServices] ResultsToHttpResponses responseResolver,
+                        [FromRoute] Guid from,
+                        [FromRoute] Guid to,
+                        CancellationToken cancellationToken = default) =>
+                    await responseResolver.GetResult<DeleteKnowRelationCommand>(
+                        new DeleteKnowRelationCommand(from.GuidToUlid(), to.GuidToUlid()),
+                        Results.NoContent,
+                        cancellationToken)
+            );
     }
 }
