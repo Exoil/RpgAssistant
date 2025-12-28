@@ -8,6 +8,7 @@ public static class AppLoggerConfiguration
     {
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(configuration)
+            .Enrich.FromLogContext()
             .CreateLogger();
         hostBuilder.UseSerilog((context, services, logConfiguration) => logConfiguration
             .ReadFrom.Configuration(context.Configuration)
