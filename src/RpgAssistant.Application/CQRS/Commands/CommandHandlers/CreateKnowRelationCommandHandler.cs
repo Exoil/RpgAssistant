@@ -23,38 +23,34 @@ public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowR
         CreateKnowRelationCommand request,
         CancellationToken cancellationToken = new CancellationToken())
     {
-        if (request.FromCharacterId == request.ToCharacterId)
-        {
-            return UnprocessableContentException.CreateKnowRelationFailsWhenIdFormAndToAreSame(request.FromCharacterId);
-        }
+        var id = Ulid.NewUlid();
 
         await using var transaction =  await _transactionFactory.CreateAsync();
         var characterRepository = new CharacterRepository(transaction);
-        var id = Ulid.NewUlid();
 
         try
         {
-            var fromCharacterExists = await characterRepository.ExistsAsync(request.FromCharacterId);
+            var createKnowRelation = new CreateKnowRelation(
+                id,
+                request.FromCharacterId,
+                request.ToCharacterId,
+                request.Description);
+
+            var fromCharacterExists = await characterRepository.ExistsAsync(createKnowRelation.FromCharacterId);
 
             if (!fromCharacterExists.Exists)
             {
-                return UnprocessableContentException.CreateKnowRelationFailsForNotExistingCharacter(request.FromCharacterId);
+                return UnprocessableContentException.CreateKnowRelationFailsForNotExistingCharacter(createKnowRelation.FromCharacterId);
             }
 
-            var toCharacterExits = await characterRepository.ExistsAsync(request.ToCharacterId);
+            var toCharacterExits = await characterRepository.ExistsAsync(createKnowRelation.ToCharacterId);
             if (!toCharacterExits.Exists)
             {
-                return UnprocessableContentException.CreateKnowRelationFailsForNotExistingCharacter(request.ToCharacterId);
+                return UnprocessableContentException.CreateKnowRelationFailsForNotExistingCharacter(createKnowRelation.ToCharacterId);
             }
 
-            var toCharacterExists = await characterRepository.ExistsAsync(request.ToCharacterId);
-
             await characterRepository.CreateKnowRelationAsync(
-                new CreateKnowRelation(
-                    id,
-                    request.FromCharacterId,
-                    request.ToCharacterId,
-                    request.Description));
+                createKnowRelation);
         }
         catch(Exception exception)
         {

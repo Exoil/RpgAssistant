@@ -139,4 +139,20 @@ public class CharacterRepository
 
         await _transaction.RunAsync(query);
     }
+
+    public async Task DeleteKnowRelationAsync(DeleteKnowRelation createKnowRelation)
+    {
+        const string queryString = @"
+            MATCH (fromCh:Character {Id: $FromCharacterId})-[r:KNOWS]->(toCh:Character {Id: $ToCharacterId})
+            DELETE r";
+        var query = new Query(
+            queryString,
+            new
+            {
+                FromCharacterId = createKnowRelation.FromCharacterId.ToDatabaseId(),
+                ToCharacterId = createKnowRelation.ToCharacterId.ToDatabaseId(),
+            });
+
+        await _transaction.RunAsync(query);
+    }
 }

@@ -88,6 +88,13 @@ public class ResultsToHttpResponses
                 (int)HttpStatusCode.UnprocessableEntity,
                 unprocessableContentException.Title,
                 unprocessableContentException.ErrorCode),
+        ArgumentException argumentException
+            => Results.Problem(
+                argumentException.Message,
+                _endpointDisplayName,
+                (int)HttpStatusCode.BadRequest,
+                $"Invalid {argumentException.ParamName} arguments",
+                $"Invalid {argumentException.ParamName} arguments"),
         _ => exception.ToResult(_endpointDisplayName)
     };
 }

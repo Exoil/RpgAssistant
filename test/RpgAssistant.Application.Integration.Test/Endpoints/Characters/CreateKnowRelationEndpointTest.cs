@@ -55,7 +55,7 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
 
     [Fact]
     [Trait(Constants.TraitName,Constants.TestTitle)]
-    public async Task Create_KnowRelation_For_Same_CharacterId_UnprocessableStatusCode()
+    public async Task Create_KnowRelation_For_Same_CharacterId_BadRequestStatusCode()
     {
         // Arrange
         var requestCreateCharacterFrom = new
@@ -78,7 +78,7 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
         var response = await Client.PostAsJsonAsync(KnowEndpoint, createRelationRequest, CancellationToken.None);
 
         // Assert
-        response.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -140,7 +140,7 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
     [Theory]
     [InlineData(51)]
     [Trait(Constants.TraitName,Constants.TestTitle)]
-    public async Task Create_KnowRelation_BadRequest(int descriptionLenght)
+    public async Task Create_KnowRelation_Description_Is_Too_Long_BadRequest(int descriptionLenght)
     {
         // Arrange
         var requestCreateCharacterFrom = new

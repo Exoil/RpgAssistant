@@ -1,39 +1,31 @@
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 using RpgAssistant.Domain.Models;
 
 namespace RpgAssistant.Domain.Entities.Knows.Commands;
 
-public record CreateKnowRelation : BaseValueObject
+public record DeleteKnowRelation : BaseValueObject
 {
-    protected override string ModelName  => nameof(CreateKnowRelation);
-
-    public required Ulid Id { get; init; }
+    protected override string ModelName  => nameof(DeleteKnowRelation);
 
     public required Ulid FromCharacterId { get; init; }
 
     public required Ulid ToCharacterId { get; init; }
 
-    [StringLength(50, MinimumLength = 0, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
-    public required string Description { get; init; }
 
     [SetsRequiredMembers]
-    public CreateKnowRelation(
-        Ulid id,
+    public DeleteKnowRelation(
         Ulid fromCharacterId,
-        Ulid toCharacterId,
-        string description)
+        Ulid toCharacterId)
     {
+
         if (fromCharacterId == toCharacterId)
         {
             throw new ArgumentException("From and To cannot be the same character id", "fromCharacterId, toCharacterId");
         }
 
-        Id = id;
         FromCharacterId = fromCharacterId;
         ToCharacterId = toCharacterId;
-        Description = description;
 
         Validate();
     }
