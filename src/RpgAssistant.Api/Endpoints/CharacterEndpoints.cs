@@ -76,7 +76,7 @@ public static class CharacterEndpoints
                         {
                             httpContextAccessor.HttpContext!.Response.Headers.ETag = new StringValues(data.Etag);
 
-                            return Results.Ok(data.ToDto());
+                            return Results.Ok(data.ToCharacterDto());
                         },
                         cancellationToken));
 
