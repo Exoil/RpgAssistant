@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Neo4j.Driver;
 
+using RpgAssistant.Domain.Factories;
+using RpgAssistant.Domain.Repositories;
 using RpgAssistant.Infrastructure.Factories;
 using RpgAssistant.Infrastructure.Repositories;
 
@@ -28,6 +30,7 @@ public static class RegisterDatabase
         serviceCollection
             .AddScoped<IAsyncSession>(serviceProvider =>
                 serviceProvider.GetRequiredService<IDriver>().AsyncSession())
-            .AddScoped<TransactionFactory>();
+            .AddScoped<ITransactionFactory<IAsyncTransaction>, TransactionFactory>()
+            .AddScoped<ICharacterRepository, CharacterRepository>();
     }
 }

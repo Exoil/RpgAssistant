@@ -10,22 +10,18 @@ public class ValueObjectException : DomainException
         string title,
         string errorCode,
         IList<ValidationMessage> validationMessages)
-        : base(title, errorCode, message: GetValidationMessage(validationMessages))
-    {
+        : base(title, errorCode, GetValidationMessage(validationMessages)) =>
         ValidationErrors = validationMessages.ToDictionary(x => x.PropertyName, y => (object)y.Message);
-    }
 
     private static string GetValidationMessage(IList<ValidationMessage> validationMessages)
     {
-        var stringBuilder = new StringBuilder($"Value object exception occured:");
+        var stringBuilder = new StringBuilder("Value object exception occured:");
 
         foreach (var validationMessage in validationMessages)
-        {
             stringBuilder
                 .AppendLine()
                 .Append(
                     $"Property: {validationMessage.PropertyName}, validation message: {validationMessage.Message}.");
-        }
 
         return stringBuilder.ToString();
     }

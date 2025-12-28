@@ -1,23 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Serilog.AspNetCore" />
-        <PackageReference Include="Serilog.Settings.Configuration" />
-        <PackageReference Include="Serilog.Sinks.Console" />
         <PackageReference Include="MessagePipe"/>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
-        <PackageReference Include="Swashbuckle.AspNetCore"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RpgAssistant.Domain\RpgAssistant.Domain.csproj" />
-      <ProjectReference Include="..\RpgAssistant.Infrastructure\RpgAssistant.Infrastructure.csproj" />
+        <ProjectReference Include="..\RpgAssistant.Domain\RpgAssistant.Domain.csproj"/>
     </ItemGroup>
 
 </Project>

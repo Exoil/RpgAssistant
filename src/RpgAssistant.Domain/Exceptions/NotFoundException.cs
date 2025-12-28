@@ -3,7 +3,7 @@ namespace RpgAssistant.Domain.Exceptions;
 public class NotFoundException : DomainException
 {
     public NotFoundException(Enums.Entities entity)
-        : base( "Not found error", "NotFoundException", GetNotFoundMessage(entity))
+        : base("Not found error", "NotFoundException", GetNotFoundMessage(entity))
     {
     }
 

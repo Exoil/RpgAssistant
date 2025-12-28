@@ -11,7 +11,7 @@ public record BaseValueObject
 
     protected void Validate()
     {
-        var context = new ValidationContext(this, serviceProvider: null, items: null);
+        var context = new ValidationContext(this, null, null);
         var validationResults = new List<ValidationResult>();
 
         if (Validator.TryValidateObject(this, context, validationResults, true))

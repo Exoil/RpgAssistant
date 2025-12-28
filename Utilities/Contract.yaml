@@ -3,16 +3,16 @@ info:
     title: RpgAssistant Character API
     version: 1.0.0
 servers:
-    - url: https://localhost:7048
+    -   url: https://localhost:7048
 paths:
     /v1/characters:
         get:
             summary: Get paged characters
             parameters:
-                - $ref: '#/components/parameters/PageNumber'
-                - $ref: '#/components/parameters/PageSize'
-                - $ref: '#/components/parameters/SortType'
-                - $ref: '#/components/parameters/SortOrder'
+                -   $ref: '#/components/parameters/PageNumber'
+                -   $ref: '#/components/parameters/PageSize'
+                -   $ref: '#/components/parameters/SortType'
+                -   $ref: '#/components/parameters/SortOrder'
             responses:
                 '200':
                     description: List of characters
@@ -47,7 +47,7 @@ paths:
         get:
             summary: Get character by id
             parameters:
-                - $ref: '#/components/parameters/Id'
+                -   $ref: '#/components/parameters/Id'
             responses:
                 '200':
                     description: Character found
@@ -60,7 +60,7 @@ paths:
         put:
             summary: Update character
             parameters:
-                - $ref: '#/components/parameters/Id'
+                -   $ref: '#/components/parameters/Id'
             requestBody:
                 required: true
                 content:
@@ -77,7 +77,7 @@ paths:
         delete:
             summary: Delete character
             parameters:
-                - $ref: '#/components/parameters/Id'
+                -   $ref: '#/components/parameters/Id'
             responses:
                 '204':
                     description: No Content
@@ -129,7 +129,7 @@ components:
     schemas:
         CharacterPayload:
             type: object
-            required: [id, name, version]
+            required: [ id, name, version ]
             properties:
                 id:
                     type: string
@@ -145,7 +145,7 @@ components:
                     maximum: 100
         CreateCharacterDto:
             type: object
-            required: [name]
+            required: [ name ]
             properties:
                 name:
                     type: string
@@ -153,7 +153,7 @@ components:
                     maxLength: 50
         UpdateCharacterDto:
             type: object
-            required: [name, version]
+            required: [ name, version ]
             properties:
                 name:
                     type: string

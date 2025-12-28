@@ -1,10 +1,12 @@
 using MessagePipe;
-using RpgAssistant.Application.CQRS.Commands;
-using RpgAssistant.Application.CQRS.Commands.CommandHandlers;
-using RpgAssistant.Application.CQRS.Queries;
-using RpgAssistant.Application.CQRS.Queries.QueryHandlers;
-using RpgAssistant.Application.Dtos;
-using RpgAssistant.Domain.Models;
+
+using Microsoft.Extensions.DependencyInjection;
+
+using RpgAssistant.Application.Commands;
+using RpgAssistant.Application.Commands.CommandHandlers;
+using RpgAssistant.Application.Models;
+using RpgAssistant.Application.Queries;
+using RpgAssistant.Application.Queries.QueryHandlers;
 
 namespace RpgAssistant.Application.IoC;
 
@@ -25,7 +27,8 @@ public static class HandlerConfiguration
             .AddScoped<IAsyncRequestHandler<DeleteCharacterCommand, Result<Exception>>, DeleteCharacterCommandHandler>()
             .AddScoped<IAsyncRequestHandler<GetCharacterByIdQuery, Result<CharacterPayload, Exception>>,
                 GetCharacterByIdQueryHandler>()
-            .AddScoped<IAsyncRequestHandler<GetCharacterPageQuery, Result<IReadOnlyCollection<CharacterPayload>, Exception>>,
+            .AddScoped<IAsyncRequestHandler<GetCharacterPageQuery,
+                    Result<IReadOnlyCollection<CharacterPayload>, Exception>>,
                 GetCharacterPageQueryHandler>()
             .AddScoped<IAsyncRequestHandler<CreateKnowRelationCommand, Result<Ulid, Exception>>,
                 CreateKnowRelationCommandHandler>()
