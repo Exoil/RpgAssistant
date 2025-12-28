@@ -18,7 +18,11 @@ public class CharacterRepository : ICharacterRepository
             CREATE (ch:Character {Id: $CharacterId, Name: $Name, Version: 1})
             RETURN ID(ch) AS CharacterNodeId";
         var query = new Query(queryString,
-            new { CharacterId = createCharacter.Id.ToDatabaseId(), createCharacter.Name });
+            new
+            {
+                CharacterId = createCharacter.Id.ToDatabaseId(),
+                createCharacter.Name
+            });
 
         await transaction.RunAsync(query);
     }
@@ -31,7 +35,11 @@ public class CharacterRepository : ICharacterRepository
                 ch.Name = $Name,
                 ch.Version = ch.Version + 1
             RETURN ID(ch) AS CharacterNodeId";
-        var query = new Query(queryString, new { CharacterId = id.ToDatabaseId(), updateCharacter.Name });
+        var query = new Query(queryString, new
+        {
+            CharacterId = id.ToDatabaseId(),
+            updateCharacter.Name
+        });
 
         await transaction.RunAsync(query);
     }
@@ -41,7 +49,10 @@ public class CharacterRepository : ICharacterRepository
         const string queryString = @"
             MATCH (ch:Character {Id: $Id })
             RETURN ch IS NOT NULL AS Exists, coalesce(ch.Version, -1) AS Version";
-        var query = new Query(queryString, new { Id = id.ToDatabaseId() });
+        var query = new Query(queryString, new
+        {
+            Id = id.ToDatabaseId()
+        });
 
         var cursorResult = await transaction.RunAsync(query);
 
@@ -59,7 +70,10 @@ public class CharacterRepository : ICharacterRepository
         const string queryString = @"
             MATCH (ch:Character {Id: $Id })
             DETACH DELETE ch";
-        var query = new Query(queryString, new { Id = deleteCharacter.Id.ToDatabaseId() });
+        var query = new Query(queryString, new
+        {
+            Id = deleteCharacter.Id.ToDatabaseId()
+        });
 
         await transaction.RunAsync(query);
     }
@@ -69,7 +83,10 @@ public class CharacterRepository : ICharacterRepository
         const string queryString = @"
             MATCH (ch:Character {Id: $Id})
             RETURN ch.Id AS Id, ch.Name AS Name, ch.Version AS Version";
-        var query = new Query(queryString, new { Id = id.ToDatabaseId() });
+        var query = new Query(queryString, new
+        {
+            Id = id.ToDatabaseId()
+        });
 
         var cursorResult = await transaction.RunAsync(query);
 
