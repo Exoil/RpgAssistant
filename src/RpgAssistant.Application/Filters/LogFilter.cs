@@ -5,9 +5,10 @@ using Serilog.Context;
 
 namespace RpgAssistant.Application.Filters;
 
-public class LogFilter<T> : AsyncMessageHandlerFilter<T>
+public class LogFilter<TRequest, TResponse>: AsyncRequestHandlerFilter<TRequest, TResponse>
 {
-    private const string MessageTypePropertyName = "Command/Query Type";
+    private const string RequestHandlerTypePropertyName = "Handler";
+    private const string RequestTypePropertyName = "Command/Query Type";
 
     private readonly ILogger _logger;
 
@@ -16,14 +17,20 @@ public class LogFilter<T> : AsyncMessageHandlerFilter<T>
         _logger = logger;
     }
 
-    public override async ValueTask HandleAsync(T message, CancellationToken cancellationToken,
-        Func<T, CancellationToken, ValueTask> next)
+    public override async ValueTask<TResponse> InvokeAsync(
+        TRequest request,
+        CancellationToken cancellationToken,
+        Func<TRequest, CancellationToken, ValueTask<TResponse>> next)
     {
-        using (LogContext.PushProperty(MessageTypePropertyName, typeof(T).Name))
+        using (LogContext.PushProperty(RequestHandlerTypePropertyName, typeof(TRequest).Name))
+        using (LogContext.PushProperty(RequestTypePropertyName, typeof(TRequest).Name))
         {
-            _logger.Debug("Start handle message");
-            await next(message, cancellationToken);
-            _logger.Debug("Finish handle message");
+            _logger.Debug("Start handle request");
+            var response = await next(request, cancellationToken);
+            _logger.Debug("Finish handle request");
+
+            return response;
         }
+
     }
 }
