@@ -44,7 +44,7 @@ public class
 
             if (!exists.Exists)
             {
-                _logger.Error("GetCharacterById fails for not existing character: {Id}", request.Id);
+                _logger.Error("Get character by id fails for not existing character: {Id}", request.Id);
                 return new NotFoundException(Entities.Character);
             }
 

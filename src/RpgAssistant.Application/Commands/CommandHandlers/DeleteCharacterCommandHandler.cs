@@ -43,7 +43,7 @@ public class DeleteCharacterCommandHandler : IAsyncRequestHandler<DeleteCharacte
 
             if (!exists.Exists)
             {
-                _logger.Error("DeleteCharacter fails for not existing character: {Id}", request.Id);
+                _logger.Error("Delete character fails for not existing character: {Id}", request.Id);
                 return new NotFoundException(Entities.Character);
             }
 

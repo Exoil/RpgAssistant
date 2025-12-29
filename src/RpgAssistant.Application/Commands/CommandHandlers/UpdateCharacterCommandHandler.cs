@@ -43,13 +43,13 @@ public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacte
 
             if (!exists.Exists)
             {
-                _logger.Error("UpdateCharacter fails for not existing character: {Id}", request.Id);
+                _logger.Error("Update character fails for not existing character: {Id}", request.Id);
                 return new NotFoundException(Entities.Character);
             }
 
             if (exists.Version != request.Version)
             {
-                _logger.Error("UpdateCharacter fails for optimistic concurrency failure: {Id}", request.Id);
+                _logger.Error("Update character fails for optimistic concurrency failure: {Id}", request.Id);
                 return new PreconditionException();
             }
 

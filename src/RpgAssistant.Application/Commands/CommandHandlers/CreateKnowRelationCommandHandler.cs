@@ -50,7 +50,7 @@ public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowR
 
             if (!fromCharacterExists.Exists)
             {
-                _logger.Error("CreateKnowRelation fails for not existing character: {Id}",
+                _logger.Error("Create know relation fails for not existing character: {Id}",
                     createKnowRelation.FromCharacterId);
                 return UnprocessableContentException.CreateKnowRelationFailsForNotExistingCharacter(createKnowRelation
                     .FromCharacterId);
@@ -62,7 +62,7 @@ public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowR
 
             if (!toCharacterExists.Exists)
             {
-                _logger.Error("CreateKnowRelation fails for not existing character: {Id}", createKnowRelation.ToCharacterId);
+                _logger.Error("Create know relation fails for not existing character: {Id}", createKnowRelation.ToCharacterId);
                 return UnprocessableContentException.CreateKnowRelationFailsForNotExistingCharacter(createKnowRelation
                     .ToCharacterId);
             }
