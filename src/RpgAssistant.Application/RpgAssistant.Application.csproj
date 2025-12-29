@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="MessagePipe"/>
+        <PackageReference Include="Serilog"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -15,7 +15,9 @@ public record BaseValueObject
         var validationResults = new List<ValidationResult>();
 
         if (Validator.TryValidateObject(this, context, validationResults, true))
+        {
             return;
+        }
 
         var validationMessages = validationResults
             .Select(x => new ValidationMessage(x.MemberNames.First(), x.ErrorMessage!))

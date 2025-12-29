@@ -18,10 +18,12 @@ public class ValueObjectException : DomainException
         var stringBuilder = new StringBuilder("Value object exception occured:");
 
         foreach (var validationMessage in validationMessages)
+        {
             stringBuilder
                 .AppendLine()
                 .Append(
                     $"Property: {validationMessage.PropertyName}, validation message: {validationMessage.Message}.");
+        }
 
         return stringBuilder.ToString();
     }

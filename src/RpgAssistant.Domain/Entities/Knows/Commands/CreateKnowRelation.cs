@@ -15,8 +15,10 @@ public record CreateKnowRelation : BaseValueObject
         string description)
     {
         if (fromCharacterId == toCharacterId)
+        {
             throw new ArgumentException("From and To cannot be the same character id",
                 "fromCharacterId, toCharacterId");
+        }
 
         Id = id;
         FromCharacterId = fromCharacterId;
