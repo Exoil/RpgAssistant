@@ -25,7 +25,7 @@ public static class RecordExtensions
             record["Name"].As<string>(),
             record["KnowRelationIds"]
                 .As<List<string>>().
-                Select(Guid.Parse)
+                Select(x => x.DatabaseIdToUlid())
                 .ToList()
                 .AsReadOnly());
 
