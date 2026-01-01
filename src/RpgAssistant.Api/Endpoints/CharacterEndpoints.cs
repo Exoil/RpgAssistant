@@ -89,10 +89,10 @@ public static class CharacterEndpoints
                         [FromQuery] string sortType,
                         [FromQuery] string sortOrder,
                         CancellationToken cancellationToken = default) =>
-                    await responseResolver.GetResult<GetCharacterPageQuery, IReadOnlyCollection<CharacterPayload>>(
+                    await responseResolver.GetResult<GetCharacterPageQuery, IReadOnlyCollection<CharacterPayloadWithRelations>>(
                         new GetCharacterPageQuery(pageNumber, pageSize, sortType, sortOrder),
                         data => Results.Ok(
-                            data.Select(x => x.ToCharacterDto())),
+                            data),
                         cancellationToken));
 
         endpointGroup
