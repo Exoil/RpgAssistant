@@ -2,7 +2,7 @@ using RpgAssistant.Domain.Entities.Characters.Commands;
 
 namespace RpgAssistant.Domain.Entities.Characters;
 
-public class Character
+public sealed class Character
 {
     public Character(CreateCharacter createCharacter)
     {
@@ -12,6 +12,7 @@ public class Character
     }
 
     public Character(CreateCharacter createCharacter, int version) : this(createCharacter) => Version = version;
+
     public Ulid Id { get; private init; }
 
     public string Name { get; private set; }

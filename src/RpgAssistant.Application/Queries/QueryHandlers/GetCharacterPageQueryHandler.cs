@@ -12,7 +12,7 @@ using ILogger = Serilog.ILogger;
 namespace RpgAssistant.Application.Queries.QueryHandlers;
 
 public class GetCharacterPageQueryHandler
-    : IAsyncRequestHandler<GetCharacterPageQuery, Result<IReadOnlyCollection<CharacterPayload>, Exception>>
+    : IAsyncRequestHandler<GetCharacterPageQuery, Result<IReadOnlyCollection<CharacterPayloadWithRelations>, Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
     private readonly ILogger _logger;
@@ -28,7 +28,7 @@ public class GetCharacterPageQueryHandler
         _logger = logger;
     }
 
-    public async ValueTask<Result<IReadOnlyCollection<CharacterPayload>, Exception>> InvokeAsync(
+    public async ValueTask<Result<IReadOnlyCollection<CharacterPayloadWithRelations>, Exception>> InvokeAsync(
         GetCharacterPageQuery request,
         CancellationToken cancellationToken = new())
     {
@@ -49,7 +49,13 @@ public class GetCharacterPageQueryHandler
                 request.Size);
 
             return character
-                .Select(x => new CharacterPayload(x.Id.ToGuid(), x.Name, x.Version))
+                .Select(x => new CharacterPayloadWithRelations(
+                    x.Id.ToGuid(),
+                    x.Name,
+                    x.KnowCharacterIds
+                        .Select(y => y.ToGuid())
+                        .ToList()
+                        .AsReadOnly()))
                 .ToList()
                 .AsReadOnly();
         }

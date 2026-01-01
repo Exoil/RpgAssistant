@@ -1,6 +1,6 @@
 namespace RpgAssistant.Domain.Entities.Knows;
 
-public class KnowRelation
+public sealed class KnowRelation
 {
     public KnowRelation(
         Ulid id,

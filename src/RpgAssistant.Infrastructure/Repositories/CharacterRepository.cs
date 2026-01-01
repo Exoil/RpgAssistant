@@ -5,6 +5,7 @@ using RpgAssistant.Domain.Entities.Characters.Commands;
 using RpgAssistant.Domain.Entities.Characters.Queries;
 using RpgAssistant.Domain.Entities.Knows.Commands;
 using RpgAssistant.Domain.Extensions;
+using RpgAssistant.Domain.Models;
 using RpgAssistant.Domain.Repositories;
 using RpgAssistant.Infrastructure.Repositories.Extensions;
 
@@ -100,22 +101,20 @@ public class CharacterRepository : ICharacterRepository
         return character;
     }
 
-    public async Task<IReadOnlyCollection<Character>> GetAsync(IAsyncTransaction transaction,
+    public async Task<IReadOnlyCollection<CharacterWithKnowRelation>> GetAsync(IAsyncTransaction transaction,
         GetCharacterPage characterPage)
     {
         var skip = (int)((characterPage.Page - 1) * characterPage.Size);
         var limit = (int)characterPage.Size;
 
         const string queryString = @"
-            MATCH (ch:Character)
-            RETURN ch.Id AS Id, ch.Name AS Name, ch.Version AS Version
+            MATCH (ch:Character)-[r:KNOWS]->(toCh:Character)
+            RETURN ch.Id AS Id, ch.Name AS Name, collect(toCh.Id) AS KnowRelationIds
             ORDER BY
                 CASE WHEN $SortType = 'Id' AND $SortOrder = 'Asc' THEN ch.Id END ASC,
                 CASE WHEN $SortType = 'Id' AND $SortOrder = 'Desc' THEN ch.Id END DESC,
                 CASE WHEN $SortType = 'Name' AND $SortOrder = 'Asc' THEN ch.Name END ASC,
-                CASE WHEN $SortType = 'Name' AND $SortOrder = 'Desc' THEN ch.Name END DESC,
-                CASE WHEN $SortType = 'Version' AND $SortOrder = 'Asc' THEN ch.Version END ASC,
-                CASE WHEN $SortType = 'Version' AND $SortOrder = 'Desc' THEN ch.Version END DESC
+                CASE WHEN $SortType = 'Name' AND $SortOrder = 'Desc' THEN ch.Name END DESC
             SKIP $Skip
             LIMIT $Limit";
 
@@ -129,7 +128,7 @@ public class CharacterRepository : ICharacterRepository
 
         var cursorResult = await transaction.RunAsync(query);
 
-        var characters = await cursorResult.ToListAsync(record => record.ToCharacter());
+        var characters = await cursorResult.ToListAsync(record => record.ToCharacterWithKnowRelation());
 
         return characters.AsReadOnly();
     }

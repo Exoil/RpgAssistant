@@ -32,7 +32,7 @@ public class GetCharacterByIdEndpointTest : IntegrationTestBase
         // Assert
         responseGet.StatusCode.ShouldBe(HttpStatusCode.OK);
         const int expectedVersion = 1;
-        responseGet.Headers.ETag!.Tag.ShouldBe($"\"{expectedVersion}");
+        responseGet.Headers.ETag!.Tag.ShouldBe($"\"{expectedVersion}\"");
 
         var payload = await responseGet.Content.ReadFromJsonAsync<CharacterPayload>();
 

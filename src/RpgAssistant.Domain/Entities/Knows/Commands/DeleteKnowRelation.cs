@@ -4,7 +4,7 @@ using RpgAssistant.Domain.Models;
 
 namespace RpgAssistant.Domain.Entities.Knows.Commands;
 
-public record DeleteKnowRelation : BaseValueObject
+public sealed record DeleteKnowRelation : BaseValueObject
 {
     [SetsRequiredMembers]
     public DeleteKnowRelation(

@@ -16,6 +16,8 @@ public class GetCharacterPageEndpointTest : IntegrationTestBase
 {
     public const string Endpoint = "/v1/characters";
 
+    public const string KnowEndpoint = "/v1/characters/knows";
+
     [Theory]
     [InlineData(1, 10, "Name", "Asc")]
     [InlineData(1, 10, "Name", "Desc")]
@@ -40,13 +42,37 @@ public class GetCharacterPageEndpointTest : IntegrationTestBase
             });
         }
 
-        var charadterIds = new List<Guid>();
+        var characterIds = new List<Guid>();
 
         foreach (var dataToCreate in dataToCreateCharacter)
         {
             var response = await Client.PostAsJsonAsync(Endpoint, dataToCreate, CancellationToken.None);
             var characterId = await response.Content.ReadFromJsonAsync<Guid>();
-            charadterIds.Add(characterId);
+            characterIds.Add(characterId);
+        }
+
+        var idFrom = Guid.Empty;
+        var idTo = Guid.Empty;
+        for (var i = 0; i < characterIds.Count; i++)
+        {
+            idFrom = characterIds[i];
+
+            if (i == characterIds.Count - 1)
+            {
+                idTo = characterIds[0];
+            }
+            else
+            {
+                idTo = characterIds[(i + 1)];
+            }
+            var createRelationRequest = new
+            {
+                FromCharacterId = idFrom,
+                ToCharacterId = idTo,
+                Description = "Test"
+            };
+
+            await Client.PostAsJsonAsync(KnowEndpoint, createRelationRequest, CancellationToken.None);
         }
 
         var endpoint =
@@ -58,12 +84,12 @@ public class GetCharacterPageEndpointTest : IntegrationTestBase
         // Assert
         reponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var content = await reponse.Content.ReadFromJsonAsync<IEnumerable<CharacterPayload>>();
+        var content = await reponse.Content.ReadFromJsonAsync<IEnumerable<CharacterPayloadWithRelations>>();
         var list = content!.ToList();
 
         list.Select(c => c.Name).ShouldBe(expectedNames);
-        list.All(c => charadterIds.Contains(c.Id)).ShouldBeTrue();
-        list.Select(c => c.Id).ToHashSet().Count.ShouldBe(pageSize);
+        list.All(c => characterIds.Contains(c.Id)).ShouldBeTrue();
+        list.ShouldAllBe(c => c.KnowCharacterIds.Count == 1);
     }
 
 

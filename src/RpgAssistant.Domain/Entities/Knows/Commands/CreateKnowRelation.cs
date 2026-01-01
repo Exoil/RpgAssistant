@@ -5,7 +5,7 @@ using RpgAssistant.Domain.Models;
 
 namespace RpgAssistant.Domain.Entities.Knows.Commands;
 
-public record CreateKnowRelation : BaseValueObject
+public sealed record CreateKnowRelation : BaseValueObject
 {
     [SetsRequiredMembers]
     public CreateKnowRelation(
