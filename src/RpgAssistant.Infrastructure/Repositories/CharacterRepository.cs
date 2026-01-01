@@ -114,9 +114,7 @@ public class CharacterRepository : ICharacterRepository
                 CASE WHEN $SortType = 'Id' AND $SortOrder = 'Asc' THEN ch.Id END ASC,
                 CASE WHEN $SortType = 'Id' AND $SortOrder = 'Desc' THEN ch.Id END DESC,
                 CASE WHEN $SortType = 'Name' AND $SortOrder = 'Asc' THEN ch.Name END ASC,
-                CASE WHEN $SortType = 'Name' AND $SortOrder = 'Desc' THEN ch.Name END DESC,
-                CASE WHEN $SortType = 'Version' AND $SortOrder = 'Asc' THEN ch.Version END ASC,
-                CASE WHEN $SortType = 'Version' AND $SortOrder = 'Desc' THEN ch.Version END DESC
+                CASE WHEN $SortType = 'Name' AND $SortOrder = 'Desc' THEN ch.Name END DESC
             SKIP $Skip
             LIMIT $Limit";
 
