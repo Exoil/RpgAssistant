@@ -5,7 +5,7 @@ using RpgAssistant.Domain.Models;
 
 namespace RpgAssistant.Domain.Entities.Characters.Commands;
 
-public record UpdateCharacter : BaseValueObject
+public sealed record UpdateCharacter : BaseValueObject
 {
     [SetsRequiredMembers]
     public UpdateCharacter(

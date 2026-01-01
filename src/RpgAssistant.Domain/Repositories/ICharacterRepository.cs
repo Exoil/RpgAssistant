@@ -4,6 +4,7 @@ using RpgAssistant.Domain.Entities.Characters;
 using RpgAssistant.Domain.Entities.Characters.Commands;
 using RpgAssistant.Domain.Entities.Characters.Queries;
 using RpgAssistant.Domain.Entities.Knows.Commands;
+using RpgAssistant.Domain.Models;
 
 namespace RpgAssistant.Domain.Repositories;
 
@@ -19,7 +20,7 @@ public interface ICharacterRepository
 
     Task<Character> GetAsync(IAsyncTransaction transaction, Ulid id);
 
-    Task<IReadOnlyCollection<Character>> GetAsync(IAsyncTransaction transaction, GetCharacterPage characterPage);
+    Task<IReadOnlyCollection<CharacterWithKnowRelation>> GetAsync(IAsyncTransaction transaction, GetCharacterPage characterPage);
 
     Task CreateKnowRelationAsync(IAsyncTransaction transaction, CreateKnowRelation createKnowRelation);
 

@@ -28,7 +28,7 @@ public class GetCharacterPageQueryHandler
         _logger = logger;
     }
 
-    public async ValueTask<Result<IReadOnlyCollection<CharacterPayload>, Exception>> InvokeAsync(
+    public async ValueTask<Result<IReadOnlyCollection<CharacterPayloadWithRelations>, Exception>> InvokeAsync(
         GetCharacterPageQuery request,
         CancellationToken cancellationToken = new())
     {
@@ -49,7 +49,7 @@ public class GetCharacterPageQueryHandler
                 request.Size);
 
             return character
-                .Select(x => new CharacterPayload(x.Id.ToGuid(), x.Name, x.Version))
+                .Select(x => new CharacterPayloadWithRelations(x.Id.ToGuid(), x.Name, x.Version))
                 .ToList()
                 .AsReadOnly();
         }
