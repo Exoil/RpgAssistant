@@ -30,19 +30,30 @@ export interface IRpgAssistantClient {
      * @param id Character identifier
      * @return Character found
      */
-    charactersGET(id: string, signal?: AbortSignal): Promise<CharacterPayload>;
+    charactersGET(id: string, signal?: AbortSignal): Promise<string>;
     /**
      * Update character
      * @param id Character identifier
+     * @param if_Match The ETag version of the character (integer)
      * @return No Content
      */
-    charactersPUT(id: string, body: UpdateCharacterDto, signal?: AbortSignal): Promise<void>;
+    charactersPUT(id: string, if_Match: string, body: UpdateCharacterDto, signal?: AbortSignal): Promise<void>;
     /**
      * Delete character
      * @param id Character identifier
      * @return No Content
      */
     charactersDELETE(id: string, signal?: AbortSignal): Promise<void>;
+    /**
+     * Create a knowledge relationship between characters
+     * @return Created
+     */
+    knows(body: CreateKnowsDto, signal?: AbortSignal): Promise<string>;
+    /**
+     * Delete a knowledge relationship
+     * @return No Content
+     */
+    to(from: string, to: string, signal?: AbortSignal): Promise<void>;
 }
 
 export class RpgAssistantClient implements IRpgAssistantClient {
@@ -132,7 +143,10 @@ export class RpgAssistantClient implements IRpgAssistantClient {
 
         } else if (status === 400) {
             const _responseText = response.data;
-            return throwException("Bad Request", status, _responseText, _headers);
+            let result400: any = null;
+            let resultData400  = _responseText;
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
@@ -193,7 +207,10 @@ export class RpgAssistantClient implements IRpgAssistantClient {
 
         } else if (status === 400) {
             const _responseText = response.data;
-            return throwException("Validation error", status, _responseText, _headers);
+            let result400: any = null;
+            let resultData400  = _responseText;
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
@@ -207,7 +224,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
      * @param id Character identifier
      * @return Character found
      */
-    charactersGET(id: string, signal?: AbortSignal): Promise<CharacterPayload> {
+    charactersGET(id: string, signal?: AbortSignal): Promise<string> {
         let url_ = this.baseUrl + "/v1/characters/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -234,7 +251,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
         });
     }
 
-    protected processCharactersGET(response: AxiosResponse): Promise<CharacterPayload> {
+    protected processCharactersGET(response: AxiosResponse): Promise<string> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -248,26 +265,31 @@ export class RpgAssistantClient implements IRpgAssistantClient {
             const _responseText = response.data;
             let result200: any = null;
             let resultData200  = _responseText;
-            result200 = CharacterPayload.fromJS(resultData200);
-            return Promise.resolve<CharacterPayload>(result200);
+                result200 = resultData200 !== undefined ? resultData200 : null as any;
+    
+            return Promise.resolve<string>(result200);
 
         } else if (status === 404) {
             const _responseText = response.data;
-            return throwException("Not Found", status, _responseText, _headers);
+            let result404: any = null;
+            let resultData404  = _responseText;
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("The specified resource was not found", status, _responseText, _headers, result404);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<CharacterPayload>(null as any);
+        return Promise.resolve<string>(null as any);
     }
 
     /**
      * Update character
      * @param id Character identifier
+     * @param if_Match The ETag version of the character (integer)
      * @return No Content
      */
-    charactersPUT(id: string, body: UpdateCharacterDto, signal?: AbortSignal): Promise<void> {
+    charactersPUT(id: string, if_Match: string, body: UpdateCharacterDto, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/v1/characters/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -281,6 +303,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
             method: "PUT",
             url: url_,
             headers: {
+                "If-Match": if_Match !== undefined && if_Match !== null ? "" + if_Match : "",
                 "Content-Type": "application/json",
             },
             signal
@@ -313,11 +336,24 @@ export class RpgAssistantClient implements IRpgAssistantClient {
 
         } else if (status === 400) {
             const _responseText = response.data;
-            return throwException("Validation error", status, _responseText, _headers);
+            let result400: any = null;
+            let resultData400  = _responseText;
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
 
         } else if (status === 404) {
             const _responseText = response.data;
-            return throwException("Not Found", status, _responseText, _headers);
+            let result404: any = null;
+            let resultData404  = _responseText;
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("The specified resource was not found", status, _responseText, _headers, result404);
+
+        } else if (status === 412) {
+            const _responseText = response.data;
+            let result412: any = null;
+            let resultData412  = _responseText;
+            result412 = ProblemDetails.fromJS(resultData412);
+            return throwException("Precondition Failed", status, _responseText, _headers, result412);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
@@ -373,7 +409,10 @@ export class RpgAssistantClient implements IRpgAssistantClient {
 
         } else if (status === 404) {
             const _responseText = response.data;
-            return throwException("Not Found", status, _responseText, _headers);
+            let result404: any = null;
+            let resultData404  = _responseText;
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("The specified resource was not found", status, _responseText, _headers, result404);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
@@ -381,6 +420,195 @@ export class RpgAssistantClient implements IRpgAssistantClient {
         }
         return Promise.resolve<void>(null as any);
     }
+
+    /**
+     * Create a knowledge relationship between characters
+     * @return Created
+     */
+    knows(body: CreateKnowsDto, signal?: AbortSignal): Promise<string> {
+        let url_ = this.baseUrl + "/v1/characters/knows";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            signal
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processKnows(_response);
+        });
+    }
+
+    protected processKnows(response: AxiosResponse): Promise<string> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 201) {
+            const _responseText = response.data;
+            let result201: any = null;
+            let resultData201  = _responseText;
+                result201 = resultData201 !== undefined ? resultData201 : null as any;
+    
+            return Promise.resolve<string>(result201);
+
+        } else if (status === 400) {
+            const _responseText = response.data;
+            let result400: any = null;
+            let resultData400  = _responseText;
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<string>(null as any);
+    }
+
+    /**
+     * Delete a knowledge relationship
+     * @return No Content
+     */
+    to(from: string, to: string, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/v1/characters/knows/{from}/to/{to}";
+        if (from === undefined || from === null)
+            throw new globalThis.Error("The parameter 'from' must be defined.");
+        url_ = url_.replace("{from}", encodeURIComponent("" + from));
+        if (to === undefined || to === null)
+            throw new globalThis.Error("The parameter 'to' must be defined.");
+        url_ = url_.replace("{to}", encodeURIComponent("" + to));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "DELETE",
+            url: url_,
+            headers: {
+            },
+            signal
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processTo(_response);
+        });
+    }
+
+    protected processTo(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 204) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status === 404) {
+            const _responseText = response.data;
+            let result404: any = null;
+            let resultData404  = _responseText;
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("The specified resource was not found", status, _responseText, _headers, result404);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+}
+
+export class ProblemDetails implements IProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IProblemDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.type = _data["type"];
+            this.title = _data["title"];
+            this.status = _data["status"];
+            this.detail = _data["detail"];
+            this.instance = _data["instance"];
+        }
+    }
+
+    static fromJS(data: any): ProblemDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProblemDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["type"] = this.type;
+        data["title"] = this.title;
+        data["status"] = this.status;
+        data["detail"] = this.detail;
+        data["instance"] = this.instance;
+        return data;
+    }
+}
+
+export interface IProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+
+    [key: string]: any;
 }
 
 export class CharacterPayload implements ICharacterPayload {
@@ -489,7 +717,6 @@ export interface ICreateCharacterDto {
 
 export class UpdateCharacterDto implements IUpdateCharacterDto {
     name!: string;
-    version!: number;
 
     [key: string]: any;
 
@@ -509,7 +736,6 @@ export class UpdateCharacterDto implements IUpdateCharacterDto {
                     this[property] = _data[property];
             }
             this.name = _data["name"];
-            this.version = _data["version"];
         }
     }
 
@@ -527,14 +753,68 @@ export class UpdateCharacterDto implements IUpdateCharacterDto {
                 data[property] = this[property];
         }
         data["name"] = this.name;
-        data["version"] = this.version;
         return data;
     }
 }
 
 export interface IUpdateCharacterDto {
     name: string;
-    version: number;
+
+    [key: string]: any;
+}
+
+export class CreateKnowsDto implements ICreateKnowsDto {
+    fromCharacterId!: string;
+    toCharacterId!: string;
+    description!: string;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateKnowsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.fromCharacterId = _data["fromCharacterId"];
+            this.toCharacterId = _data["toCharacterId"];
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): CreateKnowsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateKnowsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["fromCharacterId"] = this.fromCharacterId;
+        data["toCharacterId"] = this.toCharacterId;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface ICreateKnowsDto {
+    fromCharacterId: string;
+    toCharacterId: string;
+    description: string;
 
     [key: string]: any;
 }
