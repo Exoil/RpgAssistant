@@ -23,7 +23,7 @@ paths:
                                 items:
                                     $ref: '#/components/schemas/CharacterPayload'
                 '400':
-                    description: Bad Request
+                    $ref: '#/components/responses/BadRequest'
         post:
             summary: Create a character
             requestBody:
@@ -41,7 +41,7 @@ paths:
                                 type: string
                                 format: uuid
                 '400':
-                    description: Validation error
+                    $ref: '#/components/responses/BadRequest'
 
     /v1/characters/{id}:
         get:
@@ -51,16 +51,22 @@ paths:
             responses:
                 '200':
                     description: Character found
+                    headers:
+                        ETag:
+                            description: Entity tag representing the current version
+                            schema:
+                                type: string
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CharacterPayload'
+                                $ref: '#/components/schemas/CharacterDto'
                 '404':
-                    description: Not Found
+                    $ref: '#/components/responses/NotFound'
         put:
             summary: Update character
             parameters:
                 -   $ref: '#/components/parameters/Id'
+                -   $ref: '#/components/parameters/IfMatch'
             requestBody:
                 required: true
                 content:
@@ -71,9 +77,11 @@ paths:
                 '204':
                     description: No Content
                 '400':
-                    description: Validation error
+                    $ref: '#/components/responses/BadRequest'
                 '404':
-                    description: Not Found
+                    $ref: '#/components/responses/NotFound'
+                '412':
+                    $ref: '#/components/responses/PreconditionFailed'
         delete:
             summary: Delete character
             parameters:
@@ -82,7 +90,49 @@ paths:
                 '204':
                     description: No Content
                 '404':
-                    description: Not Found
+                    $ref: '#/components/responses/NotFound'
+
+    /v1/characters/knows:
+        post:
+            summary: Create a knowledge relationship between characters
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateKnowsDto'
+            responses:
+                '201':
+                    description: Created
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                                format: uuid
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+
+    /v1/characters/knows/{from}/to/{to}:
+        delete:
+            summary: Delete a knowledge relationship
+            parameters:
+                -   name: from
+                    in: path
+                    required: true
+                    schema:
+                        type: string
+                        format: uuid
+                -   name: to
+                    in: path
+                    required: true
+                    schema:
+                        type: string
+                        format: uuid
+            responses:
+                '204':
+                    description: No Content
+                '404':
+                    $ref: '#/components/responses/NotFound'
 
 components:
     parameters:
@@ -126,7 +176,57 @@ components:
             description: Sort direction (e.g., asc, desc)
             schema:
                 type: string
+        IfMatch:
+            name: If-Match
+            in: header
+            required: true
+            description: The ETag version of the character (integer)
+            schema:
+                type: string
+    responses:
+        BadRequest:
+            description: Bad Request
+            content:
+                application/problem+json:
+                    schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+        NotFound:
+            description: The specified resource was not found
+            content:
+                application/problem+json:
+                    schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+        PreconditionFailed:
+            description: Precondition Failed
+            content:
+                application/problem+json:
+                    schema:
+                        $ref: '#/components/schemas/ProblemDetails'
     schemas:
+        ProblemDetails:
+            type: object
+            properties:
+                type:
+                    type: string
+                    nullable: true
+                title:
+                    type: string
+                    nullable: true
+                status:
+                    type: integer
+                    format: int32
+                    nullable: true
+                detail:
+                    type: string
+                    nullable: true
+                instance:
+                    type: string
+                    nullable: true
+            additionalProperties: true
+        CharacterDto:
+                    type: string
+                    minLength: 1
+                    maxLength: 50
         CharacterPayload:
             type: object
             required: [ id, name, version ]
@@ -153,14 +253,23 @@ components:
                     maxLength: 50
         UpdateCharacterDto:
             type: object
-            required: [ name, version ]
+            required: [ name ]
             properties:
                 name:
                     type: string
                     minLength: 1
                     maxLength: 50
-                version:
-                    type: integer
-                    format: int32
-                    minimum: 1
-                    maximum: 100
+        CreateKnowsDto:
+            type: object
+            required: [ fromCharacterId, toCharacterId, description ]
+            properties:
+                fromCharacterId:
+                    type: string
+                    format: uuid
+                toCharacterId:
+                    type: string
+                    format: uuid
+                description:
+                    type: string
+                    minLength: 0
+                    maxLength: 50
