@@ -8,6 +8,7 @@ paths:
     /v1/characters:
         get:
             summary: Get paged characters
+            operationId: getPagedCharacters
             parameters:
                 -   $ref: '#/components/parameters/PageNumber'
                 -   $ref: '#/components/parameters/PageSize'
@@ -26,6 +27,7 @@ paths:
                     $ref: '#/components/responses/BadRequest'
         post:
             summary: Create a character
+            operationId: createCharacter
             requestBody:
                 required: true
                 content:
@@ -45,6 +47,7 @@ paths:
 
     /v1/characters/{id}:
         get:
+            operationId: getCharacterById
             summary: Get character by id
             parameters:
                 -   $ref: '#/components/parameters/Id'
@@ -63,6 +66,7 @@ paths:
                 '404':
                     $ref: '#/components/responses/NotFound'
         put:
+            operationId: updateCharacter
             summary: Update character
             parameters:
                 -   $ref: '#/components/parameters/Id'
@@ -83,6 +87,7 @@ paths:
                 '412':
                     $ref: '#/components/responses/PreconditionFailed'
         delete:
+            operationId: deleteCharacter
             summary: Delete character
             parameters:
                 -   $ref: '#/components/parameters/Id'
@@ -94,6 +99,7 @@ paths:
 
     /v1/characters/knows:
         post:
+            operationId: createKnowRelationship
             summary: Create a knowledge relationship between characters
             requestBody:
                 required: true
@@ -114,6 +120,7 @@ paths:
 
     /v1/characters/knows/{from}/to/{to}:
         delete:
+            operationId: deleteKnowRelationship
             summary: Delete a knowledge relationship
             parameters:
                 -   name: from
