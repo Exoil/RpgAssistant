@@ -12,18 +12,11 @@ import type * as vNG from 'v-network-graph'
 import { RpgAssistantService } from './services/RpgAssistant'
 
 let rpgAssistantService: RpgAssistantService
+let nodes: CharacterNode[]
 
 onBeforeMount(() => {
   rpgAssistantService = new RpgAssistantService('https://localhost:5051')
 })
-
-// --- Nodes --- //
-const nodes = ref<CharacterNode[]>([
-  new CharacterNode('a', 'Node A'),
-  new CharacterNode('b', 'Node B'),
-  new CharacterNode('c', 'Node C'),
-])
-
 // --- Sidebar state ---
 const selectedNode = ref<CharacterNode | null>(null)
 // Convert to object for v-network-graph

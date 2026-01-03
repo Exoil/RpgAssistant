@@ -1,4 +1,4 @@
-import { RpgAssistantClient, UpdateCharacterDto } from './httpClients/RpgAssistantClient'
+import { RpgAssistantClient, UpdateCharacterDto } from './HttpClients/RpgAssistantClient'
 import { Character } from './Models/Character'
 import type { PageQuery } from './Models/PageQuery'
 import type { UpdateCharacter } from './Models/UpdateCharacter'
