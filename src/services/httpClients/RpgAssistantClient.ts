@@ -19,41 +19,41 @@ export interface IRpgAssistantClient {
      * @param sortOrder Sort direction (e.g., asc, desc)
      * @return List of characters
      */
-    charactersAll(pageNumber: number, pageSize: number, sortType: string, sortOrder: string, signal?: AbortSignal): Promise<CharacterPayload[]>;
+    getPagedCharacters(pageNumber: number, pageSize: number, sortType: string, sortOrder: string, signal?: AbortSignal): Promise<CharacterPayload[]>;
     /**
      * Create a character
      * @return Created
      */
-    charactersPOST(body: CreateCharacterDto, signal?: AbortSignal): Promise<string>;
+    createCharacter(body: CreateCharacterDto, signal?: AbortSignal): Promise<string>;
     /**
      * Get character by id
      * @param id Character identifier
      * @return Character found
      */
-    charactersGET(id: string, signal?: AbortSignal): Promise<string>;
+    getCharacterById(id: string, signal?: AbortSignal): Promise<string>;
     /**
      * Update character
      * @param id Character identifier
      * @param if_Match The ETag version of the character (integer)
      * @return No Content
      */
-    charactersPUT(id: string, if_Match: string, body: UpdateCharacterDto, signal?: AbortSignal): Promise<void>;
+    updateCharacter(id: string, if_Match: string, body: UpdateCharacterDto, signal?: AbortSignal): Promise<void>;
     /**
      * Delete character
      * @param id Character identifier
      * @return No Content
      */
-    charactersDELETE(id: string, signal?: AbortSignal): Promise<void>;
+    deleteCharacter(id: string, signal?: AbortSignal): Promise<void>;
     /**
      * Create a knowledge relationship between characters
      * @return Created
      */
-    knows(body: CreateKnowsDto, signal?: AbortSignal): Promise<string>;
+    createKnowRelationship(body: CreateKnowsDto, signal?: AbortSignal): Promise<string>;
     /**
      * Delete a knowledge relationship
      * @return No Content
      */
-    to(from: string, to: string, signal?: AbortSignal): Promise<void>;
+    deleteKnowRelationship(from: string, to: string, signal?: AbortSignal): Promise<void>;
 }
 
 export class RpgAssistantClient implements IRpgAssistantClient {
@@ -77,7 +77,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
      * @param sortOrder Sort direction (e.g., asc, desc)
      * @return List of characters
      */
-    charactersAll(pageNumber: number, pageSize: number, sortType: string, sortOrder: string, signal?: AbortSignal): Promise<CharacterPayload[]> {
+    getPagedCharacters(pageNumber: number, pageSize: number, sortType: string, sortOrder: string, signal?: AbortSignal): Promise<CharacterPayload[]> {
         let url_ = this.baseUrl + "/v1/characters?";
         if (pageNumber === undefined || pageNumber === null)
             throw new globalThis.Error("The parameter 'pageNumber' must be defined and cannot be null.");
@@ -113,11 +113,11 @@ export class RpgAssistantClient implements IRpgAssistantClient {
                 throw _error;
             }
         }).then((_response: AxiosResponse) => {
-            return this.processCharactersAll(_response);
+            return this.processGetPagedCharacters(_response);
         });
     }
 
-    protected processCharactersAll(response: AxiosResponse): Promise<CharacterPayload[]> {
+    protected processGetPagedCharacters(response: AxiosResponse): Promise<CharacterPayload[]> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -159,7 +159,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
      * Create a character
      * @return Created
      */
-    charactersPOST(body: CreateCharacterDto, signal?: AbortSignal): Promise<string> {
+    createCharacter(body: CreateCharacterDto, signal?: AbortSignal): Promise<string> {
         let url_ = this.baseUrl + "/v1/characters";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -183,11 +183,11 @@ export class RpgAssistantClient implements IRpgAssistantClient {
                 throw _error;
             }
         }).then((_response: AxiosResponse) => {
-            return this.processCharactersPOST(_response);
+            return this.processCreateCharacter(_response);
         });
     }
 
-    protected processCharactersPOST(response: AxiosResponse): Promise<string> {
+    protected processCreateCharacter(response: AxiosResponse): Promise<string> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -224,7 +224,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
      * @param id Character identifier
      * @return Character found
      */
-    charactersGET(id: string, signal?: AbortSignal): Promise<string> {
+    getCharacterById(id: string, signal?: AbortSignal): Promise<string> {
         let url_ = this.baseUrl + "/v1/characters/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -247,11 +247,11 @@ export class RpgAssistantClient implements IRpgAssistantClient {
                 throw _error;
             }
         }).then((_response: AxiosResponse) => {
-            return this.processCharactersGET(_response);
+            return this.processGetCharacterById(_response);
         });
     }
 
-    protected processCharactersGET(response: AxiosResponse): Promise<string> {
+    protected processGetCharacterById(response: AxiosResponse): Promise<string> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -289,7 +289,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
      * @param if_Match The ETag version of the character (integer)
      * @return No Content
      */
-    charactersPUT(id: string, if_Match: string, body: UpdateCharacterDto, signal?: AbortSignal): Promise<void> {
+    updateCharacter(id: string, if_Match: string, body: UpdateCharacterDto, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/v1/characters/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -316,11 +316,11 @@ export class RpgAssistantClient implements IRpgAssistantClient {
                 throw _error;
             }
         }).then((_response: AxiosResponse) => {
-            return this.processCharactersPUT(_response);
+            return this.processUpdateCharacter(_response);
         });
     }
 
-    protected processCharactersPUT(response: AxiosResponse): Promise<void> {
+    protected processUpdateCharacter(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -367,7 +367,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
      * @param id Character identifier
      * @return No Content
      */
-    charactersDELETE(id: string, signal?: AbortSignal): Promise<void> {
+    deleteCharacter(id: string, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/v1/characters/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -389,11 +389,11 @@ export class RpgAssistantClient implements IRpgAssistantClient {
                 throw _error;
             }
         }).then((_response: AxiosResponse) => {
-            return this.processCharactersDELETE(_response);
+            return this.processDeleteCharacter(_response);
         });
     }
 
-    protected processCharactersDELETE(response: AxiosResponse): Promise<void> {
+    protected processDeleteCharacter(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -425,7 +425,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
      * Create a knowledge relationship between characters
      * @return Created
      */
-    knows(body: CreateKnowsDto, signal?: AbortSignal): Promise<string> {
+    createKnowRelationship(body: CreateKnowsDto, signal?: AbortSignal): Promise<string> {
         let url_ = this.baseUrl + "/v1/characters/knows";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -449,11 +449,11 @@ export class RpgAssistantClient implements IRpgAssistantClient {
                 throw _error;
             }
         }).then((_response: AxiosResponse) => {
-            return this.processKnows(_response);
+            return this.processCreateKnowRelationship(_response);
         });
     }
 
-    protected processKnows(response: AxiosResponse): Promise<string> {
+    protected processCreateKnowRelationship(response: AxiosResponse): Promise<string> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -489,7 +489,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
      * Delete a knowledge relationship
      * @return No Content
      */
-    to(from: string, to: string, signal?: AbortSignal): Promise<void> {
+    deleteKnowRelationship(from: string, to: string, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/v1/characters/knows/{from}/to/{to}";
         if (from === undefined || from === null)
             throw new globalThis.Error("The parameter 'from' must be defined.");
@@ -514,11 +514,11 @@ export class RpgAssistantClient implements IRpgAssistantClient {
                 throw _error;
             }
         }).then((_response: AxiosResponse) => {
-            return this.processTo(_response);
+            return this.processDeleteKnowRelationship(_response);
         });
     }
 
-    protected processTo(response: AxiosResponse): Promise<void> {
+    protected processDeleteKnowRelationship(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
