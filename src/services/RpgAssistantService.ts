@@ -1,4 +1,5 @@
 import {
+  CreateCharacterDto,
   CreateKnowsDto,
   RpgAssistantClient,
   UpdateCharacterDto
@@ -13,6 +14,18 @@ export class RpgAssistantService {
 
   constructor(baseUrl: string) {
     this._rpgAssistantClient = new RpgAssistantClient(baseUrl);
+  }
+
+  public async createCharacterAsync(
+    name: string,
+    signal?: AbortSignal
+  ): Promise<string>
+  {
+    const createCharacter = new CreateCharacterDto({
+      name: name
+    });
+
+    return await this._rpgAssistantClient.createCharacter(createCharacter, signal);
   }
 
   public async getCharacterAsync(
