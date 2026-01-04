@@ -30,7 +30,7 @@ export interface IRpgAssistantClient {
      * @param id Character identifier
      * @return Character found
      */
-    getCharacterById(id: string, signal?: AbortSignal): Promise<string>;
+    getCharacterById(id: string, signal?: AbortSignal): Promise<CharacterDto>;
     /**
      * Update character
      * @param id Character identifier
@@ -224,7 +224,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
      * @param id Character identifier
      * @return Character found
      */
-    getCharacterById(id: string, signal?: AbortSignal): Promise<string> {
+    getCharacterById(id: string, signal?: AbortSignal): Promise<CharacterDto> {
         let url_ = this.baseUrl + "/v1/characters/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -251,7 +251,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
         });
     }
 
-    protected processGetCharacterById(response: AxiosResponse): Promise<string> {
+    protected processGetCharacterById(response: AxiosResponse): Promise<CharacterDto> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -265,9 +265,8 @@ export class RpgAssistantClient implements IRpgAssistantClient {
             const _responseText = response.data;
             let result200: any = null;
             let resultData200  = _responseText;
-                result200 = resultData200 !== undefined ? resultData200 : null as any;
-    
-            return Promise.resolve<string>(result200);
+            result200 = CharacterDto.fromJS(resultData200);
+            return Promise.resolve<CharacterDto>(result200);
 
         } else if (status === 404) {
             const _responseText = response.data;
@@ -280,7 +279,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<string>(null as any);
+        return Promise.resolve<CharacterDto>(null as any);
     }
 
     /**
@@ -607,6 +606,62 @@ export interface IProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+
+    [key: string]: any;
+}
+
+export class CharacterDto implements ICharacterDto {
+    /** Character identifier */
+    id!: string;
+    /** Character name */
+    name!: string;
+
+    [key: string]: any;
+
+    constructor(data?: ICharacterDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): CharacterDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CharacterDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ICharacterDto {
+    /** Character identifier */
+    id: string;
+    /** Character name */
+    name: string;
 
     [key: string]: any;
 }
