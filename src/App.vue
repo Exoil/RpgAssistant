@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <v-network-graph :nodes="nodesObject" :edges="edgesObject" :event-handlers="eventHandlers" />
+   <!-- <v-network-graph :nodes="nodesObject" :edges="edgesObject" :event-handlers="eventHandlers" /> -->
   </div>
 </template>
 
@@ -42,7 +42,6 @@ const eventHandlers: vNG.EventHandlers = {
     console.log('End right click')
   },
   */
-}
 </script>
 
 <style scoped>
