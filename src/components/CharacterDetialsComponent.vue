@@ -9,6 +9,9 @@
     <button @click="updateCharacterData">">
       Update
     </button>
+    <button @click="deleteCharacterData">">
+      Delete
+    </button>
   </div>
 </template>
 
@@ -47,7 +50,25 @@ const updateCharacterData = async () => {
   {
     console.error('Failed update character name', err);
   }
+}
 
+const deleteCharacterData = async () => {
+  if (!character){
+    return
+  }
+
+  controller?.abort();
+  controller = new AbortController();
+
+  try{
+    await rpgAssistantService.deleteCharacterAsync(
+      character.value!.id,
+      controller.signal)
+  }
+  catch (err: any)
+  {
+    console.error('Failed update character name', err);
+  }
 }
 
 watch(
