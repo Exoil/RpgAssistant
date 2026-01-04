@@ -9,14 +9,17 @@ import { ref, onBeforeMount } from 'vue'
 import { CharacterNode } from '@/models/CharacterNode'
 import { KnowEdge } from '@/models/KnowEdge'
 import type * as vNG from 'v-network-graph'
-import { RpgAssistantService } from './services/RpgAssistant'
+import { RpgAssistantService } from './services/RpgAssistantService.ts'
 
 let rpgAssistantService: RpgAssistantService
 let nodes: CharacterNode[]
 
 onBeforeMount(() => {
   rpgAssistantService = new RpgAssistantService('https://localhost:5051')
-})
+});
+
+
+/*
 // --- Sidebar state ---
 const selectedNode = ref<CharacterNode | null>(null)
 // Convert to object for v-network-graph
@@ -24,11 +27,13 @@ const nodesObject = Object.fromEntries(nodes.value.map((n) => [n.id, n]))
 
 // --- Edges --- //
 const edges = ref<KnowEdge[]>([new KnowEdge('edge1', 'a', 'b'), new KnowEdge('edge2', 'a', 'c')])
+
 const edgesObject = Object.fromEntries(
   edges.value.map((e) => [e.id, { source: e.source, target: e.target }]),
 )
 
 // --- Event handlers --- //
+
 const eventHandlers: vNG.EventHandlers = {
   'node:contextmenu': (node) => {
     const characterNode = nodes.value.find((n) => n.id === node.node) // lookup original instance
@@ -36,6 +41,7 @@ const eventHandlers: vNG.EventHandlers = {
     selectedNode.value = characterNode ?? null
     console.log('End right click')
   },
+  */
 }
 </script>
 
