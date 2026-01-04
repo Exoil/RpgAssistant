@@ -212,6 +212,7 @@ components:
     schemas:
         ProblemDetails:
             type: object
+            title: ProblemDetails
             properties:
                 type:
                     type: string
@@ -231,11 +232,22 @@ components:
                     nullable: true
             additionalProperties: true
         CharacterDto:
+            title: CharacterDto
+            type: object
+            required: [ id, name ]
+            properties:
+                id:
                     type: string
+                    description: Character identifier
+                    format: uuid
+                name:
+                    type: string
+                    description: Character name
                     minLength: 1
                     maxLength: 50
         CharacterPayload:
             type: object
+            title: CharacterPayload
             required: [ id, name, version ]
             properties:
                 id:
@@ -252,6 +264,7 @@ components:
                     maximum: 100
         CreateCharacterDto:
             type: object
+            title: CreateCharacterDto
             required: [ name ]
             properties:
                 name:
@@ -259,6 +272,7 @@ components:
                     minLength: 1
                     maxLength: 50
         UpdateCharacterDto:
+            title: UpdateCharacterDto
             type: object
             required: [ name ]
             properties:
@@ -267,6 +281,7 @@ components:
                     minLength: 1
                     maxLength: 50
         CreateKnowsDto:
+            title: CreateKnowsDto
             type: object
             required: [ fromCharacterId, toCharacterId, description ]
             properties:
