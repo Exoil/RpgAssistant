@@ -4,9 +4,9 @@
     <input
       :id="'name-'+ character?.id"
       type="text"
-      v-model="character?.name"
+      v-model="characterName"
       placeholder="Enter new name"/>
-    <button @click="">
+    <button @click="updateCharacterData">">
       Update
     </button>
   </div>
@@ -24,11 +24,13 @@ const { rpgAssistantService, characterId } = defineProps<{
   characterId: string
 }>();
 
+const characterName = ref('');
+
 const character = ref<VersionedCharacter | null>();
 
 let controller: AbortController | null = null;
 
-const updateCharacterName = async () => {
+const updateCharacterData = async () => {
   if (!character){
     return
   }
@@ -38,7 +40,7 @@ const updateCharacterName = async () => {
 
   try{
     await rpgAssistantService.updateCharacterAsync(
-      new UpdateCharacter(character.value!.id, character.value!.name, character.value!.version),
+      new UpdateCharacter(character.value!.id, characterName.value, character.value!.version),
       controller.signal)
   }
   catch (err: any)
@@ -58,7 +60,8 @@ watch(
 
     try {
       character.value =
-      await rpgAssistantService.getCharacterAsync(id, controller.signal);
+        await rpgAssistantService.getCharacterAsync(id, controller.signal);
+      characterName.value = character.value.name;
     } catch (err: any) {
       if (err.name !== 'AbortError') {
         console.error('Failed to load character', err);
