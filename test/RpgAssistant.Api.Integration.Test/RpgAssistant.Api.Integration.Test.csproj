@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
@@ -15,7 +15,7 @@
         <PackageReference Include="Testcontainers"/>
         <PackageReference Include="Testcontainers.Neo4j"/>
         <PackageReference Include="xunit"/>
-        <PackageReference Include="xunit.runner.visualstudio"/>
+        <PackageReference Include="xunit.runner.visualstudio/">
     </ItemGroup>
 
     <ItemGroup>
