@@ -3,6 +3,8 @@ using RpgAssistant.Api.IoC;
 using RpgAssistant.Application.IoC;
 using RpgAssistant.Infrastructure.IoC;
 
+using Steeltoe.Configuration.Placeholder;
+
 namespace RpgAssistant.Api;
 
 public class Program
@@ -17,6 +19,10 @@ public class Program
     private static WebApplication BuildApp(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+
+        builder.Configuration.AddPlaceholderResolver();
+
 
         // Services
         builder.Services.RegisterGraphDb(builder.Configuration);
