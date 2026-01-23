@@ -10,12 +10,12 @@ namespace RpgAssistant.Api.Integration.Test.Containers;
 public class Neo4jContainerRunner : IAsyncDisposable
 {
     private readonly Neo4jContainer _container;
+    private string image = "neo4j:latest";
 
     private bool _isInitialized;
 
     public Neo4jContainerRunner() =>
-        _container = new Neo4jBuilder()
-            .WithImage("neo4j:latest")
+        _container = new Neo4jBuilder(image)
             .WithCleanUp(true)
             .Build();
 
