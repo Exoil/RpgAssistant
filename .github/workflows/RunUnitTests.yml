@@ -10,7 +10,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build-and-run-unit-test:
+  build-and-run-test:
 
     runs-on: ubuntu-latest
 
@@ -24,5 +24,7 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Test
+    - name: Run unit tests
       run: dotnet test --filter Category=Unit --no-build --verbosity normal
+    - name: Run integration tests
+      run: dotnet test --filter Category=Integration --no-build --verbosity normal
