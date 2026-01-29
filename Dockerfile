@@ -14,6 +14,10 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 ENV ASPNETCORE_URLS=http://+:8080
+ENV Neo4j__ConnectionString=localhost:7687
+ENV Neo4j__Password=YourStrong@Passw0rd
+ENV Neo4j__UserName=neo4j
+ENV ASPNETCORE_ENVIRONMENT=Development
 EXPOSE 8080
 
 COPY --from=build /app/out .
