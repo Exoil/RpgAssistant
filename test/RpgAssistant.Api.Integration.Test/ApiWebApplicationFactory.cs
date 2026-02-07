@@ -39,7 +39,7 @@ public class ApiWebApplicationFactory : WebApplicationFactory<SutProgram>
             // Add test-specific configuration
             config.Sources.Clear();
             config.SetBasePath(context.HostingEnvironment.ContentRootPath);
-            config.AddJsonFile("appsettings.Testing.json", true);
+            config.AddJsonFile("appsettings.Testing.json", optional: false, reloadOnChange: false);
 
             // Override settings with test container values
             var inMemorySettings = new Dictionary<string, string>
@@ -60,6 +60,13 @@ public class ApiWebApplicationFactory : WebApplicationFactory<SutProgram>
 
         builder.ConfigureServices(services =>
         {
+
+            services.RemoveAll<IDriver>();
+            services.AddSingleton<IDriver>(_ =>
+                GraphDatabase.Driver(
+                    _neo4JContainerRunner.ConnectionString,
+                    AuthTokens.None,
+                    cfg => cfg.WithEncryptionLevel(EncryptionLevel.None)));
             // Replace the TimeProvider
             services.RemoveAll<TimeProvider>();
             services.AddSingleton<TimeProvider>(TimeProvider);

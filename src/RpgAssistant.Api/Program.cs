@@ -22,7 +22,7 @@ public class Program
         builder.Configuration.AddPlaceholderResolver();
 
         // Services
-        builder.Services.RegisterGraphDb(builder.Configuration, builder.Environment.EnvironmentName == "Testing");
+        builder.Services.RegisterGraphDb(builder.Configuration);
         builder.Services.RegisterHandlers();
         builder.Host.ConfigureLogger(builder.Configuration);
         builder.Services.RegisterResultsResolvers();

@@ -6,7 +6,7 @@
         "iisExpress": {
             "applicationUrl": "http://localhost:38666",
             "sslPort": 44373,
-            "Neo4j__ConnectionString": "localhost:30778",
+            "Neo4j__ConnectionString": "bolt://localhost:30778",
             "Neo4j__UserName": "neo4j",
             "Neo4j__Password": "SuperPassword123"
         }
@@ -20,7 +20,7 @@
             "applicationUrl": "http://localhost:5278",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "Neo4j__ConnectionString": "localhost:30778",
+                "Neo4j__ConnectionString": "bolt://localhost:30778",
                 "Neo4j__UserName": "neo4j",
                 "Neo4j__Password": "SuperPassword123"
             }
@@ -33,9 +33,9 @@
             "applicationUrl": "https://localhost:7048;http://localhost:5278",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "Neo4j__ConnectionString": "bolt://localhost:17687",
+                "Neo4j__ConnectionString": "bolt://localhost:30778",
                 "Neo4j__UserName": "neo4j",
-                "Neo4j__Password": "SuperP@ssword321"
+                "Neo4j__Password": "SuperPassword123"
             }
         },
         "IIS Express": {
@@ -44,7 +44,7 @@
             "launchUrl": "swagger",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "Neo4j__ConnectionString": "localhost:30778",
+                "Neo4j__ConnectionString": "bolt://localhost:30778",
                 "Neo4j__UserName": "neo4j",
                 "Neo4j__Password": "SuperPassword123"
             }
