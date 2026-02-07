@@ -20,14 +20,26 @@ public static class RegisterDatabase
 
     private const string _configurationPathToGraphDbPassword = "GraphDb:Password";
 
-    public static void RegisterGraphDb(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static void RegisterGraphDb(this IServiceCollection serviceCollection, IConfiguration configuration, bool isTest)
     {
-        serviceCollection.AddSingleton(
-            GraphDatabase.Driver(
-                configuration[_configurationPathToGraphDbConnectionString],
-                AuthTokens.Basic(configuration[_configurationPathToGraphDbUsername],
-                    configuration[_configurationPathToGraphDbPassword]),
-                config => config.WithEncryptionLevel(EncryptionLevel.None)));
+        if (isTest)
+        {
+            var test = configuration[_configurationPathToGraphDbConnectionString];
+            serviceCollection.AddSingleton(
+                GraphDatabase.Driver(
+                    configuration[_configurationPathToGraphDbConnectionString],
+                    AuthTokens.None,
+                    config => config.WithEncryptionLevel(EncryptionLevel.None)));
+        }
+        else
+        {
+            serviceCollection.AddSingleton(
+                GraphDatabase.Driver(
+                    configuration[_configurationPathToGraphDbConnectionString],
+                    AuthTokens.Basic(configuration[_configurationPathToGraphDbUsername],
+                        configuration[_configurationPathToGraphDbPassword]),
+                    config => config.WithEncryptionLevel(EncryptionLevel.None)));
+        }
 
         serviceCollection
             .AddScoped<IAsyncSession>(serviceProvider =>

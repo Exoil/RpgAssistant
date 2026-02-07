@@ -19,13 +19,10 @@ public class Program
     private static WebApplication BuildApp(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-
         builder.Configuration.AddPlaceholderResolver();
 
-
         // Services
-        builder.Services.RegisterGraphDb(builder.Configuration);
+        builder.Services.RegisterGraphDb(builder.Configuration, builder.Environment.EnvironmentName == "Testing");
         builder.Services.RegisterHandlers();
         builder.Host.ConfigureLogger(builder.Configuration);
         builder.Services.RegisterResultsResolvers();

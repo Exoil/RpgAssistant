@@ -38,13 +38,14 @@ public class ApiWebApplicationFactory : WebApplicationFactory<SutProgram>
         {
             // Add test-specific configuration
             config.Sources.Clear();
+            config.SetBasePath(context.HostingEnvironment.ContentRootPath);
             config.AddJsonFile("appsettings.Testing.json", true);
 
             // Override settings with test container values
             var inMemorySettings = new Dictionary<string, string>
             {
                 {
-                    "GraphDb:ConnectionString", _neo4JContainerRunner.ConnectionString.Replace("neo4j", "bolt")
+                    "GraphDb:ConnectionString", _neo4JContainerRunner.ConnectionString
                 },
                 {
                     "GraphDb:Username", "foo"
@@ -62,10 +63,6 @@ public class ApiWebApplicationFactory : WebApplicationFactory<SutProgram>
             // Replace the TimeProvider
             services.RemoveAll<TimeProvider>();
             services.AddSingleton<TimeProvider>(TimeProvider);
-
-            // Replace Neo4j driver with our test container driver
-            services.RemoveAll<IDriver>();
-            services.AddSingleton(_neo4JContainerRunner.CreateDriver());
         });
     }
 
