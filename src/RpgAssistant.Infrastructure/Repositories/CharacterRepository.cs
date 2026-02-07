@@ -108,15 +108,19 @@ public class CharacterRepository : ICharacterRepository
         var limit = (int)characterPage.Size;
 
         const string queryString = @"
-            MATCH (ch:Character)-[r:KNOWS]->(toCh:Character)
-            RETURN ch.Id AS Id, ch.Name AS Name, collect(toCh.Id) AS KnowRelationIds
+            MATCH (ch:Character)
+            OPTIONAL MATCH (ch)-[:KNOWS]->(toCh:Character)
+            WITH
+                ch,
+                [x IN collect(toCh.Id) WHERE x IS NOT NULL] AS KnowRelationIds
             ORDER BY
                 CASE WHEN $SortType = 'Id' AND $SortOrder = 'Asc' THEN ch.Id END ASC,
                 CASE WHEN $SortType = 'Id' AND $SortOrder = 'Desc' THEN ch.Id END DESC,
                 CASE WHEN $SortType = 'Name' AND $SortOrder = 'Asc' THEN ch.Name END ASC,
                 CASE WHEN $SortType = 'Name' AND $SortOrder = 'Desc' THEN ch.Name END DESC
             SKIP $Skip
-            LIMIT $Limit";
+            LIMIT $Limit
+            RETURN ch.Id AS Id, ch.Name AS Name, KnowRelationIds";
 
         var query = new Query(queryString, new
         {
