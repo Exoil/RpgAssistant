@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +22,7 @@ public static class RegisterDatabase
 
     public static void RegisterGraphDb(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
+        Debug.WriteLine($"Registering Neo4j database...{configuration[_configurationPathToGraphDbConnectionString]}");
         serviceCollection.AddSingleton(
             GraphDatabase.Driver(
                 configuration[_configurationPathToGraphDbConnectionString],
