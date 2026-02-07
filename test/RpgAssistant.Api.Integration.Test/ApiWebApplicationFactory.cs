@@ -43,7 +43,7 @@ public class ApiWebApplicationFactory : WebApplicationFactory<SutProgram>
             var inMemorySettings = new Dictionary<string, string>
             {
                 {
-                    "GraphDb:ConnectionString", _neo4JContainerRunner.ConnectionString
+                    "GraphDb:ConnectionString", _neo4JContainerRunner.ConnectionString.Replace("neo4j","bolt")
                 },
                 {
                     "GraphDb:Username", "foo"
