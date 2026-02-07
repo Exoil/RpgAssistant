@@ -13,10 +13,8 @@ namespace RpgAssistant.Api.Integration.Test;
 public abstract class IntegrationTestBase : IAsyncLifetime
 {
     protected Neo4jContainerRunner _neo4JContainerRunner = default!;
-
     protected HttpClient Client = default!;
     protected ApiWebApplicationFactory Factory = default!;
-
     protected FakeTimeProvider TimeProvider = default!;
 
     protected IntegrationTestBase() => _neo4JContainerRunner = new Neo4jContainerRunner();
@@ -33,7 +31,6 @@ public abstract class IntegrationTestBase : IAsyncLifetime
         => await _neo4JContainerRunner.ResetAsync();
 
     protected Task<IDriver> GetDriverAsync() => Task.FromResult(_neo4JContainerRunner.CreateDriver());
-
 
     protected void SetCurrentTime(DateTimeOffset time) =>
         TimeProvider.SetUtcNow(time);

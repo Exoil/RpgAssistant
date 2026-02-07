@@ -62,6 +62,6 @@ public class Neo4jContainerRunner : IAsyncDisposable
 
     public IDriver CreateDriver() =>
         GraphDatabase.Driver(
-            ConnectionString,
+            ConnectionString.Replace("neo4j","bolt"),
             AuthTokens.None);
 }

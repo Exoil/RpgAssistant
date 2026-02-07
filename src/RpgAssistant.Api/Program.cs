@@ -19,10 +19,7 @@ public class Program
     private static WebApplication BuildApp(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-
         builder.Configuration.AddPlaceholderResolver();
-
 
         // Services
         builder.Services.RegisterGraphDb(builder.Configuration);
