@@ -37,13 +37,14 @@ public class ApiWebApplicationFactory : WebApplicationFactory<SutProgram>
         builder.ConfigureAppConfiguration((context, config) =>
         {
             // Add test-specific configuration
+            config.Sources.Clear();
             config.AddJsonFile("appsettings.Testing.json", true);
 
             // Override settings with test container values
             var inMemorySettings = new Dictionary<string, string>
             {
                 {
-                    "GraphDb:ConnectionString", _neo4JContainerRunner.ConnectionString.Replace("neo4j","bolt")
+                    "GraphDb:ConnectionString", _neo4JContainerRunner.ConnectionString
                 },
                 {
                     "GraphDb:Username", "foo"
