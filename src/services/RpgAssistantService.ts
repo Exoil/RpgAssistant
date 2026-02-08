@@ -63,9 +63,9 @@ export class RpgAssistantService {
       pageQuery.sortType,
       pageQuery.sortOrder,
       signal,
-    )
+    );
 
-    return arrayOfCharacters.map((c) => new Character(c.id, c.name))
+    return arrayOfCharacters.map((c)=> new Character(c.id, c.name , c.knowCharacterIds))
   }
 
   public async createKnowRelationBetweenCharacters(

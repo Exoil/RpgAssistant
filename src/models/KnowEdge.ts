@@ -1,12 +1,10 @@
-import type { EdgeWithId } from 'v-network-graph'
+import type {Edge} from 'v-network-graph'
 
-export class KnowEdge implements EdgeWithId {
-  id: string
+export class KnowEdge implements Edge {
   source: string
   target: string
 
-  constructor(id: string, source: string, target: string) {
-    this.id = id
+  constructor(source: string, target: string) {
     this.source = source
     this.target = target
   }

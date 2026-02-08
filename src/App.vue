@@ -6,7 +6,7 @@
       <br/>
       <button id="create-character-node-submit-button" @click="onClickCreateCharacter">Create</button>
     </div>
-   <v-network-graph :nodes="nodesForGraph" :event-handlers="eventHandlers" />
+   <v-network-graph :nodes="nodesForGraph" :edges="edgesForGraph" :configs="configs" :event-handlers="eventHandlers" />
   </div>
 </template>
 
@@ -18,9 +18,19 @@ import type * as vNG from 'v-network-graph'
 import { RpgAssistantService } from './services/RpgAssistantService.ts'
 import {PageQuery} from "@/services/Models/PageQuery.ts";
 import {Character} from "@/services/Models/Character.ts";
-import {type NodeWithId, VNetworkGraph} from "v-network-graph";
+import {defineConfigs, VNetworkGraph} from "v-network-graph";
 
 let rpgAssistantService: RpgAssistantService;
+const configs = defineConfigs({
+  edge: {
+    type: "straight",
+    marker: {
+      source: { type: "none" },
+      target: { type: "arrow", width: 6, height: 6 },
+    },
+  },
+})
+
 const nodeList = ref<CharacterNode[]>([]);
 const nodesForGraph = computed<vNG.Nodes>(() =>
   Object.fromEntries(
@@ -32,6 +42,17 @@ const nodesForGraph = computed<vNG.Nodes>(() =>
     ])
   )
 )
+const edges = ref<KnowEdge[]>([]);
+const edgesForGraph = computed<vNG.Edges>(() =>
+Object.fromEntries(
+  edges.value.map((e) => [
+    e.source + e.target,
+    {
+      source: e.source,
+      target: e.target,
+    }
+  ])
+))
 const characterCreateName = ref('')
 
 onBeforeMount(() => {
@@ -45,6 +66,11 @@ onMounted(async () => {
   let pageQuery = new PageQuery(1, 10, 'name', 'Asc');
   let result = await rpgAssistantService.getCharactersAsync(pageQuery, signal);
   nodeList.value = result.map((c) => new CharacterNode(c))
+  nodeList.value.forEach(n => {
+    n.characterData.knowCharacterIds.forEach(knowId => {
+      edges.value.push(new KnowEdge(n.id, knowId))
+    })
+  })
   console.log("Loaded characters")
 })
 

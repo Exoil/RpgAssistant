@@ -65,7 +65,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
 
         this.instance = instance || axios.create();
 
-        this.baseUrl = baseUrl ?? "http://localhost:8080";
+        this.baseUrl = baseUrl ?? "https://localhost:7048";
 
     }
 
@@ -202,7 +202,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
             let result201: any = null;
             let resultData201  = _responseText;
                 result201 = resultData201 !== undefined ? resultData201 : null as any;
-
+    
             return Promise.resolve<string>(result201);
 
         } else if (status === 400) {
@@ -467,7 +467,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
             let result201: any = null;
             let resultData201  = _responseText;
                 result201 = resultData201 !== undefined ? resultData201 : null as any;
-
+    
             return Promise.resolve<string>(result201);
 
         } else if (status === 400) {
@@ -669,7 +669,7 @@ export interface ICharacterDto {
 export class CharacterPayload implements ICharacterPayload {
     id!: string;
     name!: string;
-    version!: number;
+    knowCharacterIds!: string[];
 
     [key: string]: any;
 
@@ -679,6 +679,9 @@ export class CharacterPayload implements ICharacterPayload {
                 if (data.hasOwnProperty(property))
                     (this as any)[property] = (data as any)[property];
             }
+        }
+        if (!data) {
+            this.knowCharacterIds = [];
         }
     }
 
@@ -690,7 +693,11 @@ export class CharacterPayload implements ICharacterPayload {
             }
             this.id = _data["id"];
             this.name = _data["name"];
-            this.version = _data["version"];
+            if (Array.isArray(_data["knowCharacterIds"])) {
+                this.knowCharacterIds = [] as any;
+                for (let item of _data["knowCharacterIds"])
+                    this.knowCharacterIds!.push(item);
+            }
         }
     }
 
@@ -709,7 +716,11 @@ export class CharacterPayload implements ICharacterPayload {
         }
         data["id"] = this.id;
         data["name"] = this.name;
-        data["version"] = this.version;
+        if (Array.isArray(this.knowCharacterIds)) {
+            data["knowCharacterIds"] = [];
+            for (let item of this.knowCharacterIds)
+                data["knowCharacterIds"].push(item);
+        }
         return data;
     }
 }
@@ -717,7 +728,7 @@ export class CharacterPayload implements ICharacterPayload {
 export interface ICharacterPayload {
     id: string;
     name: string;
-    version: number;
+    knowCharacterIds: string[];
 
     [key: string]: any;
 }
