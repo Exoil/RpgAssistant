@@ -248,7 +248,7 @@ components:
         CharacterPayload:
             type: object
             title: CharacterPayload
-            required: [ id, name, version ]
+            required: [ id, name, knowCharacterIds ]
             properties:
                 id:
                     type: string
@@ -257,11 +257,14 @@ components:
                     type: string
                     minLength: 1
                     maxLength: 50
-                version:
-                    type: integer
-                    format: int32
-                    minimum: 1
-                    maximum: 100
+                knowCharacterIds:
+                    type: array
+                    minItems: 0
+                    maxItems: 50
+                    items:
+                        type: string
+                        format: uuid
+
         CreateCharacterDto:
             type: object
             title: CreateCharacterDto
