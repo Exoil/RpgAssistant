@@ -65,7 +65,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
 
         this.instance = instance || axios.create();
 
-        this.baseUrl = baseUrl ?? "https://localhost:7048";
+        this.baseUrl = baseUrl ?? "http://localhost:8080";
 
     }
 
@@ -202,7 +202,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
             let result201: any = null;
             let resultData201  = _responseText;
                 result201 = resultData201 !== undefined ? resultData201 : null as any;
-    
+
             return Promise.resolve<string>(result201);
 
         } else if (status === 400) {
@@ -467,7 +467,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
             let result201: any = null;
             let resultData201  = _responseText;
                 result201 = resultData201 !== undefined ? resultData201 : null as any;
-    
+
             return Promise.resolve<string>(result201);
 
         } else if (status === 400) {
