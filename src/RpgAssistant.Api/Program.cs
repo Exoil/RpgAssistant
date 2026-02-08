@@ -27,10 +27,21 @@ public class Program
         builder.Host.ConfigureLogger(builder.Configuration);
         builder.Services.RegisterResultsResolvers();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+                policy
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+            );
+        });
+
         var app = builder.Build();
 
         // Middleware and endpoints
         app.UseHttpsRedirection();
+        app.UseCors();
         app.MapUtilityEndpoints();
         app.MapCharacterEndpoints();
 
