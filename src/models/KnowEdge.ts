@@ -1,4 +1,4 @@
-import type {Edge} from 'v-network-graph'
+import type { Edge } from 'v-network-graph'
 
 export class KnowEdge implements Edge {
   source: string

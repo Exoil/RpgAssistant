@@ -1,8 +1,13 @@
 <template>
-  <div class = "create-character-node-form">
+  <div class="create-character-node-form">
     <h3>Create character from</h3>
-    <input id="create-character-node-name-input" type="text" placeholder="Enter new name" v-model="characterCreateName"/>
-    <br/>
+    <input
+      id="create-character-node-name-input"
+      type="text"
+      placeholder="Enter new name"
+      v-model="characterCreateName"
+    />
+    <br />
     <button id="create-character-node-submit-button" @click="onClickCreateCharacter">Create</button>
   </div>
 </template>
@@ -10,32 +15,34 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from 'vue'
 import type { RpgAssistantService } from '@/services/RpgAssistantService'
-import {CharacterNode} from "@/models/CharacterNode.ts";
-import {Character} from "@/services/Models/Character.ts";
+import { CharacterNode } from '@/models/CharacterNode.ts'
+import { Character } from '@/services/Models/Character.ts'
 
-const { rpgAssistantService} = defineProps<{
+const { rpgAssistantService } = defineProps<{
   rpgAssistantService: RpgAssistantService
-}>();
-let controller: AbortController | null = null;
-const characterCreateName = ref('');
+}>()
+let controller: AbortController | null = null
+const characterCreateName = ref('')
 const emit = defineEmits<{
-  (e: "created", node: CharacterNode): void
-}>();
+  (e: 'created', node: CharacterNode): void
+}>()
 
+async function onClickCreateCharacter() {
+  controller?.abort()
+  controller = new AbortController()
 
-async function onClickCreateCharacter(){
-  controller?.abort();
-  controller = new AbortController();
+  const signal = controller.signal
+  let createResult = await rpgAssistantService.createCharacterAsync(
+    characterCreateName.value,
+    signal,
+  )
+  const node = new CharacterNode(new Character(createResult, characterCreateName.value))
 
-  const signal = controller.signal;
-  let createResult = await rpgAssistantService.createCharacterAsync(characterCreateName.value, signal);
-  const node = new CharacterNode(new Character(createResult, characterCreateName.value));
-
-  emit("created", node);
-  characterCreateName.value = "";
+  emit('created', node)
+  characterCreateName.value = ''
 }
 
 onBeforeUnmount(() => {
-  controller?.abort();
+  controller?.abort()
 })
 </script>
