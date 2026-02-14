@@ -14,7 +14,6 @@
 <script setup lang="ts">
 import {onBeforeUnmount, ref, watch} from 'vue';
 import type { RpgAssistantService } from '@/services/RpgAssistantService';
-import { CharacterNode } from '@/models/CharacterNode.ts';
 import { Character } from '@/services/Models/Character.ts';
 import {UpdateCharacter} from "@/services/Models/UpdateCharacter.ts";
 
@@ -23,6 +22,7 @@ const props = defineProps<{
   characterId: string | null;
 }>();
 let characterData = ref(new Character('', ''));
+let version = ref(-1);
 let controller: AbortController | null = null;
 const emit = defineEmits<{
   (e: 'updated', characterData: Character): void;
@@ -31,14 +31,12 @@ const emit = defineEmits<{
 async function onClickUpdateCharacter() {
   controller?.abort();
   controller = new AbortController();
-  const characterNode = ref(new CharacterNode(new Character("", "")));
-  const version = ref<number>(0)
 
   const signal = controller.signal;
   await props.rpgAssistantService.updateCharacterAsync(
     new UpdateCharacter(
-      characterNode.value.characterData.id,
-      characterNode.value.characterData.name,
+      characterData.value.id,
+      characterData.value.name,
       version.value),
     signal,
   );
@@ -50,9 +48,13 @@ async function loadCharacterById(id: string) {
   controller?.abort();
   controller = new AbortController();
 
+
   const dto = await props.rpgAssistantService.getCharacterAsync(id, controller.signal);
+  console.log('version on onload ' +  dto.version);
   characterData.value.id = dto.id;
   characterData.value.name = dto.name;
+  version.value = dto.version;
+  console.log('version on onload assign ' + version!.value);
 }
 
 
