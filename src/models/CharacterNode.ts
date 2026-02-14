@@ -11,4 +11,10 @@ export class CharacterNode implements NodeWithId {
     this.id = character.id;
     this.name = character.name;
   }
+
+  updateName(name: string){
+    this!.characterData.name = name;
+    this!.name = name;
+  }
+
 }

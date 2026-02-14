@@ -10,7 +10,7 @@
 
     <div>
       <h3>Delete character</h3>
-      <CharacterDeleteComponent
+      <DeleteCharacterComponent
         :rpgAssistantService="rpgAssistantService"
         :characterId="markedNodeId"
         @deleted="onCharacterDeleted"/>
@@ -18,7 +18,10 @@
 
     <div>
       <h3> Update character</h3>
-
+      <UpdateCharacterComponent
+        :rpgAssistantService="rpgAssistantService"
+        :characterId="markedNodeId"
+        @updated="onCharacterUpdated"/>
     </div>
     <v-network-graph
       :nodes="nodesForGraph"
@@ -37,9 +40,11 @@ import { KnowEdge } from '@/models/KnowEdge';
 import * as vNG from 'v-network-graph';
 import { RpgAssistantService } from './services/RpgAssistantService.ts';
 import { PageQuery } from '@/services/Models/PageQuery.ts';
-import { defineConfigs, VNetworkGraph } from 'v-network-graph';
+import { VNetworkGraph } from 'v-network-graph';
 import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue';
-import CharacterDeleteComponent from "@/components/CharacterDeleteComponent.vue";
+import DeleteCharacterComponent from "@/components/DeleteCharacterComponent.vue";
+import type {Character} from "@/services/Models/Character.ts";
+import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue";
 
 let rpgAssistantService: RpgAssistantService;
 
@@ -110,6 +115,16 @@ function SetupGraphConfig() {
   configs.edge.type = 'straight';
   configs.edge.marker.source.type = 'none';
   configs.edge.marker.target.type = 'arrow';
+  configs.view.grid.visible = true;
+  configs.view.grid.interval = 10;
+  configs.view.grid.thickIncrements = 5;
+  configs.view.grid.line.color = '#e0e0e0';
+  configs.view.grid.line.width = 1;
+  configs.view.grid.line.dasharray = 1;
+  configs.view.grid.thick.color = '#cccccc';
+  configs.view.grid.thick.width = 1;
+  configs.view.grid.thick.dasharray = 0;
+  configs.view.layoutHandler = new vNG.GridLayout({grid: 10});
 }
 
 function onCharacterCreated(node: CharacterNode) {
@@ -125,6 +140,17 @@ function onCharacterDeleted(id: string) {
     return;
 
   nodeList.value.splice(idx, 1);
+}
+
+function onCharacterUpdated(updatedCharacter: Character) {
+
+  const idx = nodeList.value.findIndex((n) => n.id === updatedCharacter.id);
+
+  if (idx === -1)
+    return;
+
+  nodeList.value[idx]!.characterData.id = updatedCharacter.id;
+  nodeList.value[idx]!.updateName(updatedCharacter.name);
 }
 
 // --- Event handlers --- //
