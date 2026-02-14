@@ -26,19 +26,16 @@ import CreateCharacterComponent from "@/components/CreateCharacterComponent.vue"
 
 let rpgAssistantService: RpgAssistantService;
 
-const configs = reactive(vNG.getFullConfigs())
-configs.node.selectable = 1;
+const configs = reactive(vNG.getFullConfigs());
 
-
-
-const markedNodeId = ref<string | null>(null)
-const suppressNextViewClickClear = ref(false)
+const markedNodeId = ref<string | null>(null);
+const suppressNextViewClickClear = ref(false);
 const selectedNodeIds = computed<string[]>({
   get() {
-    return markedNodeId.value ? [markedNodeId.value] : []
+    return markedNodeId.value ? [markedNodeId.value] : [];
   },
   set(ids) {
-    const next = ids?.[0]
+    const next = ids?.[0];
 
     if (!next) {
       return
@@ -72,6 +69,7 @@ Object.fromEntries(
 
 onBeforeMount(() => {
   rpgAssistantService = new RpgAssistantService('http://localhost:8080');
+  SetupGraphConfig();
 });
 
 onMounted(async () => {
@@ -89,19 +87,17 @@ onMounted(async () => {
   console.log("Loaded characters")
 })
 
+function SetupGraphConfig() {
+  configs.node.selectable = 1;
+  configs.edge.type = "straight"
+  configs.edge.marker.source.type = "none"
+  configs.edge.marker.target.type = "arrow"
+}
+
 function onCharacterCreated(node: CharacterNode) {
   nodeList.value.push(node);
   markedNodeId.value = node.id
 }
-
-/*
-// --- Edges --- //
-const edges = ref<KnowEdge[]>([new KnowEdge('edge1', 'a', 'b'), new KnowEdge('edge2', 'a', 'c')])
-
-const edgesObject = Object.fromEntries(
-  edges.value.map((e) => [e.id, { source: e.source, target: e.target }]),
-)
-*/
 
 // --- Event handlers --- //
 const eventHandlers: vNG.EventHandlers = {
