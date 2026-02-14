@@ -1,51 +1,41 @@
 <template>
-  <div>
-    <label :for="'name'"></label>
-    <input
-      :id="'name'"
-      type="text"
-      v-model="characterName"
-      placeholder="Enter new name"/>
-    <button @click="createCharacter">">
-      Update
-    </button>
+  <div class = "create-character-node-form">
+    <h3>Create character from</h3>
+    <input id="create-character-node-name-input" type="text" placeholder="Enter new name" v-model="characterCreateName"/>
+    <br/>
+    <button id="create-character-node-submit-button" @click="onClickCreateCharacter">Create</button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from 'vue'
 import type { RpgAssistantService } from '@/services/RpgAssistantService'
+import {CharacterNode} from "@/models/CharacterNode.ts";
+import {Character} from "@/services/Models/Character.ts";
 
-const showForm = ref(true)
-// ✅ define props correctly (TYPE ONLY)
 const { rpgAssistantService} = defineProps<{
   rpgAssistantService: RpgAssistantService
 }>();
-
-const characterName = ref('');
-
 let controller: AbortController | null = null;
+const characterCreateName = ref('');
+const emit = defineEmits<{
+  (e: "created", node: CharacterNode): void
+}>();
 
-const createCharacter = async () => {
+
+async function onClickCreateCharacter(){
   controller?.abort();
   controller = new AbortController();
 
-  try{
-    await rpgAssistantService.createCharacterAsync(
-      characterName.value,
-      controller.signal);
-  }
-  catch (err: any)
-  {
-    console.error('Failed update character name', err);
-  }
-  finally {
-    characterName.value = '';
-    showForm.value = false;
-  }
+  const signal = controller.signal;
+  let createResult = await rpgAssistantService.createCharacterAsync(characterCreateName.value, signal);
+  const node = new CharacterNode(new Character(createResult, characterCreateName.value));
+
+  emit("created", node);
+  characterCreateName.value = "";
 }
 
 onBeforeUnmount(() => {
-  controller?.abort()
+  controller?.abort();
 })
 </script>

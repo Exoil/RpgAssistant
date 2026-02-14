@@ -1,17 +1,21 @@
 <template>
   <div class="app">
-    <div class = "create-character-node-form">
-      <h3>Create character from</h3>
-      <input id="create-character-node-name-input" type="text" placeholder="Enter new name" v-model="characterCreateName"/>
-      <br/>
-      <button id="create-character-node-submit-button" @click="onClickCreateCharacter">Create</button>
-    </div>
-   <v-network-graph :nodes="nodesForGraph" :edges="edgesForGraph" :configs="configs" :event-handlers="eventHandlers" />
+    <CreateCharacterComponent
+      :rpgAssistantService="rpgAssistantService"
+      @created="onCharacterCreated"
+    />
+    <v-network-graph
+      :nodes="nodesForGraph"
+      :edges="edgesForGraph"
+      :configs="configs"
+      :event-handlers="eventHandlers"
+      v-model:selected-nodes="selectedNodeIds"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref, onBeforeMount, onMounted, computed} from 'vue'
+import {ref, onBeforeMount, onMounted, computed, reactive} from 'vue'
 import { CharacterNode } from '@/models/CharacterNode'
 import { KnowEdge } from '@/models/KnowEdge'
 import type * as vNG from 'v-network-graph'
@@ -19,15 +23,26 @@ import { RpgAssistantService } from './services/RpgAssistantService.ts'
 import {PageQuery} from "@/services/Models/PageQuery.ts";
 import {Character} from "@/services/Models/Character.ts";
 import {defineConfigs, VNetworkGraph} from "v-network-graph";
+import CreateCharacterComponent from "@/components/CreateCharacterComponent.vue";
 
 let rpgAssistantService: RpgAssistantService;
-const configs = defineConfigs({
-  edge: {
-    type: "straight",
-    marker: {
-      source: { type: "none" },
-      target: { type: "arrow", width: 6, height: 6 },
-    },
+
+const configs = reactive(vNG.getFullConfigs())
+
+
+const markedNodeId = ref<string | null>(null)
+const suppressNextViewClickClear = ref(false)
+const selectedNodeIds = computed<string[]>({
+  get() {
+    return markedNodeId.value ? [markedNodeId.value] : []
+  },
+  set(ids) {
+    const next = ids?.[0]
+
+    if (!next) {
+      return
+    }
+    markedNodeId.value = next
   },
 })
 
@@ -52,8 +67,7 @@ Object.fromEntries(
       target: e.target,
     }
   ])
-))
-const characterCreateName = ref('')
+));
 
 onBeforeMount(() => {
   rpgAssistantService = new RpgAssistantService('http://localhost:8080');
@@ -74,11 +88,9 @@ onMounted(async () => {
   console.log("Loaded characters")
 })
 
-async function onClickCreateCharacter(){
-  const controller = new AbortController()
-  const signal = controller.signal
-  let createResult = await rpgAssistantService.createCharacterAsync(characterCreateName.value, signal);
-  nodeList.value.push(new CharacterNode(new Character(createResult, characterCreateName.value)))
+function onCharacterCreated(node: CharacterNode) {
+  nodeList.value.push(node);
+  markedNodeId.value = node.id
 }
 
 /*
@@ -91,11 +103,24 @@ const edgesObject = Object.fromEntries(
 */
 
 // --- Event handlers --- //
-
 const eventHandlers: vNG.EventHandlers = {
-  'node:contextmenu': (node) => {
-    console.log('node contextmenu, to do')
-  }
+  "node:click": ({ node }) => {
+    suppressNextViewClickClear.value = true
+    markedNodeId.value = node
+  },
+  "node:pointerdown": ({ node, event }) => {
+    // mark immediately on press
+    markedNodeId.value = node
+
+    // optional: stop the browser from doing text selection / dragging
+    event.preventDefault()
+  },
+  "view:click": ({ event }) => {
+    if (suppressNextViewClickClear.value) {
+      suppressNextViewClickClear.value = false
+      return
+    }
+  },
 }
 </script>
 
