@@ -47,13 +47,10 @@ async function loadCharacterById(id: string) {
   controller?.abort();
   controller = new AbortController();
 
-
   const dto = await props.rpgAssistantService.getCharacterAsync(id, controller.signal);
-  console.log('version on onload ' +  dto.version);
   characterData.value.id = dto.id;
   characterData.value.name = dto.name;
   characterData.value.version = dto.version;
-  console.log('version on onload assign ' + characterData.value.version);
 }
 
 
