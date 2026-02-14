@@ -1,9 +1,25 @@
 <template>
   <div class="app">
+    <div>
+      <h3> Create character</h3>
     <CreateCharacterComponent
       :rpgAssistantService="rpgAssistantService"
       @created="onCharacterCreated"
     />
+    </div>
+
+    <div>
+      <h3>Delete character</h3>
+      <CharacterDeleteComponent
+        :rpgAssistantService="rpgAssistantService"
+        :characterId="markedNodeId"
+        @deleted="onCharacterDeleted"/>
+    </div>
+
+    <div>
+      <h3> Update character</h3>
+
+    </div>
     <v-network-graph
       :nodes="nodesForGraph"
       :edges="edgesForGraph"
@@ -23,6 +39,7 @@ import { RpgAssistantService } from './services/RpgAssistantService.ts';
 import { PageQuery } from '@/services/Models/PageQuery.ts';
 import { defineConfigs, VNetworkGraph } from 'v-network-graph';
 import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue';
+import CharacterDeleteComponent from "@/components/CharacterDeleteComponent.vue";
 
 let rpgAssistantService: RpgAssistantService;
 
@@ -98,6 +115,16 @@ function SetupGraphConfig() {
 function onCharacterCreated(node: CharacterNode) {
   nodeList.value.push(node);
   markedNodeId.value = node.id;
+}
+
+function onCharacterDeleted(id: string) {
+
+  const idx = nodeList.value.findIndex((n) => n.id === id);
+
+  if (idx === -1)
+    return;
+
+  nodeList.value.splice(idx, 1);
 }
 
 // --- Event handlers --- //

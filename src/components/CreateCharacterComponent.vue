@@ -1,6 +1,5 @@
 <template>
   <div class="create-character-node-form">
-    <h3>Create character from</h3>
     <input
       id="create-character-node-name-input"
       type="text"
