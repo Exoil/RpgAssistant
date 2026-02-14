@@ -13,36 +13,36 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, ref } from 'vue'
-import type { RpgAssistantService } from '@/services/RpgAssistantService'
-import { CharacterNode } from '@/models/CharacterNode.ts'
-import { Character } from '@/services/Models/Character.ts'
+import { onBeforeUnmount, ref } from 'vue';
+import type { RpgAssistantService } from '@/services/RpgAssistantService';
+import { CharacterNode } from '@/models/CharacterNode.ts';
+import { Character } from '@/services/Models/Character.ts';
 
 const { rpgAssistantService } = defineProps<{
-  rpgAssistantService: RpgAssistantService
-}>()
-let controller: AbortController | null = null
-const characterCreateName = ref('')
+  rpgAssistantService: RpgAssistantService;
+}>();
+let controller: AbortController | null = null;
+const characterCreateName = ref('');
 const emit = defineEmits<{
-  (e: 'created', node: CharacterNode): void
-}>()
+  (e: 'created', node: CharacterNode): void;
+}>();
 
 async function onClickCreateCharacter() {
-  controller?.abort()
-  controller = new AbortController()
+  controller?.abort();
+  controller = new AbortController();
 
-  const signal = controller.signal
+  const signal = controller.signal;
   let createResult = await rpgAssistantService.createCharacterAsync(
     characterCreateName.value,
     signal,
-  )
-  const node = new CharacterNode(new Character(createResult, characterCreateName.value))
+  );
+  const node = new CharacterNode(new Character(createResult, characterCreateName.value));
 
-  emit('created', node)
-  characterCreateName.value = ''
+  emit('created', node);
+  characterCreateName.value = '';
 }
 
 onBeforeUnmount(() => {
-  controller?.abort()
-})
+  controller?.abort();
+});
 </script>

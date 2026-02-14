@@ -7,8 +7,8 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-import axios, { AxiosError } from 'axios'
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelToken } from 'axios'
+import axios, { AxiosError } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelToken } from 'axios';
 
 export interface IRpgAssistantClient {
   /**
@@ -25,18 +25,18 @@ export interface IRpgAssistantClient {
     sortType: string,
     sortOrder: string,
     signal?: AbortSignal,
-  ): Promise<CharacterPayload[]>
+  ): Promise<CharacterPayload[]>;
   /**
    * Create a character
    * @return Created
    */
-  createCharacter(body: CreateCharacterDto, signal?: AbortSignal): Promise<string>
+  createCharacter(body: CreateCharacterDto, signal?: AbortSignal): Promise<string>;
   /**
    * Get character by id
    * @param id Character identifier
    * @return Character found
    */
-  getCharacterById(id: string, signal?: AbortSignal): Promise<CharacterDto>
+  getCharacterById(id: string, signal?: AbortSignal): Promise<CharacterDto>;
   /**
    * Update character
    * @param id Character identifier
@@ -48,34 +48,34 @@ export interface IRpgAssistantClient {
     if_Match: string,
     body: UpdateCharacterDto,
     signal?: AbortSignal,
-  ): Promise<void>
+  ): Promise<void>;
   /**
    * Delete character
    * @param id Character identifier
    * @return No Content
    */
-  deleteCharacter(id: string, signal?: AbortSignal): Promise<void>
+  deleteCharacter(id: string, signal?: AbortSignal): Promise<void>;
   /**
    * Create a knowledge relationship between characters
    * @return Created
    */
-  createKnowRelationship(body: CreateKnowsDto, signal?: AbortSignal): Promise<string>
+  createKnowRelationship(body: CreateKnowsDto, signal?: AbortSignal): Promise<string>;
   /**
    * Delete a knowledge relationship
    * @return No Content
    */
-  deleteKnowRelationship(from: string, to: string, signal?: AbortSignal): Promise<void>
+  deleteKnowRelationship(from: string, to: string, signal?: AbortSignal): Promise<void>;
 }
 
 export class RpgAssistantClient implements IRpgAssistantClient {
-  protected instance: AxiosInstance
-  protected baseUrl: string
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined
+  protected instance: AxiosInstance;
+  protected baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, instance?: AxiosInstance) {
-    this.instance = instance || axios.create()
+    this.instance = instance || axios.create();
 
-    this.baseUrl = baseUrl ?? 'https://localhost:7048'
+    this.baseUrl = baseUrl ?? 'https://localhost:7048';
   }
 
   /**
@@ -93,20 +93,20 @@ export class RpgAssistantClient implements IRpgAssistantClient {
     sortOrder: string,
     signal?: AbortSignal,
   ): Promise<CharacterPayload[]> {
-    let url_ = this.baseUrl + '/v1/characters?'
+    let url_ = this.baseUrl + '/v1/characters?';
     if (pageNumber === undefined || pageNumber === null)
-      throw new globalThis.Error("The parameter 'pageNumber' must be defined and cannot be null.")
-    else url_ += 'pageNumber=' + encodeURIComponent('' + pageNumber) + '&'
+      throw new globalThis.Error("The parameter 'pageNumber' must be defined and cannot be null.");
+    else url_ += 'pageNumber=' + encodeURIComponent('' + pageNumber) + '&';
     if (pageSize === undefined || pageSize === null)
-      throw new globalThis.Error("The parameter 'pageSize' must be defined and cannot be null.")
-    else url_ += 'pageSize=' + encodeURIComponent('' + pageSize) + '&'
+      throw new globalThis.Error("The parameter 'pageSize' must be defined and cannot be null.");
+    else url_ += 'pageSize=' + encodeURIComponent('' + pageSize) + '&';
     if (sortType === undefined || sortType === null)
-      throw new globalThis.Error("The parameter 'sortType' must be defined and cannot be null.")
-    else url_ += 'sortType=' + encodeURIComponent('' + sortType) + '&'
+      throw new globalThis.Error("The parameter 'sortType' must be defined and cannot be null.");
+    else url_ += 'sortType=' + encodeURIComponent('' + sortType) + '&';
     if (sortOrder === undefined || sortOrder === null)
-      throw new globalThis.Error("The parameter 'sortOrder' must be defined and cannot be null.")
-    else url_ += 'sortOrder=' + encodeURIComponent('' + sortOrder) + '&'
-    url_ = url_.replace(/[?&]$/, '')
+      throw new globalThis.Error("The parameter 'sortOrder' must be defined and cannot be null.");
+    else url_ += 'sortOrder=' + encodeURIComponent('' + sortOrder) + '&';
+    url_ = url_.replace(/[?&]$/, '');
 
     let options_: AxiosRequestConfig = {
       method: 'GET',
@@ -115,54 +115,59 @@ export class RpgAssistantClient implements IRpgAssistantClient {
         Accept: 'application/json',
       },
       signal,
-    }
+    };
 
     return this.instance
       .request(options_)
       .catch((_error: any) => {
         if (isAxiosError(_error) && _error.response) {
-          return _error.response
+          return _error.response;
         } else {
-          throw _error
+          throw _error;
         }
       })
       .then((_response: AxiosResponse) => {
-        return this.processGetPagedCharacters(_response)
-      })
+        return this.processGetPagedCharacters(_response);
+      });
   }
 
   protected processGetPagedCharacters(response: AxiosResponse): Promise<CharacterPayload[]> {
-    const status = response.status
-    let _headers: any = {}
+    const status = response.status;
+    let _headers: any = {};
     if (response.headers && typeof response.headers === 'object') {
       for (const k in response.headers) {
         if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k]
+          _headers[k] = response.headers[k];
         }
       }
     }
     if (status === 200) {
-      const _responseText = response.data
-      let result200: any = null
-      let resultData200 = _responseText
+      const _responseText = response.data;
+      let result200: any = null;
+      let resultData200 = _responseText;
       if (Array.isArray(resultData200)) {
-        result200 = [] as any
-        for (let item of resultData200) result200!.push(CharacterPayload.fromJS(item))
+        result200 = [] as any;
+        for (let item of resultData200) result200!.push(CharacterPayload.fromJS(item));
       } else {
-        result200 = null as any
+        result200 = null as any;
       }
-      return Promise.resolve<CharacterPayload[]>(result200)
+      return Promise.resolve<CharacterPayload[]>(result200);
     } else if (status === 400) {
-      const _responseText = response.data
-      let result400: any = null
-      let resultData400 = _responseText
-      result400 = ProblemDetails.fromJS(resultData400)
-      return throwException('Bad Request', status, _responseText, _headers, result400)
+      const _responseText = response.data;
+      let result400: any = null;
+      let resultData400 = _responseText;
+      result400 = ProblemDetails.fromJS(resultData400);
+      return throwException('Bad Request', status, _responseText, _headers, result400);
     } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data
-      return throwException('An unexpected server error occurred.', status, _responseText, _headers)
+      const _responseText = response.data;
+      return throwException(
+        'An unexpected server error occurred.',
+        status,
+        _responseText,
+        _headers,
+      );
     }
-    return Promise.resolve<CharacterPayload[]>(null as any)
+    return Promise.resolve<CharacterPayload[]>(null as any);
   }
 
   /**
@@ -170,10 +175,10 @@ export class RpgAssistantClient implements IRpgAssistantClient {
    * @return Created
    */
   createCharacter(body: CreateCharacterDto, signal?: AbortSignal): Promise<string> {
-    let url_ = this.baseUrl + '/v1/characters'
-    url_ = url_.replace(/[?&]$/, '')
+    let url_ = this.baseUrl + '/v1/characters';
+    url_ = url_.replace(/[?&]$/, '');
 
-    const content_ = JSON.stringify(body)
+    const content_ = JSON.stringify(body);
 
     let options_: AxiosRequestConfig = {
       data: content_,
@@ -184,50 +189,55 @@ export class RpgAssistantClient implements IRpgAssistantClient {
         Accept: 'application/json',
       },
       signal,
-    }
+    };
 
     return this.instance
       .request(options_)
       .catch((_error: any) => {
         if (isAxiosError(_error) && _error.response) {
-          return _error.response
+          return _error.response;
         } else {
-          throw _error
+          throw _error;
         }
       })
       .then((_response: AxiosResponse) => {
-        return this.processCreateCharacter(_response)
-      })
+        return this.processCreateCharacter(_response);
+      });
   }
 
   protected processCreateCharacter(response: AxiosResponse): Promise<string> {
-    const status = response.status
-    let _headers: any = {}
+    const status = response.status;
+    let _headers: any = {};
     if (response.headers && typeof response.headers === 'object') {
       for (const k in response.headers) {
         if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k]
+          _headers[k] = response.headers[k];
         }
       }
     }
     if (status === 201) {
-      const _responseText = response.data
-      let result201: any = null
-      let resultData201 = _responseText
-      result201 = resultData201 !== undefined ? resultData201 : (null as any)
+      const _responseText = response.data;
+      let result201: any = null;
+      let resultData201 = _responseText;
+      result201 = resultData201 !== undefined ? resultData201 : (null as any);
 
-      return Promise.resolve<string>(result201)
+      return Promise.resolve<string>(result201);
     } else if (status === 400) {
-      const _responseText = response.data
-      let result400: any = null
-      let resultData400 = _responseText
-      result400 = ProblemDetails.fromJS(resultData400)
-      return throwException('Bad Request', status, _responseText, _headers, result400)
+      const _responseText = response.data;
+      let result400: any = null;
+      let resultData400 = _responseText;
+      result400 = ProblemDetails.fromJS(resultData400);
+      return throwException('Bad Request', status, _responseText, _headers, result400);
     } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data
-      return throwException('An unexpected server error occurred.', status, _responseText, _headers)
+      const _responseText = response.data;
+      return throwException(
+        'An unexpected server error occurred.',
+        status,
+        _responseText,
+        _headers,
+      );
     }
-    return Promise.resolve<string>(null as any)
+    return Promise.resolve<string>(null as any);
   }
 
   /**
@@ -236,11 +246,11 @@ export class RpgAssistantClient implements IRpgAssistantClient {
    * @return Character found
    */
   getCharacterById(id: string, signal?: AbortSignal): Promise<CharacterDto> {
-    let url_ = this.baseUrl + '/v1/characters/{id}'
+    let url_ = this.baseUrl + '/v1/characters/{id}';
     if (id === undefined || id === null)
-      throw new globalThis.Error("The parameter 'id' must be defined.")
-    url_ = url_.replace('{id}', encodeURIComponent('' + id))
-    url_ = url_.replace(/[?&]$/, '')
+      throw new globalThis.Error("The parameter 'id' must be defined.");
+    url_ = url_.replace('{id}', encodeURIComponent('' + id));
+    url_ = url_.replace(/[?&]$/, '');
 
     let options_: AxiosRequestConfig = {
       method: 'GET',
@@ -249,55 +259,60 @@ export class RpgAssistantClient implements IRpgAssistantClient {
         Accept: 'application/json',
       },
       signal,
-    }
+    };
 
     return this.instance
       .request(options_)
       .catch((_error: any) => {
         if (isAxiosError(_error) && _error.response) {
-          return _error.response
+          return _error.response;
         } else {
-          throw _error
+          throw _error;
         }
       })
       .then((_response: AxiosResponse) => {
-        return this.processGetCharacterById(_response)
-      })
+        return this.processGetCharacterById(_response);
+      });
   }
 
   protected processGetCharacterById(response: AxiosResponse): Promise<CharacterDto> {
-    const status = response.status
-    let _headers: any = {}
+    const status = response.status;
+    let _headers: any = {};
     if (response.headers && typeof response.headers === 'object') {
       for (const k in response.headers) {
         if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k]
+          _headers[k] = response.headers[k];
         }
       }
     }
     if (status === 200) {
-      const _responseText = response.data
-      let result200: any = null
-      let resultData200 = _responseText
-      result200 = CharacterDto.fromJS(resultData200)
-      return Promise.resolve<CharacterDto>(result200)
+      const _responseText = response.data;
+      let result200: any = null;
+      let resultData200 = _responseText;
+      result200 = CharacterDto.fromJS(resultData200);
+      return Promise.resolve<CharacterDto>(result200);
     } else if (status === 404) {
-      const _responseText = response.data
-      let result404: any = null
-      let resultData404 = _responseText
-      result404 = ProblemDetails.fromJS(resultData404)
+      const _responseText = response.data;
+      let result404: any = null;
+      let resultData404 = _responseText;
+      result404 = ProblemDetails.fromJS(resultData404);
       return throwException(
         'The specified resource was not found',
         status,
         _responseText,
         _headers,
         result404,
-      )
+      );
     } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data
-      return throwException('An unexpected server error occurred.', status, _responseText, _headers)
+      const _responseText = response.data;
+      return throwException(
+        'An unexpected server error occurred.',
+        status,
+        _responseText,
+        _headers,
+      );
     }
-    return Promise.resolve<CharacterDto>(null as any)
+    return Promise.resolve<CharacterDto>(null as any);
   }
 
   /**
@@ -312,13 +327,13 @@ export class RpgAssistantClient implements IRpgAssistantClient {
     body: UpdateCharacterDto,
     signal?: AbortSignal,
   ): Promise<void> {
-    let url_ = this.baseUrl + '/v1/characters/{id}'
+    let url_ = this.baseUrl + '/v1/characters/{id}';
     if (id === undefined || id === null)
-      throw new globalThis.Error("The parameter 'id' must be defined.")
-    url_ = url_.replace('{id}', encodeURIComponent('' + id))
-    url_ = url_.replace(/[?&]$/, '')
+      throw new globalThis.Error("The parameter 'id' must be defined.");
+    url_ = url_.replace('{id}', encodeURIComponent('' + id));
+    url_ = url_.replace(/[?&]$/, '');
 
-    const content_ = JSON.stringify(body)
+    const content_ = JSON.stringify(body);
 
     let options_: AxiosRequestConfig = {
       data: content_,
@@ -329,64 +344,69 @@ export class RpgAssistantClient implements IRpgAssistantClient {
         'Content-Type': 'application/json',
       },
       signal,
-    }
+    };
 
     return this.instance
       .request(options_)
       .catch((_error: any) => {
         if (isAxiosError(_error) && _error.response) {
-          return _error.response
+          return _error.response;
         } else {
-          throw _error
+          throw _error;
         }
       })
       .then((_response: AxiosResponse) => {
-        return this.processUpdateCharacter(_response)
-      })
+        return this.processUpdateCharacter(_response);
+      });
   }
 
   protected processUpdateCharacter(response: AxiosResponse): Promise<void> {
-    const status = response.status
-    let _headers: any = {}
+    const status = response.status;
+    let _headers: any = {};
     if (response.headers && typeof response.headers === 'object') {
       for (const k in response.headers) {
         if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k]
+          _headers[k] = response.headers[k];
         }
       }
     }
     if (status === 204) {
-      const _responseText = response.data
-      return Promise.resolve<void>(null as any)
+      const _responseText = response.data;
+      return Promise.resolve<void>(null as any);
     } else if (status === 400) {
-      const _responseText = response.data
-      let result400: any = null
-      let resultData400 = _responseText
-      result400 = ProblemDetails.fromJS(resultData400)
-      return throwException('Bad Request', status, _responseText, _headers, result400)
+      const _responseText = response.data;
+      let result400: any = null;
+      let resultData400 = _responseText;
+      result400 = ProblemDetails.fromJS(resultData400);
+      return throwException('Bad Request', status, _responseText, _headers, result400);
     } else if (status === 404) {
-      const _responseText = response.data
-      let result404: any = null
-      let resultData404 = _responseText
-      result404 = ProblemDetails.fromJS(resultData404)
+      const _responseText = response.data;
+      let result404: any = null;
+      let resultData404 = _responseText;
+      result404 = ProblemDetails.fromJS(resultData404);
       return throwException(
         'The specified resource was not found',
         status,
         _responseText,
         _headers,
         result404,
-      )
+      );
     } else if (status === 412) {
-      const _responseText = response.data
-      let result412: any = null
-      let resultData412 = _responseText
-      result412 = ProblemDetails.fromJS(resultData412)
-      return throwException('Precondition Failed', status, _responseText, _headers, result412)
+      const _responseText = response.data;
+      let result412: any = null;
+      let resultData412 = _responseText;
+      result412 = ProblemDetails.fromJS(resultData412);
+      return throwException('Precondition Failed', status, _responseText, _headers, result412);
     } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data
-      return throwException('An unexpected server error occurred.', status, _responseText, _headers)
+      const _responseText = response.data;
+      return throwException(
+        'An unexpected server error occurred.',
+        status,
+        _responseText,
+        _headers,
+      );
     }
-    return Promise.resolve<void>(null as any)
+    return Promise.resolve<void>(null as any);
   }
 
   /**
@@ -395,63 +415,68 @@ export class RpgAssistantClient implements IRpgAssistantClient {
    * @return No Content
    */
   deleteCharacter(id: string, signal?: AbortSignal): Promise<void> {
-    let url_ = this.baseUrl + '/v1/characters/{id}'
+    let url_ = this.baseUrl + '/v1/characters/{id}';
     if (id === undefined || id === null)
-      throw new globalThis.Error("The parameter 'id' must be defined.")
-    url_ = url_.replace('{id}', encodeURIComponent('' + id))
-    url_ = url_.replace(/[?&]$/, '')
+      throw new globalThis.Error("The parameter 'id' must be defined.");
+    url_ = url_.replace('{id}', encodeURIComponent('' + id));
+    url_ = url_.replace(/[?&]$/, '');
 
     let options_: AxiosRequestConfig = {
       method: 'DELETE',
       url: url_,
       headers: {},
       signal,
-    }
+    };
 
     return this.instance
       .request(options_)
       .catch((_error: any) => {
         if (isAxiosError(_error) && _error.response) {
-          return _error.response
+          return _error.response;
         } else {
-          throw _error
+          throw _error;
         }
       })
       .then((_response: AxiosResponse) => {
-        return this.processDeleteCharacter(_response)
-      })
+        return this.processDeleteCharacter(_response);
+      });
   }
 
   protected processDeleteCharacter(response: AxiosResponse): Promise<void> {
-    const status = response.status
-    let _headers: any = {}
+    const status = response.status;
+    let _headers: any = {};
     if (response.headers && typeof response.headers === 'object') {
       for (const k in response.headers) {
         if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k]
+          _headers[k] = response.headers[k];
         }
       }
     }
     if (status === 204) {
-      const _responseText = response.data
-      return Promise.resolve<void>(null as any)
+      const _responseText = response.data;
+      return Promise.resolve<void>(null as any);
     } else if (status === 404) {
-      const _responseText = response.data
-      let result404: any = null
-      let resultData404 = _responseText
-      result404 = ProblemDetails.fromJS(resultData404)
+      const _responseText = response.data;
+      let result404: any = null;
+      let resultData404 = _responseText;
+      result404 = ProblemDetails.fromJS(resultData404);
       return throwException(
         'The specified resource was not found',
         status,
         _responseText,
         _headers,
         result404,
-      )
+      );
     } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data
-      return throwException('An unexpected server error occurred.', status, _responseText, _headers)
+      const _responseText = response.data;
+      return throwException(
+        'An unexpected server error occurred.',
+        status,
+        _responseText,
+        _headers,
+      );
     }
-    return Promise.resolve<void>(null as any)
+    return Promise.resolve<void>(null as any);
   }
 
   /**
@@ -459,10 +484,10 @@ export class RpgAssistantClient implements IRpgAssistantClient {
    * @return Created
    */
   createKnowRelationship(body: CreateKnowsDto, signal?: AbortSignal): Promise<string> {
-    let url_ = this.baseUrl + '/v1/characters/knows'
-    url_ = url_.replace(/[?&]$/, '')
+    let url_ = this.baseUrl + '/v1/characters/knows';
+    url_ = url_.replace(/[?&]$/, '');
 
-    const content_ = JSON.stringify(body)
+    const content_ = JSON.stringify(body);
 
     let options_: AxiosRequestConfig = {
       data: content_,
@@ -473,50 +498,55 @@ export class RpgAssistantClient implements IRpgAssistantClient {
         Accept: 'application/json',
       },
       signal,
-    }
+    };
 
     return this.instance
       .request(options_)
       .catch((_error: any) => {
         if (isAxiosError(_error) && _error.response) {
-          return _error.response
+          return _error.response;
         } else {
-          throw _error
+          throw _error;
         }
       })
       .then((_response: AxiosResponse) => {
-        return this.processCreateKnowRelationship(_response)
-      })
+        return this.processCreateKnowRelationship(_response);
+      });
   }
 
   protected processCreateKnowRelationship(response: AxiosResponse): Promise<string> {
-    const status = response.status
-    let _headers: any = {}
+    const status = response.status;
+    let _headers: any = {};
     if (response.headers && typeof response.headers === 'object') {
       for (const k in response.headers) {
         if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k]
+          _headers[k] = response.headers[k];
         }
       }
     }
     if (status === 201) {
-      const _responseText = response.data
-      let result201: any = null
-      let resultData201 = _responseText
-      result201 = resultData201 !== undefined ? resultData201 : (null as any)
+      const _responseText = response.data;
+      let result201: any = null;
+      let resultData201 = _responseText;
+      result201 = resultData201 !== undefined ? resultData201 : (null as any);
 
-      return Promise.resolve<string>(result201)
+      return Promise.resolve<string>(result201);
     } else if (status === 400) {
-      const _responseText = response.data
-      let result400: any = null
-      let resultData400 = _responseText
-      result400 = ProblemDetails.fromJS(resultData400)
-      return throwException('Bad Request', status, _responseText, _headers, result400)
+      const _responseText = response.data;
+      let result400: any = null;
+      let resultData400 = _responseText;
+      result400 = ProblemDetails.fromJS(resultData400);
+      return throwException('Bad Request', status, _responseText, _headers, result400);
     } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data
-      return throwException('An unexpected server error occurred.', status, _responseText, _headers)
+      const _responseText = response.data;
+      return throwException(
+        'An unexpected server error occurred.',
+        status,
+        _responseText,
+        _headers,
+      );
     }
-    return Promise.resolve<string>(null as any)
+    return Promise.resolve<string>(null as any);
   }
 
   /**
@@ -524,82 +554,87 @@ export class RpgAssistantClient implements IRpgAssistantClient {
    * @return No Content
    */
   deleteKnowRelationship(from: string, to: string, signal?: AbortSignal): Promise<void> {
-    let url_ = this.baseUrl + '/v1/characters/knows/{from}/to/{to}'
+    let url_ = this.baseUrl + '/v1/characters/knows/{from}/to/{to}';
     if (from === undefined || from === null)
-      throw new globalThis.Error("The parameter 'from' must be defined.")
-    url_ = url_.replace('{from}', encodeURIComponent('' + from))
+      throw new globalThis.Error("The parameter 'from' must be defined.");
+    url_ = url_.replace('{from}', encodeURIComponent('' + from));
     if (to === undefined || to === null)
-      throw new globalThis.Error("The parameter 'to' must be defined.")
-    url_ = url_.replace('{to}', encodeURIComponent('' + to))
-    url_ = url_.replace(/[?&]$/, '')
+      throw new globalThis.Error("The parameter 'to' must be defined.");
+    url_ = url_.replace('{to}', encodeURIComponent('' + to));
+    url_ = url_.replace(/[?&]$/, '');
 
     let options_: AxiosRequestConfig = {
       method: 'DELETE',
       url: url_,
       headers: {},
       signal,
-    }
+    };
 
     return this.instance
       .request(options_)
       .catch((_error: any) => {
         if (isAxiosError(_error) && _error.response) {
-          return _error.response
+          return _error.response;
         } else {
-          throw _error
+          throw _error;
         }
       })
       .then((_response: AxiosResponse) => {
-        return this.processDeleteKnowRelationship(_response)
-      })
+        return this.processDeleteKnowRelationship(_response);
+      });
   }
 
   protected processDeleteKnowRelationship(response: AxiosResponse): Promise<void> {
-    const status = response.status
-    let _headers: any = {}
+    const status = response.status;
+    let _headers: any = {};
     if (response.headers && typeof response.headers === 'object') {
       for (const k in response.headers) {
         if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k]
+          _headers[k] = response.headers[k];
         }
       }
     }
     if (status === 204) {
-      const _responseText = response.data
-      return Promise.resolve<void>(null as any)
+      const _responseText = response.data;
+      return Promise.resolve<void>(null as any);
     } else if (status === 404) {
-      const _responseText = response.data
-      let result404: any = null
-      let resultData404 = _responseText
-      result404 = ProblemDetails.fromJS(resultData404)
+      const _responseText = response.data;
+      let result404: any = null;
+      let resultData404 = _responseText;
+      result404 = ProblemDetails.fromJS(resultData404);
       return throwException(
         'The specified resource was not found',
         status,
         _responseText,
         _headers,
         result404,
-      )
+      );
     } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data
-      return throwException('An unexpected server error occurred.', status, _responseText, _headers)
+      const _responseText = response.data;
+      return throwException(
+        'An unexpected server error occurred.',
+        status,
+        _responseText,
+        _headers,
+      );
     }
-    return Promise.resolve<void>(null as any)
+    return Promise.resolve<void>(null as any);
   }
 }
 
 export class ProblemDetails implements IProblemDetails {
-  type?: string | undefined
-  title?: string | undefined
-  status?: number | undefined
-  detail?: string | undefined
+  type?: string | undefined;
+  title?: string | undefined;
+  status?: number | undefined;
+  detail?: string | undefined;
   instance?: string | undefined;
 
-  [key: string]: any
+  [key: string]: any;
 
   constructor(data?: IProblemDetails) {
     if (data) {
       for (var property in data) {
-        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property]
+        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property];
       }
     }
   }
@@ -607,59 +642,59 @@ export class ProblemDetails implements IProblemDetails {
   init(_data?: any) {
     if (_data) {
       for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property]
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
-      this.type = _data['type']
-      this.title = _data['title']
-      this.status = _data['status']
-      this.detail = _data['detail']
-      this.instance = _data['instance']
+      this.type = _data['type'];
+      this.title = _data['title'];
+      this.status = _data['status'];
+      this.detail = _data['detail'];
+      this.instance = _data['instance'];
     }
   }
 
   static fromJS(data: any): ProblemDetails {
-    data = typeof data === 'object' ? data : {}
-    let result = new ProblemDetails()
-    result.init(data)
-    return result
+    data = typeof data === 'object' ? data : {};
+    let result = new ProblemDetails();
+    result.init(data);
+    return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
+    data = typeof data === 'object' ? data : {};
     for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property]
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
-    data['type'] = this.type
-    data['title'] = this.title
-    data['status'] = this.status
-    data['detail'] = this.detail
-    data['instance'] = this.instance
-    return data
+    data['type'] = this.type;
+    data['title'] = this.title;
+    data['status'] = this.status;
+    data['detail'] = this.detail;
+    data['instance'] = this.instance;
+    return data;
   }
 }
 
 export interface IProblemDetails {
-  type?: string | undefined
-  title?: string | undefined
-  status?: number | undefined
-  detail?: string | undefined
-  instance?: string | undefined
+  type?: string | undefined;
+  title?: string | undefined;
+  status?: number | undefined;
+  detail?: string | undefined;
+  instance?: string | undefined;
 
-  [key: string]: any
+  [key: string]: any;
 }
 
 export class CharacterDto implements ICharacterDto {
   /** Character identifier */
-  id!: string
+  id!: string;
   /** Character name */
   name!: string;
 
-  [key: string]: any
+  [key: string]: any;
 
   constructor(data?: ICharacterDto) {
     if (data) {
       for (var property in data) {
-        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property]
+        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property];
       }
     }
   }
@@ -667,111 +702,111 @@ export class CharacterDto implements ICharacterDto {
   init(_data?: any) {
     if (_data) {
       for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property]
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
-      this.id = _data['id']
-      this.name = _data['name']
+      this.id = _data['id'];
+      this.name = _data['name'];
     }
   }
 
   static fromJS(data: any): CharacterDto {
-    data = typeof data === 'object' ? data : {}
-    let result = new CharacterDto()
-    result.init(data)
-    return result
+    data = typeof data === 'object' ? data : {};
+    let result = new CharacterDto();
+    result.init(data);
+    return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
+    data = typeof data === 'object' ? data : {};
     for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property]
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
-    data['id'] = this.id
-    data['name'] = this.name
-    return data
+    data['id'] = this.id;
+    data['name'] = this.name;
+    return data;
   }
 }
 
 export interface ICharacterDto {
   /** Character identifier */
-  id: string
+  id: string;
   /** Character name */
-  name: string
+  name: string;
 
-  [key: string]: any
+  [key: string]: any;
 }
 
 export class CharacterPayload implements ICharacterPayload {
-  id!: string
-  name!: string
+  id!: string;
+  name!: string;
   knowCharacterIds!: string[];
 
-  [key: string]: any
+  [key: string]: any;
 
   constructor(data?: ICharacterPayload) {
     if (data) {
       for (var property in data) {
-        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property]
+        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property];
       }
     }
     if (!data) {
-      this.knowCharacterIds = []
+      this.knowCharacterIds = [];
     }
   }
 
   init(_data?: any) {
     if (_data) {
       for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property]
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
-      this.id = _data['id']
-      this.name = _data['name']
+      this.id = _data['id'];
+      this.name = _data['name'];
       if (Array.isArray(_data['knowCharacterIds'])) {
-        this.knowCharacterIds = [] as any
-        for (let item of _data['knowCharacterIds']) this.knowCharacterIds!.push(item)
+        this.knowCharacterIds = [] as any;
+        for (let item of _data['knowCharacterIds']) this.knowCharacterIds!.push(item);
       }
     }
   }
 
   static fromJS(data: any): CharacterPayload {
-    data = typeof data === 'object' ? data : {}
-    let result = new CharacterPayload()
-    result.init(data)
-    return result
+    data = typeof data === 'object' ? data : {};
+    let result = new CharacterPayload();
+    result.init(data);
+    return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
+    data = typeof data === 'object' ? data : {};
     for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property]
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
-    data['id'] = this.id
-    data['name'] = this.name
+    data['id'] = this.id;
+    data['name'] = this.name;
     if (Array.isArray(this.knowCharacterIds)) {
-      data['knowCharacterIds'] = []
-      for (let item of this.knowCharacterIds) data['knowCharacterIds'].push(item)
+      data['knowCharacterIds'] = [];
+      for (let item of this.knowCharacterIds) data['knowCharacterIds'].push(item);
     }
-    return data
+    return data;
   }
 }
 
 export interface ICharacterPayload {
-  id: string
-  name: string
-  knowCharacterIds: string[]
+  id: string;
+  name: string;
+  knowCharacterIds: string[];
 
-  [key: string]: any
+  [key: string]: any;
 }
 
 export class CreateCharacterDto implements ICreateCharacterDto {
   name!: string;
 
-  [key: string]: any
+  [key: string]: any;
 
   constructor(data?: ICreateCharacterDto) {
     if (data) {
       for (var property in data) {
-        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property]
+        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property];
       }
     }
   }
@@ -779,44 +814,44 @@ export class CreateCharacterDto implements ICreateCharacterDto {
   init(_data?: any) {
     if (_data) {
       for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property]
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
-      this.name = _data['name']
+      this.name = _data['name'];
     }
   }
 
   static fromJS(data: any): CreateCharacterDto {
-    data = typeof data === 'object' ? data : {}
-    let result = new CreateCharacterDto()
-    result.init(data)
-    return result
+    data = typeof data === 'object' ? data : {};
+    let result = new CreateCharacterDto();
+    result.init(data);
+    return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
+    data = typeof data === 'object' ? data : {};
     for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property]
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
-    data['name'] = this.name
-    return data
+    data['name'] = this.name;
+    return data;
   }
 }
 
 export interface ICreateCharacterDto {
-  name: string
+  name: string;
 
-  [key: string]: any
+  [key: string]: any;
 }
 
 export class UpdateCharacterDto implements IUpdateCharacterDto {
   name!: string;
 
-  [key: string]: any
+  [key: string]: any;
 
   constructor(data?: IUpdateCharacterDto) {
     if (data) {
       for (var property in data) {
-        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property]
+        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property];
       }
     }
   }
@@ -824,46 +859,46 @@ export class UpdateCharacterDto implements IUpdateCharacterDto {
   init(_data?: any) {
     if (_data) {
       for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property]
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
-      this.name = _data['name']
+      this.name = _data['name'];
     }
   }
 
   static fromJS(data: any): UpdateCharacterDto {
-    data = typeof data === 'object' ? data : {}
-    let result = new UpdateCharacterDto()
-    result.init(data)
-    return result
+    data = typeof data === 'object' ? data : {};
+    let result = new UpdateCharacterDto();
+    result.init(data);
+    return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
+    data = typeof data === 'object' ? data : {};
     for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property]
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
-    data['name'] = this.name
-    return data
+    data['name'] = this.name;
+    return data;
   }
 }
 
 export interface IUpdateCharacterDto {
-  name: string
+  name: string;
 
-  [key: string]: any
+  [key: string]: any;
 }
 
 export class CreateKnowsDto implements ICreateKnowsDto {
-  fromCharacterId!: string
-  toCharacterId!: string
+  fromCharacterId!: string;
+  toCharacterId!: string;
   description!: string;
 
-  [key: string]: any
+  [key: string]: any;
 
   constructor(data?: ICreateKnowsDto) {
     if (data) {
       for (var property in data) {
-        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property]
+        if (data.hasOwnProperty(property)) (this as any)[property] = (data as any)[property];
       }
     }
   }
@@ -871,47 +906,47 @@ export class CreateKnowsDto implements ICreateKnowsDto {
   init(_data?: any) {
     if (_data) {
       for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property]
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
-      this.fromCharacterId = _data['fromCharacterId']
-      this.toCharacterId = _data['toCharacterId']
-      this.description = _data['description']
+      this.fromCharacterId = _data['fromCharacterId'];
+      this.toCharacterId = _data['toCharacterId'];
+      this.description = _data['description'];
     }
   }
 
   static fromJS(data: any): CreateKnowsDto {
-    data = typeof data === 'object' ? data : {}
-    let result = new CreateKnowsDto()
-    result.init(data)
-    return result
+    data = typeof data === 'object' ? data : {};
+    let result = new CreateKnowsDto();
+    result.init(data);
+    return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
+    data = typeof data === 'object' ? data : {};
     for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property]
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
-    data['fromCharacterId'] = this.fromCharacterId
-    data['toCharacterId'] = this.toCharacterId
-    data['description'] = this.description
-    return data
+    data['fromCharacterId'] = this.fromCharacterId;
+    data['toCharacterId'] = this.toCharacterId;
+    data['description'] = this.description;
+    return data;
   }
 }
 
 export interface ICreateKnowsDto {
-  fromCharacterId: string
-  toCharacterId: string
-  description: string
+  fromCharacterId: string;
+  toCharacterId: string;
+  description: string;
 
-  [key: string]: any
+  [key: string]: any;
 }
 
 export class ApiException extends Error {
-  override message: string
-  status: number
-  response: string
-  headers: { [key: string]: any }
-  result: any
+  override message: string;
+  status: number;
+  response: string;
+  headers: { [key: string]: any };
+  result: any;
 
   constructor(
     message: string,
@@ -920,19 +955,19 @@ export class ApiException extends Error {
     headers: { [key: string]: any },
     result: any,
   ) {
-    super()
+    super();
 
-    this.message = message
-    this.status = status
-    this.response = response
-    this.headers = headers
-    this.result = result
+    this.message = message;
+    this.status = status;
+    this.response = response;
+    this.headers = headers;
+    this.result = result;
   }
 
-  protected isApiException = true
+  protected isApiException = true;
 
   static isApiException(obj: any): obj is ApiException {
-    return obj.isApiException === true
+    return obj.isApiException === true;
   }
 }
 
@@ -943,10 +978,10 @@ function throwException(
   headers: { [key: string]: any },
   result?: any,
 ): any {
-  if (result !== null && result !== undefined) throw result
-  else throw new ApiException(message, status, response, headers, null)
+  if (result !== null && result !== undefined) throw result;
+  else throw new ApiException(message, status, response, headers, null);
 }
 
 function isAxiosError(obj: any): obj is AxiosError {
-  return obj && obj.isAxiosError === true
+  return obj && obj.isAxiosError === true;
 }

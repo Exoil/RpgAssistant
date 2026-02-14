@@ -3,49 +3,49 @@ import {
   CreateKnowsDto,
   RpgAssistantClient,
   UpdateCharacterDto,
-} from './HttpClients/RpgAssistantClient'
-import { VersionedCharacter } from './Models/VersionedCharacter'
-import type { PageQuery } from './Models/PageQuery'
-import type { UpdateCharacter } from './Models/UpdateCharacter'
-import { Character } from '@/services/Models/Character.ts'
+} from './HttpClients/RpgAssistantClient';
+import { VersionedCharacter } from './Models/VersionedCharacter';
+import type { PageQuery } from './Models/PageQuery';
+import type { UpdateCharacter } from './Models/UpdateCharacter';
+import { Character } from '@/services/Models/Character.ts';
 
 export class RpgAssistantService {
-  private _rpgAssistantClient: RpgAssistantClient
+  private _rpgAssistantClient: RpgAssistantClient;
 
   constructor(baseUrl: string) {
-    this._rpgAssistantClient = new RpgAssistantClient(baseUrl)
+    this._rpgAssistantClient = new RpgAssistantClient(baseUrl);
   }
 
   public async createCharacterAsync(name: string, signal?: AbortSignal): Promise<string> {
     const createCharacter = new CreateCharacterDto({
       name: name,
-    })
+    });
 
-    return await this._rpgAssistantClient.createCharacter(createCharacter, signal)
+    return await this._rpgAssistantClient.createCharacter(createCharacter, signal);
   }
 
   public async getCharacterAsync(id: string, signal?: AbortSignal): Promise<VersionedCharacter> {
-    const response = await this._rpgAssistantClient.getCharacterById(id, signal)
+    const response = await this._rpgAssistantClient.getCharacterById(id, signal);
 
-    return new VersionedCharacter(response.id, response.name, response.version)
+    return new VersionedCharacter(response.id, response.name, response.version);
   }
 
   public async updateCharacterAsync(updateCharacter: UpdateCharacter, signal?: AbortSignal) {
     const modelToUpdate = new UpdateCharacterDto({
       name: updateCharacter.name,
-    })
-    const ifMatch = '"' + updateCharacter.version.toString() + '"'
+    });
+    const ifMatch = '"' + updateCharacter.version.toString() + '"';
 
     await this._rpgAssistantClient.updateCharacter(
       updateCharacter.id,
       ifMatch,
       modelToUpdate,
       signal,
-    )
+    );
   }
 
   public async deleteCharacterAsync(id: string, signal?: AbortSignal) {
-    await this._rpgAssistantClient.deleteCharacter(id, signal)
+    await this._rpgAssistantClient.deleteCharacter(id, signal);
   }
 
   public async getCharactersAsync(
@@ -58,9 +58,9 @@ export class RpgAssistantService {
       pageQuery.sortType,
       pageQuery.sortOrder,
       signal,
-    )
+    );
 
-    return arrayOfCharacters.map((c) => new Character(c.id, c.name, c.knowCharacterIds))
+    return arrayOfCharacters.map((c) => new Character(c.id, c.name, c.knowCharacterIds));
   }
 
   public async createKnowRelationBetweenCharacters(
@@ -73,9 +73,9 @@ export class RpgAssistantService {
       fromCharacterId: fromId,
       toCharacterId: toId,
       description: description,
-    })
+    });
 
-    return await this._rpgAssistantClient.createKnowRelationship(createKnowRelation, signal)
+    return await this._rpgAssistantClient.createKnowRelationship(createKnowRelation, signal);
   }
 
   public async deleteKnowRelationBetweenCharacters(
@@ -83,6 +83,6 @@ export class RpgAssistantService {
     toId: string,
     signal?: AbortSignal,
   ): Promise<void> {
-    return await this._rpgAssistantClient.deleteKnowRelationship(fromId, toId, signal)
+    return await this._rpgAssistantClient.deleteKnowRelationship(fromId, toId, signal);
   }
 }
