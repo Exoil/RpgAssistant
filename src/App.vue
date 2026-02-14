@@ -73,25 +73,25 @@ onBeforeMount(() => {
 });
 
 onMounted(async () => {
-  console.log("start load characters")
-  const controller = new AbortController()
-  const signal = controller.signal
+  console.log("start load characters");
+  const controller = new AbortController();
+  const signal = controller.signal;
   let pageQuery = new PageQuery(1, 10, 'name', 'Asc');
   let result = await rpgAssistantService.getCharactersAsync(pageQuery, signal);
-  nodeList.value = result.map((c) => new CharacterNode(c))
+  nodeList.value = result.map((c) => new CharacterNode(c));
   nodeList.value.forEach(n => {
     n.characterData.knowCharacterIds.forEach(knowId => {
-      edges.value.push(new KnowEdge(n.id, knowId))
-    })
-  })
-  console.log("Loaded characters")
+      edges.value.push(new KnowEdge(n.id, knowId));
+    });
+  });
+  console.log("Loaded characters");
 })
 
 function SetupGraphConfig() {
   configs.node.selectable = 1;
-  configs.edge.type = "straight"
-  configs.edge.marker.source.type = "none"
-  configs.edge.marker.target.type = "arrow"
+  configs.edge.type = "straight";
+  configs.edge.marker.source.type = "none";
+  configs.edge.marker.target.type = "arrow";
 }
 
 function onCharacterCreated(node: CharacterNode) {
