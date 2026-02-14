@@ -15,19 +15,20 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onBeforeMount, onMounted, computed, reactive} from 'vue'
+import {ref, onBeforeMount, onMounted, computed, reactive, watch} from 'vue'
 import { CharacterNode } from '@/models/CharacterNode'
 import { KnowEdge } from '@/models/KnowEdge'
-import type * as vNG from 'v-network-graph'
+import * as vNG from 'v-network-graph'
 import { RpgAssistantService } from './services/RpgAssistantService.ts'
 import {PageQuery} from "@/services/Models/PageQuery.ts";
-import {Character} from "@/services/Models/Character.ts";
 import {defineConfigs, VNetworkGraph} from "v-network-graph";
 import CreateCharacterComponent from "@/components/CreateCharacterComponent.vue";
 
 let rpgAssistantService: RpgAssistantService;
 
 const configs = reactive(vNG.getFullConfigs())
+configs.node.selectable = 1;
+
 
 
 const markedNodeId = ref<string | null>(null)
