@@ -21,24 +21,25 @@ export class RpgAssistantService {
       name: name,
     });
 
-    return await this._rpgAssistantClient.createCharacter(createCharacter, signal);
+    const resposne = await this._rpgAssistantClient.createCharacter(createCharacter, signal);
+
+    return resposne.result;
   }
 
   public async getCharacterAsync(id: string, signal?: AbortSignal): Promise<VersionedCharacter> {
     const response = await this._rpgAssistantClient.getCharacterById(id, signal);
-
-    return new VersionedCharacter(response.id, response.name, response.version);
+    response
+    return new VersionedCharacter(response.result.id, response.result.name, response.headers["etag"]);
   }
 
   public async updateCharacterAsync(updateCharacter: UpdateCharacter, signal?: AbortSignal) {
     const modelToUpdate = new UpdateCharacterDto({
       name: updateCharacter.name,
     });
-    const ifMatch = '"' + updateCharacter.version.toString() + '"';
 
     await this._rpgAssistantClient.updateCharacter(
       updateCharacter.id,
-      ifMatch,
+      updateCharacter.version,
       modelToUpdate,
       signal,
     );
@@ -60,7 +61,7 @@ export class RpgAssistantService {
       signal,
     );
 
-    return arrayOfCharacters.map((c) => new Character(c.id, c.name, c.knowCharacterIds));
+    return arrayOfCharacters.result.map((c) => new Character(c.id, c.name, c.knowCharacterIds));
   }
 
   public async createKnowRelationBetweenCharacters(
@@ -75,7 +76,7 @@ export class RpgAssistantService {
       description: description,
     });
 
-    return await this._rpgAssistantClient.createKnowRelationship(createKnowRelation, signal);
+    return (await this._rpgAssistantClient.createKnowRelationship(createKnowRelation, signal)).result;
   }
 
   public async deleteKnowRelationBetweenCharacters(
@@ -83,6 +84,6 @@ export class RpgAssistantService {
     toId: string,
     signal?: AbortSignal,
   ): Promise<void> {
-    return await this._rpgAssistantClient.deleteKnowRelationship(fromId, toId, signal);
+    return (await this._rpgAssistantClient.deleteKnowRelationship(fromId, toId, signal)).result;
   }
 }

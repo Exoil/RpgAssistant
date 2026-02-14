@@ -14,18 +14,17 @@
 <script setup lang="ts">
 import {onBeforeUnmount, ref, watch} from 'vue';
 import type { RpgAssistantService } from '@/services/RpgAssistantService';
-import { Character } from '@/services/Models/Character.ts';
 import {UpdateCharacter} from "@/services/Models/UpdateCharacter.ts";
+import {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
 
 const props = defineProps<{
   rpgAssistantService: RpgAssistantService;
   characterId: string | null;
 }>();
-let characterData = ref(new Character('', ''));
-let version = ref(-1);
+let characterData = ref(new VersionedCharacter('', '', ''));
 let controller: AbortController | null = null;
 const emit = defineEmits<{
-  (e: 'updated', characterData: Character): void;
+  (e: 'updated', characterData: VersionedCharacter): void;
 }>();
 
 async function onClickUpdateCharacter() {
@@ -37,7 +36,7 @@ async function onClickUpdateCharacter() {
     new UpdateCharacter(
       characterData.value.id,
       characterData.value.name,
-      version.value),
+      characterData.value.version),
     signal,
   );
 
@@ -53,8 +52,8 @@ async function loadCharacterById(id: string) {
   console.log('version on onload ' +  dto.version);
   characterData.value.id = dto.id;
   characterData.value.name = dto.name;
-  version.value = dto.version;
-  console.log('version on onload assign ' + version!.value);
+  characterData.value.version = dto.version;
+  console.log('version on onload assign ' + characterData.value.version);
 }
 
 
