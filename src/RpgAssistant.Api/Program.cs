@@ -34,6 +34,7 @@ public class Program
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
+                    .WithExposedHeaders("ETag", "Date", "Location")
             );
         });
 
