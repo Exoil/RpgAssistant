@@ -44,4 +44,12 @@ async function onClickCreateKnowEdge() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+#create-know-edge-button:disabled {
+  background: #9ca3af; /* gray */
+  color: #111827;      /* near-black text */
+  border-color: #6b7280;
+  cursor: not-allowed;
+  opacity: 1;          /* keep solid color (some browsers dim disabled buttons) */
+}
+</style>

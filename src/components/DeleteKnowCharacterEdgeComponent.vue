@@ -30,5 +30,3 @@ async function onClickDeleteKnowEdge() {
   emit(emitDeleteName, edgeId);
 }
 </script>
-
-<style scoped></style>

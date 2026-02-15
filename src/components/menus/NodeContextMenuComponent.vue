@@ -1,7 +1,7 @@
 <template>
   <div ref="nodeMenu" class="node-context-menu">
     Menu for the nodes
-    <button type="button" @click="onUpdateClick" :disabled="!firstSelectedCharacterId">
+    <button id="update-character" type="button" @click="onUpdateClick" :disabled="!firstSelectedCharacterId">
       Update node
     </button>
     <DeleteCharacterComponent
@@ -112,5 +112,13 @@ defineExpose({
   font-size: 12px;
   border: 1px solid #aaa;
   box-shadow: 2px 2px 2px #aaa;
+}
+
+#update-character:disabled {
+  background: #9ca3af; /* gray */
+  color: #111827;      /* near-black text */
+  border-color: #6b7280;
+  cursor: not-allowed;
+  opacity: 1;          /* prevent browser from fading it */
 }
 </style>
