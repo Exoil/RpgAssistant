@@ -23,6 +23,18 @@
         :characterId="markedNodeId"
         @updated="onCharacterUpdated"/>
     </div>
+
+    <div>
+      <h3>Delete know edge</h3>
+      <DeleteKnowCharacterEdgeComponent
+        :rpgAssistantService="rpgAssistantService"
+        :edgeId="markedEdgeId"
+        :edgeIdSeparator = EdgeIdSeparator
+        @deletedEdge="onEdgeKnowDeleted"
+      />
+
+    </div>
+
     <v-network-graph
       :nodes="nodesForGraph"
       :edges="edgesForGraph"
@@ -41,12 +53,13 @@ import { KnowEdge } from '@/models/KnowEdge';
 import * as vNG from 'v-network-graph';
 import { RpgAssistantService } from './services/RpgAssistantService.ts';
 import { PageQuery } from '@/services/Models/PageQuery.ts';
-import { VNetworkGraph } from 'v-network-graph';
+import {type EdgeEvent, type NodeEvent, type ViewEvent, VNetworkGraph} from 'v-network-graph';
 import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue';
 import DeleteCharacterComponent from "@/components/DeleteCharacterComponent.vue";
 import type {Character} from "@/services/Models/Character.ts";
 import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue";
 import type {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
+import DeleteKnowCharacterEdgeComponent from "@/components/DeleteKnowCharacterEdgeComponent.vue";
 
 let rpgAssistantService: RpgAssistantService;
 
@@ -171,23 +184,55 @@ function onCharacterUpdated(updatedCharacter: VersionedCharacter) {
   nodeList.value[idx]!.updateName(updatedCharacter.name);
 }
 
+function onEdgeKnowDeleted(deletedEdgeId: string) {
+  const [fromId, toId] = deletedEdgeId.split(EdgeIdSeparator);
+  const idx = edges.value.findIndex((n) => n.source === fromId && n.target === toId);
+
+  if (idx === -1)
+    return;
+
+  edges.value.splice(idx, 1);
+}
+
 // --- Event handlers --- //
-const eventHandlers: vNG.EventHandlers = {
-  'node:click': ({ node }) => {
-    suppressNextViewClickClear.value = true;
-    markedNodeId.value = node;
-  },
-  'edge:click': ({ edge }) => {
-    suppressNextViewClickClear.value = true;
-    markedEdgeId.value = edge
-    console.log(markedEdgeId.value);
-  },
-  'view:click': ({ event }) => {
-    if (suppressNextViewClickClear.value) {
-      suppressNextViewClickClear.value = false;
-      return;
+
+
+function nodeClickHandler(nodeEvents: NodeEvent<MouseEvent>) {
+  suppressNextViewClickClear.value = true;
+  markedNodeId.value = nodeEvents.node;
+}
+
+function edgeClickHandler(edgeEvent: EdgeEvent<MouseEvent>) {
+  suppressNextViewClickClear.value = true;
+  markedEdgeId.value = edgeEvent.edge;
+}
+
+function viewClickHandler(clickEvent: ViewEvent<MouseEvent>){
+  if (suppressNextViewClickClear.value) {
+    suppressNextViewClickClear.value = false;
+    return;
+  }
+  markedEdgeId.value = undefined;
+  markedNodeId.value = null;
+}
+
+function showContextMenu(element: HTMLElement, event: MouseEvent) {
+  element.style.left = event.x + "px"
+  element.style.top = event.y + "px"
+  element.style.visibility = "visible"
+  const handler = (event: PointerEvent) => {
+    if (!event.target || !element.contains(event.target as HTMLElement)) {
+      element.style.visibility = "hidden"
+      document.removeEventListener("pointerdown", handler, { capture: true })
     }
-  },
+  }
+  document.addEventListener("pointerdown", handler, { passive: true, capture: true })
+}
+
+const eventHandlers: vNG.EventHandlers = {
+  'node:click': nodeClickHandler,
+  'edge:click': edgeClickHandler,
+  'view:click': viewClickHandler,
 };
 </script>
 
