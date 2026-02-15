@@ -29,6 +29,7 @@
       :configs="configs"
       :event-handlers="eventHandlers"
       v-model:selected-nodes="selectedNodeIds"
+      v-model:selected-edges="selectedEdgeIds"
     />
   </div>
 </template>
@@ -49,9 +50,10 @@ import type {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
 
 let rpgAssistantService: RpgAssistantService;
 
+const EdgeIdSeparator = '_';
 const configs = reactive(vNG.getFullConfigs());
-
 const markedNodeId = ref<string | null>(null);
+const markedEdgeId = ref<string | undefined>(undefined);
 const suppressNextViewClickClear = ref(false);
 const selectedNodeIds = computed<string[]>({
   get() {
@@ -64,6 +66,20 @@ const selectedNodeIds = computed<string[]>({
       return;
     }
     markedNodeId.value = next;
+  },
+});
+
+const selectedEdgeIds = computed<string[]>({
+  get() {
+    return markedEdgeId.value ? [markedEdgeId.value] : [];
+  },
+  set(ids) {
+    const next = ids?.[0];
+
+    if (!next) {
+      return;
+    }
+    markedEdgeId.value = next;
   },
 });
 
@@ -82,7 +98,7 @@ const edges = ref<KnowEdge[]>([]);
 const edgesForGraph = computed<vNG.Edges>(() =>
   Object.fromEntries(
     edges.value.map((e) => [
-      e.source + e.target,
+      e.source + EdgeIdSeparator + e.target,
       {
         source: e.source,
         target: e.target,
@@ -113,6 +129,7 @@ onMounted(async () => {
 
 function SetupGraphConfig() {
   configs.node.selectable = 1;
+  configs.edge.selectable = 1;
   configs.edge.type = 'straight';
   configs.edge.marker.source.type = 'none';
   configs.edge.marker.target.type = 'arrow';
@@ -160,12 +177,10 @@ const eventHandlers: vNG.EventHandlers = {
     suppressNextViewClickClear.value = true;
     markedNodeId.value = node;
   },
-  'node:pointerdown': ({ node, event }) => {
-    // mark immediately on press
-    markedNodeId.value = node;
-
-    // optional: stop the browser from doing text selection / dragging
-    event.preventDefault();
+  'edge:click': ({ edge }) => {
+    suppressNextViewClickClear.value = true;
+    markedEdgeId.value = edge
+    console.log(markedEdgeId.value);
   },
   'view:click': ({ event }) => {
     if (suppressNextViewClickClear.value) {
