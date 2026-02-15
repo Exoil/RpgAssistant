@@ -45,6 +45,7 @@ import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue'
 import DeleteCharacterComponent from "@/components/DeleteCharacterComponent.vue";
 import type {Character} from "@/services/Models/Character.ts";
 import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue";
+import type {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
 
 let rpgAssistantService: RpgAssistantService;
 
@@ -142,7 +143,7 @@ function onCharacterDeleted(id: string) {
   nodeList.value.splice(idx, 1);
 }
 
-function onCharacterUpdated(updatedCharacter: Character) {
+function onCharacterUpdated(updatedCharacter: VersionedCharacter) {
 
   const idx = nodeList.value.findIndex((n) => n.id === updatedCharacter.id);
 

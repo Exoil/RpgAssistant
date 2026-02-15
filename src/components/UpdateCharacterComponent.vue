@@ -53,7 +53,6 @@ async function loadCharacterById(id: string) {
   characterData.value.version = dto.version;
 }
 
-
 watch(
   () => props.characterId,
   async (id) => {
