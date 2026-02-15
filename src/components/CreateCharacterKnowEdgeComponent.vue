@@ -1,6 +1,6 @@
 <template>
   <div class="create-know-edge-form">
-    <button id="create-know-edge-button" @click="onClickCreateKnowEdge"> Create know edge </button>
+    <button id="create-know-edge-button" @click="onClickCreateKnowEdge" :disabled="!fromNodeId && !targetNodeId"> Create know edge </button>
   </div>
 </template>
 

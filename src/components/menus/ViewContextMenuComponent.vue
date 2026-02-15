@@ -1,18 +1,14 @@
 <template>
   <div ref="viewMenu" class="view-context-menu">
-    <CreateCharacterComponent
-      :rpgAssistantService="rpgAssistantService"
-      @characterCreated="onCharacterCreated"
-    />
+    <button type="button" @click="onCreateClick">
+      Create node…
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import {ref} from "vue";
 import * as vNG from 'v-network-graph';
-import type {RpgAssistantService} from "@/services/RpgAssistantService.ts";
-import CreateCharacterComponent from "@/components/CreateCharacterComponent.vue";
-import {CharacterNode} from "@/models/CharacterNode.ts";
 
 const viewMenu = ref<HTMLDivElement>();
 
@@ -28,16 +24,12 @@ function hideMenu() {
   }
 }
 
-const { rpgAssistantService} = defineProps<{
-  rpgAssistantService: RpgAssistantService;
-}>();
-
 const emit = defineEmits<{
-  (e: 'onCharacterCreatedFromViewMenu', node: CharacterNode): void;
+  (e: 'openCreateCharacterDialog'): void;
 }>();
 
-function onCharacterCreated(node: CharacterNode) {
-  emit('onCharacterCreatedFromViewMenu', node);
+function onCreateClick() {
+  emit("openCreateCharacterDialog");
   hideMenu();
 }
 

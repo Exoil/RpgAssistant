@@ -14,7 +14,7 @@
         :firstSelectedCharacterId="markedNodeId"
         :secondSelectedCharacterId="markedNodeSecondId"
         :edgeIdSeparator = "EdgeIdSeparator"
-        @updatedCharacterFromMenu="onCharacterUpdated"
+        @openUpdateCharacterDialog="openUpdateDialog"
         @deletedCharacterFromMenu="onCharacterDeleted"
         @createKnowEdgeFromMenu="onEdgeKnowCreated"
         />
@@ -27,9 +27,31 @@
         />
       <ViewContextMenuComponent
         ref="viewMenuRef"
-        :rpgAssistantService="rpgAssistantService"
-        @onCharacterCreatedFromViewMenu="onCharacterCreated"
+        @openCreateCharacterDialog="openCreateDialog"
         />
+
+    <BaseModal
+      :open="createDialogOpen"
+      title="Create character"
+      @close="createDialogOpen = false"
+    >
+      <CreateCharacterComponent
+        :rpgAssistantService="rpgAssistantService"
+        @characterCreated="onCharacterCreated"
+      />
+    </BaseModal>
+
+    <BaseModal
+      :open="updateDialogOpen"
+      title="Update character"
+      @close="updateDialogOpen = false"
+    >
+      <UpdateCharacterComponent
+        :rpgAssistantService="rpgAssistantService"
+        :characterId="markedNodeId"
+        @updatedCharacter="onCharacterUpdated"
+      />
+    </BaseModal>
   </div>
 </template>
 
@@ -45,6 +67,9 @@ import type {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
 import NodeContextMenuComponent from "@/components/menus/NodeContextMenuComponent.vue";
 import EdgeContextMenuComponent from "@/components/menus/EdgeContextMenuComponent.vue";
 import ViewContextMenuComponent from "@/components/menus/ViewContextMenuComponent.vue";
+import BaseModal from "@/components/BaseModal.vue";
+import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue";
+import CreateCharacterComponent from "@/components/CreateCharacterComponent.vue";
 
 let rpgAssistantService: RpgAssistantService;
 const viewMenuRef = ref<InstanceType<typeof ViewContextMenuComponent> | null>(null);
@@ -159,9 +184,20 @@ function SetupGraphConfig() {
   configs.view.layoutHandler = new vNG.GridLayout({grid: 10});
 }
 
+const createDialogOpen = ref(false);
+function openCreateDialog() {
+  createDialogOpen.value = true;
+}
+
+const updateDialogOpen = ref(false);
+function openUpdateDialog() {
+  updateDialogOpen.value = true;
+}
+
 function onCharacterCreated(node: CharacterNode) {
   nodeList.value.push(node);
   markedNodeId.value = node.id;
+  createDialogOpen.value = false;
 }
 
 function onCharacterDeleted(id: string) {
@@ -183,6 +219,7 @@ function onCharacterUpdated(updatedCharacter: VersionedCharacter) {
 
   nodeList.value[idx]!.characterData.id = updatedCharacter.id;
   nodeList.value[idx]!.updateName(updatedCharacter.name);
+  updateDialogOpen.value = false;
 }
 
 function onEdgeKnowDeleted(deletedEdgeId: string) {

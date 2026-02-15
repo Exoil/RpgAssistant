@@ -1,6 +1,6 @@
 <template>
   <div class="delete-character-form">
-    <button id="delete-character-button" @click="onClickDeleteCharacter"> Delete character </button>
+    <button id="delete-character-button" @click="onClickDeleteCharacter" :disabled="!characterId"> Delete character </button>
   </div>
 </template>
 

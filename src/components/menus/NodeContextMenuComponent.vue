@@ -1,11 +1,11 @@
 <template>
   <div ref="nodeMenu" class="node-context-menu">
     Menu for the nodes
-    <UpdateCharacterComponent
-      :rpgAssistantService="rpgAssistantService"
-      :characterId="firstSelectedCharacterId"
-      @updatedCharacter="onCharacterUpdated"/>
+    <button type="button" @click="onUpdateClick" :disabled="!firstSelectedCharacterId">
+      Update node
+    </button>
     <DeleteCharacterComponent
+      :disabled="!firstSelectedCharacterId"
       :rpgAssistantService="rpgAssistantService"
       :characterId="firstSelectedCharacterId"
       @deletedCharacter="onCharacterDeleted"/>
@@ -22,8 +22,6 @@
 import {ref} from "vue";
 import * as vNG from 'v-network-graph';
 import type {RpgAssistantService} from "@/services/RpgAssistantService.ts";
-import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue";
-import {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
 import DeleteCharacterComponent from "@/components/DeleteCharacterComponent.vue";
 import CreateCharacterKnowEdgeComponent from "@/components/CreateCharacterKnowEdgeComponent.vue";
 
@@ -49,13 +47,14 @@ const { rpgAssistantService, firstSelectedCharacterId, secondSelectedCharacterId
 }>();
 
 const emit = defineEmits<{
-  (e: 'updatedCharacterFromMenu', characterData: VersionedCharacter): void;
+  (e: 'openUpdateCharacterDialog'): void;
   (e: 'deletedCharacterFromMenu', deletedCharacterId: string): void;
   (e: 'createKnowEdgeFromMenu', createdEdgeId: string): void;
 }>();
 
-function onCharacterUpdated(updatedCharacter: VersionedCharacter) {
-  emit('updatedCharacterFromMenu', updatedCharacter);
+function onUpdateClick() {
+  emit("openUpdateCharacterDialog");
+  hideMenu();
 }
 
 function onCharacterDeleted(deletedCharacterId: string) {
