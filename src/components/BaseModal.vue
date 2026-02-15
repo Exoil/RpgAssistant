@@ -22,7 +22,7 @@ defineProps<{
 }>();
 
 defineEmits<{
-  (e: "close"): void;
+  (e: 'close'): void;
 }>();
 </script>
 
@@ -30,7 +30,7 @@ defineEmits<{
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0, 0, 0, 0.35);
   display: grid;
   place-items: center;
   z-index: 9999;
@@ -39,7 +39,7 @@ defineEmits<{
   width: min(520px, calc(100vw - 32px));
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
   overflow: hidden;
 }
 .modal-header {

@@ -1,54 +1,43 @@
 <template>
   <div class="app">
-      <v-network-graph
-        :nodes="nodesForGraph"
-        :edges="edgesForGraph"
-        :configs="configs"
-        :event-handlers="eventHandlers"
-        v-model:selected-nodes="selectedNodeIds"
-        v-model:selected-edges="selectedEdgeIds"
-      />
-      <NodeContextMenuComponent
-        ref="nodeMenuRef"
-        :rpgAssistantService="rpgAssistantService"
-        :firstSelectedCharacterId="markedNodeId"
-        :secondSelectedCharacterId="markedNodeSecondId"
-        :edgeIdSeparator = "EdgeIdSeparator"
-        @openUpdateCharacterDialog="openUpdateDialog"
-        @deletedCharacterFromMenu="onCharacterDeleted"
-        @createKnowEdgeFromMenu="onEdgeKnowCreated"
-        />
-      <EdgeContextMenuComponent
-        ref="edgeMenuRef"
-        :rpgAssistantService="rpgAssistantService"
-        :selectedEdgeId="markedEdgeId"
-        :edgeIdSeparator = "EdgeIdSeparator"
-        @deleteKnowEdgeFromMenu="onEdgeKnowDeleted"
-        />
-      <ViewContextMenuComponent
-        ref="viewMenuRef"
-        @openCreateCharacterDialog="openCreateDialog"
-        />
+    <v-network-graph
+      :nodes="nodesForGraph"
+      :edges="edgesForGraph"
+      :configs="graphConfiguration"
+      :event-handlers="eventHandlers"
+      v-model:selected-nodes="selectedNodeIds"
+      v-model:selected-edges="selectedEdgeIds"
+    />
+    <NodeContextMenuComponent
+      ref="nodeMenuRef"
+      :rpgAssistantService="rpgAssistantService"
+      :firstSelectedCharacterId="firstSelectedNodeId"
+      :secondSelectedCharacterId="secondSelectedNodeId"
+      :edgeIdSeparator="EdgeIdSeparator"
+      @openUpdateCharacterDialog="openUpdateDialog"
+      @deletedCharacterFromMenu="onCharacterDeleted"
+      @createKnowEdgeFromMenu="onEdgeKnowCreated"
+    />
+    <EdgeContextMenuComponent
+      ref="edgeMenuRef"
+      :rpgAssistantService="rpgAssistantService"
+      :selectedEdgeId="selectedEdgeId"
+      :edgeIdSeparator="EdgeIdSeparator"
+      @deleteKnowEdgeFromMenu="onEdgeKnowDeleted"
+    />
+    <ViewContextMenuComponent ref="viewMenuRef" @openCreateCharacterDialog="openCreateDialog" />
 
-    <BaseModal
-      :open="createDialogOpen"
-      title="Create character"
-      @close="createDialogOpen = false"
-    >
+    <BaseModal :open="createDialogOpen" title="Create character" @close="createDialogOpen = false">
       <CreateCharacterComponent
         :rpgAssistantService="rpgAssistantService"
         @characterCreated="onCharacterCreated"
       />
     </BaseModal>
 
-    <BaseModal
-      :open="updateDialogOpen"
-      title="Update character"
-      @close="updateDialogOpen = false"
-    >
+    <BaseModal :open="updateDialogOpen" title="Update character" @close="updateDialogOpen = false">
       <UpdateCharacterComponent
         :rpgAssistantService="rpgAssistantService"
-        :characterId="markedNodeId"
+        :characterId="firstSelectedNodeId"
         @updatedCharacter="onCharacterUpdated"
       />
     </BaseModal>
@@ -62,34 +51,35 @@ import { KnowEdge } from '@/models/KnowEdge';
 import * as vNG from 'v-network-graph';
 import { RpgAssistantService } from './services/RpgAssistantService.ts';
 import { PageQuery } from '@/services/Models/PageQuery.ts';
-import {type EdgeEvent, type NodeEvent, type ViewEvent, VNetworkGraph} from 'v-network-graph';
-import type {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
-import NodeContextMenuComponent from "@/components/menus/NodeContextMenuComponent.vue";
-import EdgeContextMenuComponent from "@/components/menus/EdgeContextMenuComponent.vue";
-import ViewContextMenuComponent from "@/components/menus/ViewContextMenuComponent.vue";
-import BaseModal from "@/components/BaseModal.vue";
-import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue";
-import CreateCharacterComponent from "@/components/CreateCharacterComponent.vue";
+import { type EdgeEvent, type NodeEvent, type ViewEvent, VNetworkGraph } from 'v-network-graph';
+import type { VersionedCharacter } from '@/services/Models/VersionedCharacter.ts';
+import NodeContextMenuComponent from '@/components/menus/NodeContextMenuComponent.vue';
+import EdgeContextMenuComponent from '@/components/menus/EdgeContextMenuComponent.vue';
+import ViewContextMenuComponent from '@/components/menus/ViewContextMenuComponent.vue';
+import BaseModal from '@/components/BaseModal.vue';
+import UpdateCharacterComponent from '@/components/UpdateCharacterComponent.vue';
+import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue';
 
 let rpgAssistantService: RpgAssistantService;
 const viewMenuRef = ref<InstanceType<typeof ViewContextMenuComponent> | null>(null);
 const nodeMenuRef = ref<InstanceType<typeof NodeContextMenuComponent> | null>(null);
 const edgeMenuRef = ref<InstanceType<typeof EdgeContextMenuComponent> | null>(null);
 const EdgeIdSeparator = '_';
-const configs = reactive(vNG.getFullConfigs());
-const markedNodeId = ref<string | null>(null);
-const markedNodeSecondId = ref<string | null>(null);
-const markedEdgeId = ref<string | undefined>(undefined);
+const graphConfiguration = reactive(vNG.getFullConfigs());
+const firstSelectedNodeId = ref<string | null>(null);
+const secondSelectedNodeId = ref<string | null>(null);
+const selectedEdgeId = ref<string | undefined>(undefined);
 const suppressNextViewClickClear = ref(false);
+
 const selectedNodeIds = computed<string[]>({
   get() {
     let selectedNodes = [];
 
-    if (markedNodeId.value) {
-      selectedNodes.push(markedNodeId.value);
+    if (firstSelectedNodeId.value) {
+      selectedNodes.push(firstSelectedNodeId.value);
     }
-    if (markedNodeSecondId.value) {
-      selectedNodes.push(markedNodeSecondId.value);
+    if (secondSelectedNodeId.value) {
+      selectedNodes.push(secondSelectedNodeId.value);
     }
     return selectedNodes;
   },
@@ -99,18 +89,18 @@ const selectedNodeIds = computed<string[]>({
     const secondId = ids?.[1];
 
     if (firstId) {
-      markedNodeId.value = firstId;
+      firstSelectedNodeId.value = firstId;
     }
 
     if (secondId) {
-      markedNodeSecondId.value = secondId;
+      secondSelectedNodeId.value = secondId;
     }
   },
 });
 
 const selectedEdgeIds = computed<string[]>({
   get() {
-    return markedEdgeId.value ? [markedEdgeId.value] : [];
+    return selectedEdgeId.value ? [selectedEdgeId.value] : [];
   },
   set(ids) {
     const next = ids?.[0];
@@ -118,7 +108,7 @@ const selectedEdgeIds = computed<string[]>({
     if (!next) {
       return;
     }
-    markedEdgeId.value = next;
+    selectedEdgeId.value = next;
   },
 });
 
@@ -167,21 +157,21 @@ onMounted(async () => {
 });
 
 function SetupGraphConfig() {
-  configs.node.selectable = 2;
-  configs.edge.selectable = 1;
-  configs.edge.type = 'straight';
-  configs.edge.marker.source.type = 'none';
-  configs.edge.marker.target.type = 'arrow';
-  configs.view.grid.visible = true;
-  configs.view.grid.interval = 10;
-  configs.view.grid.thickIncrements = 5;
-  configs.view.grid.line.color = '#e0e0e0';
-  configs.view.grid.line.width = 1;
-  configs.view.grid.line.dasharray = 1;
-  configs.view.grid.thick.color = '#cccccc';
-  configs.view.grid.thick.width = 1;
-  configs.view.grid.thick.dasharray = 0;
-  configs.view.layoutHandler = new vNG.GridLayout({grid: 10});
+  graphConfiguration.node.selectable = 2;
+  graphConfiguration.edge.selectable = 1;
+  graphConfiguration.edge.type = 'straight';
+  graphConfiguration.edge.marker.source.type = 'none';
+  graphConfiguration.edge.marker.target.type = 'arrow';
+  graphConfiguration.view.grid.visible = true;
+  graphConfiguration.view.grid.interval = 10;
+  graphConfiguration.view.grid.thickIncrements = 5;
+  graphConfiguration.view.grid.line.color = '#e0e0e0';
+  graphConfiguration.view.grid.line.width = 1;
+  graphConfiguration.view.grid.line.dasharray = 1;
+  graphConfiguration.view.grid.thick.color = '#cccccc';
+  graphConfiguration.view.grid.thick.width = 1;
+  graphConfiguration.view.grid.thick.dasharray = 0;
+  graphConfiguration.view.layoutHandler = new vNG.GridLayout({ grid: 10 });
 }
 
 const createDialogOpen = ref(false);
@@ -196,26 +186,22 @@ function openUpdateDialog() {
 
 function onCharacterCreated(node: CharacterNode) {
   nodeList.value.push(node);
-  markedNodeId.value = node.id;
+  firstSelectedNodeId.value = node.id;
   createDialogOpen.value = false;
 }
 
 function onCharacterDeleted(id: string) {
-
   const idx = nodeList.value.findIndex((n) => n.id === id);
 
-  if (idx === -1)
-    return;
+  if (idx === -1) return;
 
   nodeList.value.splice(idx, 1);
 }
 
 function onCharacterUpdated(updatedCharacter: VersionedCharacter) {
-
   const idx = nodeList.value.findIndex((n) => n.id === updatedCharacter.id);
 
-  if (idx === -1)
-    return;
+  if (idx === -1) return;
 
   nodeList.value[idx]!.characterData.id = updatedCharacter.id;
   nodeList.value[idx]!.updateName(updatedCharacter.name);
@@ -226,8 +212,7 @@ function onEdgeKnowDeleted(deletedEdgeId: string) {
   const [fromId, toId] = deletedEdgeId.split(EdgeIdSeparator);
   const idx = edges.value.findIndex((n) => n.source === fromId && n.target === toId);
 
-  if (idx === -1)
-    return;
+  if (idx === -1) return;
 
   edges.value.splice(idx, 1);
 }
@@ -236,8 +221,7 @@ function onEdgeKnowCreated(deletedEdgeId: string) {
   const [fromId, toId] = deletedEdgeId.split(EdgeIdSeparator);
   const foundNodeIndex = nodeList.value.findIndex((n) => n.id === fromId);
 
-  if (foundNodeIndex === -1)
-    return;
+  if (foundNodeIndex === -1) return;
 
   nodeList.value[foundNodeIndex]!.characterData.knowCharacterIds.push(toId!);
   edges.value.push(new KnowEdge(fromId!, toId!));
@@ -246,36 +230,36 @@ function onEdgeKnowCreated(deletedEdgeId: string) {
 // --- Event handlers --- //
 function nodeClickHandler(nodeEvents: NodeEvent<MouseEvent>) {
   suppressNextViewClickClear.value = true;
-  markedNodeId.value = nodeEvents.node;
+  firstSelectedNodeId.value = nodeEvents.node;
 }
 
 function edgeClickHandler(edgeEvent: EdgeEvent<MouseEvent>) {
   suppressNextViewClickClear.value = true;
-  markedEdgeId.value = edgeEvent.edge;
+  selectedEdgeId.value = edgeEvent.edge;
 }
 
-function viewClickHandler(clickEvent: ViewEvent<MouseEvent>){
+function viewClickHandler(clickEvent: ViewEvent<MouseEvent>) {
   if (suppressNextViewClickClear.value) {
     suppressNextViewClickClear.value = false;
     return;
   }
-  markedEdgeId.value = undefined;
-  markedNodeId.value = null;
-  markedNodeSecondId.value = null;
+  selectedEdgeId.value = undefined;
+  firstSelectedNodeId.value = null;
+  secondSelectedNodeId.value = null;
 }
 
 function showNodeContextMenu(params: NodeEvent<MouseEvent>) {
   suppressNextViewClickClear.value = true;
   const clickedId = params.node;
 
-  if (!markedNodeId.value) {
-    markedNodeId.value = clickedId;
-  } else if (markedNodeId.value === clickedId) {
-  } else if (!markedNodeSecondId.value) {
-    markedNodeSecondId.value = clickedId;
-  } else if (markedNodeSecondId.value === clickedId) {
+  if (!firstSelectedNodeId.value) {
+    firstSelectedNodeId.value = clickedId;
+  } else if (firstSelectedNodeId.value === clickedId) {
+  } else if (!secondSelectedNodeId.value) {
+    secondSelectedNodeId.value = clickedId;
+  } else if (secondSelectedNodeId.value === clickedId) {
   } else {
-    markedNodeSecondId.value = clickedId;
+    secondSelectedNodeId.value = clickedId;
   }
 
   nodeMenuRef.value?.showNodeContextMenu(params);
@@ -289,7 +273,7 @@ function showEdgeContextMenu(params: EdgeEvent<MouseEvent>) {
     return;
   }
 
-  markedEdgeId.value = clickedEdgeId;
+  selectedEdgeId.value = clickedEdgeId;
 
   edgeMenuRef.value?.showEdgeContextMenu(params);
 }
@@ -298,8 +282,6 @@ function showViewContextMenu(params: vNG.ViewEvent<MouseEvent>) {
   suppressNextViewClickClear.value = true;
   viewMenuRef.value?.showViewContextMenu(params);
 }
-
-
 
 const eventHandlers: vNG.EventHandlers = {
   'node:click': nodeClickHandler,

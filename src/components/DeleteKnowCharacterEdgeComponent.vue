@@ -1,13 +1,13 @@
 <template>
   <div class="delete-know-edge-form">
-    <button id="delete-know-edge-button" @click="onClickDeleteKnowEdge"> Delete know edge </button>
+    <button id="delete-know-edge-button" @click="onClickDeleteKnowEdge">Delete know edge</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import type {RpgAssistantService} from "@/services/RpgAssistantService.ts";
+import type { RpgAssistantService } from '@/services/RpgAssistantService.ts';
 
-const { rpgAssistantService, edgeId , edgeIdSeparator} = defineProps<{
+const { rpgAssistantService, edgeId, edgeIdSeparator } = defineProps<{
   rpgAssistantService: RpgAssistantService;
   edgeId: string | undefined;
   edgeIdSeparator: string;
@@ -20,17 +20,12 @@ const emit = defineEmits<{
 
 async function onClickDeleteKnowEdge() {
   controller?.abort();
-  if (!edgeId)
-    return;
+  if (!edgeId) return;
 
   controller = new AbortController();
   const signal = controller.signal;
   const [fromId, toId] = edgeId.split(edgeIdSeparator);
-  await rpgAssistantService.deleteKnowRelationBetweenCharacters(
-    fromId!,
-    toId!,
-    signal,
-  );
+  await rpgAssistantService.deleteKnowRelationBetweenCharacters(fromId!, toId!, signal);
 
   emit(emitDeleteName, edgeId);
 }

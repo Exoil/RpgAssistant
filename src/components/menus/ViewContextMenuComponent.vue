@@ -1,13 +1,11 @@
 <template>
   <div ref="viewMenu" class="view-context-menu">
-    <button type="button" @click="onCreateClick">
-      Create node…
-    </button>
+    <button type="button" @click="onCreateClick">Create node…</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import { ref } from 'vue';
 import * as vNG from 'v-network-graph';
 
 const viewMenu = ref<HTMLDivElement>();
@@ -16,10 +14,10 @@ let outsidePointerHandler: ((event: PointerEvent) => void) | null = null;
 
 function hideMenu() {
   if (viewMenu.value) {
-    viewMenu.value.style.visibility = "hidden";
+    viewMenu.value.style.visibility = 'hidden';
   }
   if (outsidePointerHandler) {
-    document.removeEventListener("pointerdown", outsidePointerHandler, { capture: true });
+    document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
     outsidePointerHandler = null;
   }
 }
@@ -29,17 +27,17 @@ const emit = defineEmits<{
 }>();
 
 function onCreateClick() {
-  emit("openCreateCharacterDialog");
+  emit('openCreateCharacterDialog');
   hideMenu();
 }
 
 function showContextMenu(element: HTMLElement, event: MouseEvent) {
-  element.style.left = event.x + "px";
-  element.style.top = event.y + "px";
-  element.style.visibility = "visible";
+  element.style.left = event.x + 'px';
+  element.style.top = event.y + 'px';
+  element.style.visibility = 'visible';
 
   if (outsidePointerHandler) {
-    document.removeEventListener("pointerdown", outsidePointerHandler, { capture: true });
+    document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
   }
 
   outsidePointerHandler = (event: PointerEvent) => {
@@ -48,7 +46,7 @@ function showContextMenu(element: HTMLElement, event: MouseEvent) {
     }
   };
 
-  document.addEventListener("pointerdown", outsidePointerHandler, { passive: true, capture: true });
+  document.addEventListener('pointerdown', outsidePointerHandler, { passive: true, capture: true });
 }
 
 function showViewContextMenu(params: vNG.ViewEvent<MouseEvent>) {

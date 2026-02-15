@@ -3,17 +3,17 @@
     <DeleteKnowCharacterEdgeComponent
       :rpgAssistantService="rpgAssistantService"
       :edgeId="selectedEdgeId"
-      :edgeIdSeparator = edgeIdSeparator
+      :edgeIdSeparator="edgeIdSeparator"
       @deletedKnowEdge="onEdgeKnowDeleted"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import { ref } from 'vue';
 import * as vNG from 'v-network-graph';
-import type {RpgAssistantService} from "@/services/RpgAssistantService.ts";
-import DeleteKnowCharacterEdgeComponent from "@/components/DeleteKnowCharacterEdgeComponent.vue";
+import type { RpgAssistantService } from '@/services/RpgAssistantService.ts';
+import DeleteKnowCharacterEdgeComponent from '@/components/DeleteKnowCharacterEdgeComponent.vue';
 
 const edgeMenu = ref<HTMLDivElement>();
 
@@ -21,10 +21,10 @@ let outsidePointerHandler: ((event: PointerEvent) => void) | null = null;
 
 function hideMenu() {
   if (edgeMenu.value) {
-    edgeMenu.value.style.visibility = "hidden";
+    edgeMenu.value.style.visibility = 'hidden';
   }
   if (outsidePointerHandler) {
-    document.removeEventListener("pointerdown", outsidePointerHandler, { capture: true });
+    document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
     outsidePointerHandler = null;
   }
 }
@@ -44,12 +44,12 @@ function onEdgeKnowDeleted(createdEdgeId: string) {
 }
 
 function showContextMenu(element: HTMLElement, event: MouseEvent) {
-  element.style.left = event.x + "px";
-  element.style.top = event.y + "px";
-  element.style.visibility = "visible";
+  element.style.left = event.x + 'px';
+  element.style.top = event.y + 'px';
+  element.style.visibility = 'visible';
 
   if (outsidePointerHandler) {
-    document.removeEventListener("pointerdown", outsidePointerHandler, { capture: true });
+    document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
   }
 
   outsidePointerHandler = (event: PointerEvent) => {
@@ -58,7 +58,7 @@ function showContextMenu(element: HTMLElement, event: MouseEvent) {
     }
   };
 
-  document.addEventListener("pointerdown", outsidePointerHandler, { passive: true, capture: true });
+  document.addEventListener('pointerdown', outsidePointerHandler, { passive: true, capture: true });
 }
 
 function showEdgeContextMenu(params: vNG.EdgeEvent<MouseEvent>) {

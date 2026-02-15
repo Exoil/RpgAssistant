@@ -12,10 +12,10 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeUnmount, ref, watch} from 'vue';
+import { onBeforeUnmount, ref, watch } from 'vue';
 import type { RpgAssistantService } from '@/services/RpgAssistantService';
-import {UpdateCharacter} from "@/services/Models/UpdateCharacter.ts";
-import {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
+import { UpdateCharacter } from '@/services/Models/UpdateCharacter.ts';
+import { VersionedCharacter } from '@/services/Models/VersionedCharacter.ts';
 
 const props = defineProps<{
   rpgAssistantService: RpgAssistantService;
@@ -36,7 +36,8 @@ async function onClickUpdateCharacter() {
     new UpdateCharacter(
       characterData.value.id,
       characterData.value.name,
-      characterData.value.version),
+      characterData.value.version,
+    ),
     signal,
   );
 
@@ -56,8 +57,7 @@ async function loadCharacterById(id: string) {
 watch(
   () => props.characterId,
   async (id) => {
-    if (!id)
-      return;
+    if (!id) return;
 
     await loadCharacterById(id);
   },

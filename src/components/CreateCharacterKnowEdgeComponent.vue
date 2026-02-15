@@ -1,13 +1,19 @@
 <template>
   <div class="create-know-edge-form">
-    <button id="create-know-edge-button" @click="onClickCreateKnowEdge" :disabled="!fromNodeId && !targetNodeId"> Create know edge </button>
+    <button
+      id="create-know-edge-button"
+      @click="onClickCreateKnowEdge"
+      :disabled="!fromNodeId && !targetNodeId"
+    >
+      Create know edge
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import type {RpgAssistantService} from "@/services/RpgAssistantService.ts";
+import type { RpgAssistantService } from '@/services/RpgAssistantService.ts';
 
-const { rpgAssistantService, fromNodeId, targetNodeId, edgeIdSeparator} = defineProps<{
+const { rpgAssistantService, fromNodeId, targetNodeId, edgeIdSeparator } = defineProps<{
   rpgAssistantService: RpgAssistantService;
   fromNodeId: string | null;
   targetNodeId: string | null;
@@ -22,8 +28,7 @@ const emit = defineEmits<{
 async function onClickCreateKnowEdge() {
   controller?.abort();
 
-  if (!fromNodeId || !targetNodeId)
-    return;
+  if (!fromNodeId || !targetNodeId) return;
 
   controller = new AbortController();
   const signal = controller.signal;

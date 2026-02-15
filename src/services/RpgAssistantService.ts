@@ -28,8 +28,12 @@ export class RpgAssistantService {
 
   public async getCharacterAsync(id: string, signal?: AbortSignal): Promise<VersionedCharacter> {
     const response = await this._rpgAssistantClient.getCharacterById(id, signal);
-    response
-    return new VersionedCharacter(response.result.id, response.result.name, response.headers["etag"]);
+    response;
+    return new VersionedCharacter(
+      response.result.id,
+      response.result.name,
+      response.headers['etag'],
+    );
   }
 
   public async updateCharacterAsync(updateCharacter: UpdateCharacter, signal?: AbortSignal) {
@@ -76,7 +80,8 @@ export class RpgAssistantService {
       description: description,
     });
 
-    return (await this._rpgAssistantClient.createKnowRelationship(createKnowRelation, signal)).result;
+    return (await this._rpgAssistantClient.createKnowRelationship(createKnowRelation, signal))
+      .result;
   }
 
   public async deleteKnowRelationBetweenCharacters(
