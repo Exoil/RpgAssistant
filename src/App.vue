@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, onMounted, computed, reactive, watch } from 'vue';
+import { ref, onBeforeMount, onMounted, computed, reactive } from 'vue';
 import { CharacterNode } from '@/models/CharacterNode';
 import { KnowEdge } from '@/models/KnowEdge';
 import * as vNG from 'v-network-graph';
@@ -65,7 +65,6 @@ import { PageQuery } from '@/services/Models/PageQuery.ts';
 import {type EdgeEvent, type NodeEvent, type ViewEvent, VNetworkGraph} from 'v-network-graph';
 import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue';
 import DeleteCharacterComponent from "@/components/DeleteCharacterComponent.vue";
-import type {Character} from "@/services/Models/Character.ts";
 import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue";
 import type {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
 import DeleteKnowCharacterEdgeComponent from "@/components/DeleteKnowCharacterEdgeComponent.vue";
