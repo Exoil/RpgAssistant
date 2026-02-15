@@ -86,7 +86,7 @@ function showContextMenu(element: HTMLElement, event: MouseEvent) {
 }
 
 function showNodeContextMenu(params: vNG.NodeEvent<MouseEvent>) {
-  const { event } = params;
+  const { node, event } = params;
   event.stopPropagation();
   event.preventDefault();
 

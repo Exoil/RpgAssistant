@@ -250,8 +250,21 @@ function showContextMenu(element: HTMLElement, event: MouseEvent) {
 function showNodeContextMenu(params: NodeEvent<MouseEvent>) {
   suppressNextViewClickClear.value = true;
 
-  // Make sure the menu actions point at the right node
-  markedNodeId.value = params.node;
+  const clickedId = params.node;
+
+  // Keep up to 2 marked nodes
+  if (!markedNodeId.value) {
+    markedNodeId.value = clickedId;
+  } else if (markedNodeId.value === clickedId) {
+    // clicked the already-marked first node -> do nothing
+  } else if (!markedNodeSecondId.value) {
+    markedNodeSecondId.value = clickedId;
+  } else if (markedNodeSecondId.value === clickedId) {
+    // clicked the already-marked second node -> do nothing
+  } else {
+    // already have 2 different nodes, replace the "second" with the new one
+    markedNodeSecondId.value = clickedId;
+  }
 
   // Delegate showing/positioning to the component that owns the menu DOM
   nodeMenuRef.value?.showNodeContextMenu(params);
