@@ -225,7 +225,7 @@ function onEdgeKnowCreated(deletedEdgeId: string) {
   if (foundNodeIndex === -1)
     return;
 
-  nodeList.value[foundNodeIndex]!.characterData.knowCharacterIds.push(toId);
+  nodeList.value[foundNodeIndex]!.characterData.knowCharacterIds.push(toId!);
   edges.value.push(new KnowEdge(fromId!, toId!));
 }
 
