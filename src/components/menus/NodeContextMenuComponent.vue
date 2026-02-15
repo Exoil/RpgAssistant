@@ -8,7 +8,7 @@
     <DeleteCharacterComponent
       :rpgAssistantService="rpgAssistantService"
       :characterId="firstSelectedCharacterId"
-      @deleted="onCharacterDeleted"/>
+      @deletedCharacter="onCharacterDeleted"/>
     <CreateCharacterKnowEdgeComponent
       :rpgAssistantService="rpgAssistantService"
       :fromNodeId="firstSelectedCharacterId"
@@ -26,6 +26,20 @@ import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue"
 import {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
 import DeleteCharacterComponent from "@/components/DeleteCharacterComponent.vue";
 import CreateCharacterKnowEdgeComponent from "@/components/CreateCharacterKnowEdgeComponent.vue";
+
+const nodeMenu = ref<HTMLDivElement>();
+
+let outsidePointerHandler: ((event: PointerEvent) => void) | null = null;
+
+function hideMenu() {
+  if (nodeMenu.value) {
+    nodeMenu.value.style.visibility = "hidden";
+  }
+  if (outsidePointerHandler) {
+    document.removeEventListener("pointerdown", outsidePointerHandler, { capture: true });
+    outsidePointerHandler = null;
+  }
+}
 
 const { rpgAssistantService, firstSelectedCharacterId, secondSelectedCharacterId } = defineProps<{
   rpgAssistantService: RpgAssistantService;
@@ -46,39 +60,44 @@ function onCharacterUpdated(updatedCharacter: VersionedCharacter) {
 
 function onCharacterDeleted(deletedCharacterId: string) {
   emit('deletedCharacterFromMenu', deletedCharacterId);
+  hideMenu();
 }
 
 function onEdgeKnowCreated(createdEdgeId: string) {
   emit('createKnowEdgeFromMenu', createdEdgeId);
 }
 
-
-const nodeMenu = ref<HTMLDivElement>()
 function showContextMenu(element: HTMLElement, event: MouseEvent) {
-  element.style.left = event.x + "px"
-  element.style.top = event.y + "px"
-  element.style.visibility = "visible"
-  const handler = (event: PointerEvent) => {
-    if (!event.target || !element.contains(event.target as HTMLElement)) {
-      element.style.visibility = "hidden"
-      document.removeEventListener("pointerdown", handler, { capture: true })
-    }
+  element.style.left = event.x + "px";
+  element.style.top = event.y + "px";
+  element.style.visibility = "visible";
+
+  if (outsidePointerHandler) {
+    document.removeEventListener("pointerdown", outsidePointerHandler, { capture: true });
   }
-  document.addEventListener("pointerdown", handler, { passive: true, capture: true })
+
+  outsidePointerHandler = (event: PointerEvent) => {
+    if (!event.target || !element.contains(event.target as HTMLElement)) {
+      hideMenu();
+    }
+  };
+
+  document.addEventListener("pointerdown", outsidePointerHandler, { passive: true, capture: true });
 }
 
 function showNodeContextMenu(params: vNG.NodeEvent<MouseEvent>) {
-  const { node, event } = params
-  // Disable browser's default context menu
-  event.stopPropagation()
-  event.preventDefault()
+  const { event } = params;
+  event.stopPropagation();
+  event.preventDefault();
+
   if (nodeMenu.value) {
-    showContextMenu(nodeMenu.value, event)
+    showContextMenu(nodeMenu.value, event);
   }
 }
 
 defineExpose({
   showNodeContextMenu,
+  hideMenu, // optional: lets App.vue hide it too if needed
 });
 </script>
 
