@@ -1,22 +1,5 @@
 <template>
   <div class="app">
-    <div>
-      <h3> Create character</h3>
-    <CreateCharacterComponent
-      :rpgAssistantService="rpgAssistantService"
-      @created="onCharacterCreated"
-    />
-    </div>
-
-    <div>
-      <h3>Delete know edge</h3>
-      <DeleteKnowCharacterEdgeComponent
-        :rpgAssistantService="rpgAssistantService"
-        :edgeId="markedEdgeId"
-        :edgeIdSeparator = EdgeIdSeparator
-        @deletedKnowEdge="onEdgeKnowDeleted"
-      />
-    </div>
       <v-network-graph
         :nodes="nodesForGraph"
         :edges="edgesForGraph"
@@ -30,10 +13,22 @@
         :rpgAssistantService="rpgAssistantService"
         :firstSelectedCharacterId="markedNodeId"
         :secondSelectedCharacterId="markedNodeSecondId"
-        :edgeIdSeparator = EdgeIdSeparator
+        :edgeIdSeparator = "EdgeIdSeparator"
         @updatedCharacterFromMenu="onCharacterUpdated"
         @deletedCharacterFromMenu="onCharacterDeleted"
         @createKnowEdgeFromMenu="onEdgeKnowCreated"
+        />
+      <EdgeContextMenuComponent
+        ref="edgeMenuRef"
+        :rpgAssistantService="rpgAssistantService"
+        :selectedEdgeId="markedEdgeId"
+        :edgeIdSeparator = "EdgeIdSeparator"
+        @deleteKnowEdgeFromMenu="onEdgeKnowDeleted"
+        />
+      <ViewContextMenuComponent
+        ref="viewMenuRef"
+        :rpgAssistantService="rpgAssistantService"
+        @onCharacterCreatedFromViewMenu="onCharacterCreated"
         />
   </div>
 </template>
@@ -46,17 +41,15 @@ import * as vNG from 'v-network-graph';
 import { RpgAssistantService } from './services/RpgAssistantService.ts';
 import { PageQuery } from '@/services/Models/PageQuery.ts';
 import {type EdgeEvent, type NodeEvent, type ViewEvent, VNetworkGraph} from 'v-network-graph';
-import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue';
-import DeleteCharacterComponent from "@/components/DeleteCharacterComponent.vue";
-import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue";
 import type {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
-import DeleteKnowCharacterEdgeComponent from "@/components/DeleteKnowCharacterEdgeComponent.vue";
-import CreateCharacterKnowEdgeComponent from "@/components/CreateCharacterKnowEdgeComponent.vue";
 import NodeContextMenuComponent from "@/components/menus/NodeContextMenuComponent.vue";
+import EdgeContextMenuComponent from "@/components/menus/EdgeContextMenuComponent.vue";
+import ViewContextMenuComponent from "@/components/menus/ViewContextMenuComponent.vue";
 
 let rpgAssistantService: RpgAssistantService;
-
+const viewMenuRef = ref<InstanceType<typeof ViewContextMenuComponent> | null>(null);
 const nodeMenuRef = ref<InstanceType<typeof NodeContextMenuComponent> | null>(null);
+const edgeMenuRef = ref<InstanceType<typeof EdgeContextMenuComponent> | null>(null);
 const EdgeIdSeparator = '_';
 const configs = reactive(vNG.getFullConfigs());
 const markedNodeId = ref<string | null>(null);
@@ -234,48 +227,50 @@ function viewClickHandler(clickEvent: ViewEvent<MouseEvent>){
   markedNodeSecondId.value = null;
 }
 
-function showContextMenu(element: HTMLElement, event: MouseEvent) {
-  element.style.left = event.x + "px"
-  element.style.top = event.y + "px"
-  element.style.visibility = "visible"
-  const handler = (event: PointerEvent) => {
-    if (!event.target || !element.contains(event.target as HTMLElement)) {
-      element.style.visibility = "hidden"
-      document.removeEventListener("pointerdown", handler, { capture: true })
-    }
-  }
-  document.addEventListener("pointerdown", handler, { passive: true, capture: true })
-}
-
 function showNodeContextMenu(params: NodeEvent<MouseEvent>) {
   suppressNextViewClickClear.value = true;
-
   const clickedId = params.node;
 
-  // Keep up to 2 marked nodes
   if (!markedNodeId.value) {
     markedNodeId.value = clickedId;
   } else if (markedNodeId.value === clickedId) {
-    // clicked the already-marked first node -> do nothing
   } else if (!markedNodeSecondId.value) {
     markedNodeSecondId.value = clickedId;
   } else if (markedNodeSecondId.value === clickedId) {
-    // clicked the already-marked second node -> do nothing
   } else {
-    // already have 2 different nodes, replace the "second" with the new one
     markedNodeSecondId.value = clickedId;
   }
 
-  // Delegate showing/positioning to the component that owns the menu DOM
   nodeMenuRef.value?.showNodeContextMenu(params);
 }
+
+function showEdgeContextMenu(params: EdgeEvent<MouseEvent>) {
+  suppressNextViewClickClear.value = true;
+
+  const clickedEdgeId = params.edge;
+  if (!clickedEdgeId) {
+    return;
+  }
+
+  markedEdgeId.value = clickedEdgeId;
+
+  edgeMenuRef.value?.showEdgeContextMenu(params);
+}
+
+function showViewContextMenu(params: vNG.ViewEvent<MouseEvent>) {
+  suppressNextViewClickClear.value = true;
+  viewMenuRef.value?.showViewContextMenu(params);
+}
+
 
 
 const eventHandlers: vNG.EventHandlers = {
   'node:click': nodeClickHandler,
   'edge:click': edgeClickHandler,
   'view:click': viewClickHandler,
-  "node:contextmenu": showNodeContextMenu
+  'node:contextmenu': showNodeContextMenu,
+  'edge:contextmenu': showEdgeContextMenu,
+  'view:contextmenu': showViewContextMenu,
 };
 </script>
 

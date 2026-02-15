@@ -23,7 +23,7 @@ const { rpgAssistantService } = defineProps<{
 let controller: AbortController | null = null;
 const characterCreateName = ref('');
 const emit = defineEmits<{
-  (e: 'created', node: CharacterNode): void;
+  (e: 'characterCreated', node: CharacterNode): void;
 }>();
 
 async function onClickCreateCharacter() {
@@ -37,7 +37,7 @@ async function onClickCreateCharacter() {
   );
   const node = new CharacterNode(new Character(createResult, characterCreateName.value));
 
-  emit('created', node);
+  emit('characterCreated', node);
   characterCreateName.value = '';
 }
 
