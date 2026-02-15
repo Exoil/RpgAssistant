@@ -41,6 +41,7 @@ const emit = defineEmits<{
 
 function onEdgeKnowDeleted(createdEdgeId: string) {
   emit('deleteKnowEdgeFromMenu', createdEdgeId);
+  hideMenu();
 }
 
 function showContextMenu(element: HTMLElement, event: MouseEvent) {

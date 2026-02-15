@@ -2,7 +2,7 @@
   <div ref="nodeMenu" class="node-context-menu">
     Menu for the nodes
     <button id="update-character" type="button" @click="onUpdateClick" :disabled="!firstSelectedCharacterId">
-      Update node
+      Update character
     </button>
     <DeleteCharacterComponent
       :disabled="!firstSelectedCharacterId"

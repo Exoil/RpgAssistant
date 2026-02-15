@@ -1,6 +1,6 @@
 <template>
   <div ref="viewMenu" class="view-context-menu">
-    <button type="button" @click="onCreateClick">Create node…</button>
+    <button type="button" @click="onCreateClick">Create character</button>
   </div>
 </template>
 
