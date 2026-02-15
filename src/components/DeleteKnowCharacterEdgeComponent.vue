@@ -13,9 +13,9 @@ const { rpgAssistantService, edgeId , edgeIdSeparator} = defineProps<{
   edgeIdSeparator: string;
 }>();
 let controller: AbortController | null = null;
-const emitDeleteName = 'deletedEdge';
+const emitDeleteName = 'deletedKnowEdge';
 const emit = defineEmits<{
-  (e: 'deletedEdge', deletedEdgeId: string): void;
+  (e: 'deletedKnowEdge', deletedEdgeId: string): void;
 }>();
 
 async function onClickDeleteKnowEdge() {

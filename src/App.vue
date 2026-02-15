@@ -30,9 +30,18 @@
         :rpgAssistantService="rpgAssistantService"
         :edgeId="markedEdgeId"
         :edgeIdSeparator = EdgeIdSeparator
-        @deletedEdge="onEdgeKnowDeleted"
+        @deletedKnowEdge="onEdgeKnowDeleted"
       />
+    </div>
 
+    <div>
+      <h3>Create know edge</h3>
+      <CreateCharacterKnowEdgeComponent
+        :rpgAssistantService="rpgAssistantService"
+        :fromNodeId="markedNodeId"
+        :targetNodeId="markedNodeSecondId"
+        :edgeIdSeparator = EdgeIdSeparator
+        @createKnowEdge="onEdgeKnowCreated"/>
     </div>
 
     <v-network-graph
@@ -60,25 +69,40 @@ import type {Character} from "@/services/Models/Character.ts";
 import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue";
 import type {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
 import DeleteKnowCharacterEdgeComponent from "@/components/DeleteKnowCharacterEdgeComponent.vue";
+import CreateCharacterKnowEdgeComponent from "@/components/CreateCharacterKnowEdgeComponent.vue";
 
 let rpgAssistantService: RpgAssistantService;
 
 const EdgeIdSeparator = '_';
 const configs = reactive(vNG.getFullConfigs());
 const markedNodeId = ref<string | null>(null);
+const markedNodeSecondId = ref<string | null>(null);
 const markedEdgeId = ref<string | undefined>(undefined);
 const suppressNextViewClickClear = ref(false);
 const selectedNodeIds = computed<string[]>({
   get() {
-    return markedNodeId.value ? [markedNodeId.value] : [];
+    let selectedNodes = [];
+
+    if (markedNodeId.value) {
+      selectedNodes.push(markedNodeId.value);
+    }
+    if (markedNodeSecondId.value) {
+      selectedNodes.push(markedNodeSecondId.value);
+    }
+    return selectedNodes;
   },
   set(ids) {
-    const next = ids?.[0];
+    const firstId = ids?.[0];
 
-    if (!next) {
-      return;
+    const secondId = ids?.[1];
+
+    if (firstId) {
+      markedNodeId.value = firstId;
     }
-    markedNodeId.value = next;
+
+    if (secondId) {
+      markedNodeSecondId.value = secondId;
+    }
   },
 });
 
@@ -141,7 +165,7 @@ onMounted(async () => {
 });
 
 function SetupGraphConfig() {
-  configs.node.selectable = 1;
+  configs.node.selectable = 2;
   configs.edge.selectable = 1;
   configs.edge.type = 'straight';
   configs.edge.marker.source.type = 'none';
@@ -194,9 +218,18 @@ function onEdgeKnowDeleted(deletedEdgeId: string) {
   edges.value.splice(idx, 1);
 }
 
+function onEdgeKnowCreated(deletedEdgeId: string) {
+  const [fromId, toId] = deletedEdgeId.split(EdgeIdSeparator);
+  const foundNodeIndex = nodeList.value.findIndex((n) => n.id === fromId);
+
+  if (foundNodeIndex === -1)
+    return;
+
+  nodeList.value[foundNodeIndex]!.characterData.knowCharacterIds.push(toId);
+  edges.value.push(new KnowEdge(fromId!, toId!));
+}
+
 // --- Event handlers --- //
-
-
 function nodeClickHandler(nodeEvents: NodeEvent<MouseEvent>) {
   suppressNextViewClickClear.value = true;
   markedNodeId.value = nodeEvents.node;
@@ -214,6 +247,7 @@ function viewClickHandler(clickEvent: ViewEvent<MouseEvent>){
   }
   markedEdgeId.value = undefined;
   markedNodeId.value = null;
+  markedNodeSecondId.value = null;
 }
 
 function showContextMenu(element: HTMLElement, event: MouseEvent) {
