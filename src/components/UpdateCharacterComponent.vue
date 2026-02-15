@@ -24,7 +24,7 @@ const props = defineProps<{
 let characterData = ref(new VersionedCharacter('', '', ''));
 let controller: AbortController | null = null;
 const emit = defineEmits<{
-  (e: 'updated', characterData: VersionedCharacter): void;
+  (e: 'updatedCharacter', characterData: VersionedCharacter): void;
 }>();
 
 async function onClickUpdateCharacter() {
@@ -40,7 +40,7 @@ async function onClickUpdateCharacter() {
     signal,
   );
 
-  emit('updated', characterData.value);
+  emit('updatedCharacter', characterData.value);
 }
 
 async function loadCharacterById(id: string) {

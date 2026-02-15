@@ -9,22 +9,6 @@
     </div>
 
     <div>
-      <h3>Delete character</h3>
-      <DeleteCharacterComponent
-        :rpgAssistantService="rpgAssistantService"
-        :characterId="markedNodeId"
-        @deleted="onCharacterDeleted"/>
-    </div>
-
-    <div>
-      <h3> Update character</h3>
-      <UpdateCharacterComponent
-        :rpgAssistantService="rpgAssistantService"
-        :characterId="markedNodeId"
-        @updated="onCharacterUpdated"/>
-    </div>
-
-    <div>
       <h3>Delete know edge</h3>
       <DeleteKnowCharacterEdgeComponent
         :rpgAssistantService="rpgAssistantService"
@@ -33,25 +17,24 @@
         @deletedKnowEdge="onEdgeKnowDeleted"
       />
     </div>
-
-    <div>
-      <h3>Create know edge</h3>
-      <CreateCharacterKnowEdgeComponent
+      <v-network-graph
+        :nodes="nodesForGraph"
+        :edges="edgesForGraph"
+        :configs="configs"
+        :event-handlers="eventHandlers"
+        v-model:selected-nodes="selectedNodeIds"
+        v-model:selected-edges="selectedEdgeIds"
+      />
+      <NodeContextMenuComponent
+        ref="nodeMenuRef"
         :rpgAssistantService="rpgAssistantService"
-        :fromNodeId="markedNodeId"
-        :targetNodeId="markedNodeSecondId"
+        :firstSelectedCharacterId="markedNodeId"
+        :secondSelectedCharacterId="markedNodeSecondId"
         :edgeIdSeparator = EdgeIdSeparator
-        @createKnowEdge="onEdgeKnowCreated"/>
-    </div>
-
-    <v-network-graph
-      :nodes="nodesForGraph"
-      :edges="edgesForGraph"
-      :configs="configs"
-      :event-handlers="eventHandlers"
-      v-model:selected-nodes="selectedNodeIds"
-      v-model:selected-edges="selectedEdgeIds"
-    />
+        @updatedCharacterFromMenu="onCharacterUpdated"
+        @deletedCharacterFromMenu="onCharacterDeleted"
+        @createKnowEdgeFromMenu="onEdgeKnowCreated"
+        />
   </div>
 </template>
 
@@ -69,9 +52,11 @@ import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue"
 import type {VersionedCharacter} from "@/services/Models/VersionedCharacter.ts";
 import DeleteKnowCharacterEdgeComponent from "@/components/DeleteKnowCharacterEdgeComponent.vue";
 import CreateCharacterKnowEdgeComponent from "@/components/CreateCharacterKnowEdgeComponent.vue";
+import NodeContextMenuComponent from "@/components/menus/NodeContextMenuComponent.vue";
 
 let rpgAssistantService: RpgAssistantService;
 
+const nodeMenuRef = ref<InstanceType<typeof NodeContextMenuComponent> | null>(null);
 const EdgeIdSeparator = '_';
 const configs = reactive(vNG.getFullConfigs());
 const markedNodeId = ref<string | null>(null);
@@ -262,10 +247,22 @@ function showContextMenu(element: HTMLElement, event: MouseEvent) {
   document.addEventListener("pointerdown", handler, { passive: true, capture: true })
 }
 
+function showNodeContextMenu(params: NodeEvent<MouseEvent>) {
+  suppressNextViewClickClear.value = true;
+
+  // Make sure the menu actions point at the right node
+  markedNodeId.value = params.node;
+
+  // Delegate showing/positioning to the component that owns the menu DOM
+  nodeMenuRef.value?.showNodeContextMenu(params);
+}
+
+
 const eventHandlers: vNG.EventHandlers = {
   'node:click': nodeClickHandler,
   'edge:click': edgeClickHandler,
   'view:click': viewClickHandler,
+  "node:contextmenu": showNodeContextMenu
 };
 </script>
 
@@ -278,5 +275,16 @@ const eventHandlers: vNG.EventHandlers = {
 .graph {
   flex: 1;
   border-right: 1px solid #ccc;
+}
+
+.node-context-menu {
+  width: 180px;
+  background-color: #efefef;
+  padding: 10px;
+  position: fixed;
+  visibility: hidden;
+  font-size: 12px;
+  border: 1px solid #aaa;
+  box-shadow: 2px 2px 2px #aaa;
 }
 </style>

@@ -12,9 +12,9 @@ const { rpgAssistantService, characterId } = defineProps<{
   characterId: string | null;
 }>();
 let controller: AbortController | null = null;
-const emitDeleteName = 'deleted';
+const emitDeleteName = 'deletedCharacter';
 const emit = defineEmits<{
-  (e: 'deleted', deletedCharacterId: string): void;
+  (e: 'deletedCharacter', deletedCharacterId: string): void;
 }>();
 
 async function onClickDeleteCharacter() {

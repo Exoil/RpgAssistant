@@ -16,7 +16,7 @@ const { rpgAssistantService, fromNodeId, targetNodeId, edgeIdSeparator} = define
 let controller: AbortController | null = null;
 const emitDeleteName = 'createKnowEdge';
 const emit = defineEmits<{
-  (e: 'createKnowEdge', deletedEdgeId: string): void;
+  (e: 'createKnowEdge', createdEdgeId: string): void;
 }>();
 
 async function onClickCreateKnowEdge() {
