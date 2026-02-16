@@ -1,11 +1,22 @@
 <template>
-  <div ref="edgeMenu" class="edge-context-menu">
-    <DeleteKnowCharacterEdgeComponent
-      :rpgAssistantService="rpgAssistantService"
-      :edgeId="selectedEdgeId"
-      :edgeIdSeparator="edgeIdSeparator"
-      @deletedKnowEdge="onEdgeKnowDeleted"
-    />
+  <div
+    ref="edgeMenu"
+    class="dropdown context-dropdown"
+    :class="{ 'is-active': isOpen }"
+    :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
+  >
+    <div class="dropdown-menu" role="menu">
+      <div class="dropdown-content">
+        <div class="dropdown-item">
+          <DeleteKnowCharacterEdgeComponent
+            :rpgAssistantService="rpgAssistantService"
+            :edgeId="selectedEdgeId"
+            :edgeIdSeparator="edgeIdSeparator"
+            @deletedKnowEdge="onEdgeKnowDeleted"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -17,12 +28,14 @@ import DeleteKnowCharacterEdgeComponent from '@/components/DeleteKnowCharacterEd
 
 const edgeMenu = ref<HTMLDivElement>();
 
+const isOpen = ref(false);
+const pos = ref({ x: 0, y: 0 });
+
 let outsidePointerHandler: ((event: PointerEvent) => void) | null = null;
 
 function hideMenu() {
-  if (edgeMenu.value) {
-    edgeMenu.value.style.visibility = 'hidden';
-  }
+  isOpen.value = false;
+
   if (outsidePointerHandler) {
     document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
     outsidePointerHandler = null;
@@ -44,49 +57,71 @@ function onEdgeKnowDeleted(createdEdgeId: string) {
   hideMenu();
 }
 
-function showContextMenu(element: HTMLElement, event: MouseEvent) {
-  element.style.left = event.x + 'px';
-  element.style.top = event.y + 'px';
-  element.style.visibility = 'visible';
+function showContextMenu(event: MouseEvent) {
+  pos.value = { x: event.clientX, y: event.clientY };
+  isOpen.value = true;
 
   if (outsidePointerHandler) {
     document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
   }
 
-  outsidePointerHandler = (event: PointerEvent) => {
-    if (!event.target || !element.contains(event.target as HTMLElement)) {
-      hideMenu();
-    }
+  outsidePointerHandler = (e: PointerEvent) => {
+    const el = edgeMenu.value;
+    if (!el) return;
+    if (!e.target || !el.contains(e.target as Node)) hideMenu();
   };
 
   document.addEventListener('pointerdown', outsidePointerHandler, { passive: true, capture: true });
 }
 
 function showEdgeContextMenu(params: vNG.EdgeEvent<MouseEvent>) {
-  const { edge, event } = params;
+  const { event } = params;
   event.stopPropagation();
   event.preventDefault();
-
-  if (edgeMenu.value) {
-    showContextMenu(edgeMenu.value, event);
-  }
+  showContextMenu(event);
 }
 
 defineExpose({
   showEdgeContextMenu,
-  hideMenu, // optional: lets App.vue hide it too if needed
+  hideMenu,
 });
 </script>
 
 <style scoped>
-.edge-context-menu {
-  width: 180px;
-  background-color: #efefef;
-  padding: 10px;
+.context-dropdown {
   position: fixed;
-  visibility: hidden;
-  font-size: 12px;
-  border: 1px solid #aaa;
-  box-shadow: 2px 2px 2px #aaa;
+  z-index: 1000;
+}
+
+.context-dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width: 12rem;
+}
+
+.context-dropdown.is-active .dropdown-menu {
+  display: block;
+}
+
+.context-dropdown .dropdown-content {
+  background: #ffffff;
+  border: 1px solid rgba(10, 10, 10, 0.12);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(10, 10, 10, 0.18);
+  padding: 0.25rem 0;
+}
+
+.context-dropdown .dropdown-item {
+  background: #ffffff;
+  color: #111827;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer; /* optional: makes it feel like a menu row */
+}
+
+.context-dropdown .dropdown-item:hover {
+  background: #f3f4f6; /* light gray */
+  color: #111827;
 }
 </style>

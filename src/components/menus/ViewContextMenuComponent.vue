@@ -1,6 +1,17 @@
 <template>
-  <div ref="viewMenu" class="view-context-menu">
-    <button type="button" @click="onCreateClick">Create character</button>
+  <div
+    ref="viewMenu"
+    class="dropdown context-dropdown"
+    :class="{ 'is-active': isOpen }"
+    :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
+  >
+    <div class="dropdown-menu" role="menu">
+      <div class="dropdown-content">
+        <button class="dropdown-item" type="button" @click="onCreateClick">
+          Create character
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -10,12 +21,14 @@ import * as vNG from 'v-network-graph';
 
 const viewMenu = ref<HTMLDivElement>();
 
+const isOpen = ref(false);
+const pos = ref({ x: 0, y: 0 });
+
 let outsidePointerHandler: ((event: PointerEvent) => void) | null = null;
 
 function hideMenu() {
-  if (viewMenu.value) {
-    viewMenu.value.style.visibility = 'hidden';
-  }
+  isOpen.value = false;
+
   if (outsidePointerHandler) {
     document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
     outsidePointerHandler = null;
@@ -31,19 +44,18 @@ function onCreateClick() {
   hideMenu();
 }
 
-function showContextMenu(element: HTMLElement, event: MouseEvent) {
-  element.style.left = event.x + 'px';
-  element.style.top = event.y + 'px';
-  element.style.visibility = 'visible';
+function showContextMenu(event: MouseEvent) {
+  pos.value = { x: event.clientX, y: event.clientY };
+  isOpen.value = true;
 
   if (outsidePointerHandler) {
     document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
   }
 
-  outsidePointerHandler = (event: PointerEvent) => {
-    if (!event.target || !element.contains(event.target as HTMLElement)) {
-      hideMenu();
-    }
+  outsidePointerHandler = (e: PointerEvent) => {
+    const el = viewMenu.value;
+    if (!el) return;
+    if (!e.target || !el.contains(e.target as Node)) hideMenu();
   };
 
   document.addEventListener('pointerdown', outsidePointerHandler, { passive: true, capture: true });
@@ -53,27 +65,53 @@ function showViewContextMenu(params: vNG.ViewEvent<MouseEvent>) {
   const { event } = params;
   event.stopPropagation();
   event.preventDefault();
-
-  if (viewMenu.value) {
-    showContextMenu(viewMenu.value, event);
-  }
+  showContextMenu(event);
 }
 
 defineExpose({
   showViewContextMenu,
-  hideMenu, // optional: lets App.vue hide it too if needed
+  hideMenu,
 });
 </script>
 
 <style scoped>
-.view-context-menu {
-  width: 180px;
-  background-color: #efefef;
-  padding: 10px;
+.context-dropdown {
   position: fixed;
-  visibility: hidden;
-  font-size: 12px;
-  border: 1px solid #aaa;
-  box-shadow: 2px 2px 2px #aaa;
+  z-index: 1000;
+}
+
+.context-dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width: 12rem;
+}
+
+.context-dropdown.is-active .dropdown-menu {
+  display: block;
+}
+
+.context-dropdown .dropdown-content {
+  background: #ffffff;
+  border: 1px solid rgba(10, 10, 10, 0.12);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(10, 10, 10, 0.18);
+  padding: 0.25rem 0;
+}
+
+.context-dropdown button.dropdown-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: #ffffff;
+  color: #111827;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+}
+
+.context-dropdown button.dropdown-item:hover {
+  background: #f3f4f6;
 }
 </style>

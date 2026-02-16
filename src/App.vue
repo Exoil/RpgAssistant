@@ -1,6 +1,7 @@
 <template>
   <div class="app">
     <v-network-graph
+      class="graph-host"
       :nodes="nodesForGraph"
       :edges="edgesForGraph"
       :configs="graphConfiguration"
@@ -299,19 +300,8 @@ const eventHandlers: vNG.EventHandlers = {
   height: 100vh;
 }
 
-.graph {
+.graph-host {
   flex: 1;
-  border-right: 1px solid #ccc;
-}
-
-.node-context-menu {
-  width: 180px;
-  background-color: #efefef;
-  padding: 10px;
-  position: fixed;
-  visibility: hidden;
-  font-size: 12px;
-  border: 1px solid #aaa;
-  box-shadow: 2px 2px 2px #aaa;
+  background: #ffffff;
 }
 </style>
