@@ -28,20 +28,21 @@
     />
     <ViewContextMenuComponent ref="viewMenuRef" @openCreateCharacterDialog="openCreateDialog" />
 
-    <BaseModal :open="createDialogOpen" title="Create character" @close="createDialogOpen = false">
-      <CreateCharacterComponent
-        :rpgAssistantService="rpgAssistantService"
-        @characterCreated="onCharacterCreated"
-      />
-    </BaseModal>
+    <CreateCharacterComponent
+      :rpgAssistantService="rpgAssistantService"
+      @characterCreated="onCharacterCreated"
+      :open = "createDialogOpen"
+      @closeCreateCharacter = "createDialogClose"
+    />
 
-    <BaseModal :open="updateDialogOpen" title="Update character" @close="updateDialogOpen = false">
-      <UpdateCharacterComponent
-        :rpgAssistantService="rpgAssistantService"
-        :characterId="firstSelectedNodeId"
-        @updatedCharacter="onCharacterUpdated"
-      />
-    </BaseModal>
+    <UpdateCharacterComponent
+      :rpgAssistantService="rpgAssistantService"
+      :characterId="firstSelectedNodeId"
+      :open="updateNodeCharacterNodeModal"
+      @updatedCharacter="onCharacterUpdated"
+      @closeUpdateCharacter="updateDialogModalClose"
+    />
+
   </div>
 </template>
 
@@ -57,9 +58,8 @@ import type { VersionedCharacter } from '@/services/Models/VersionedCharacter.ts
 import NodeContextMenuComponent from '@/components/menus/NodeContextMenuComponent.vue';
 import EdgeContextMenuComponent from '@/components/menus/EdgeContextMenuComponent.vue';
 import ViewContextMenuComponent from '@/components/menus/ViewContextMenuComponent.vue';
-import BaseModal from '@/components/BaseModal.vue';
-import UpdateCharacterComponent from '@/components/UpdateCharacterComponent.vue';
 import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue';
+import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue";
 
 let rpgAssistantService: RpgAssistantService;
 const viewMenuRef = ref<InstanceType<typeof ViewContextMenuComponent> | null>(null);
@@ -180,9 +180,20 @@ function openCreateDialog() {
   createDialogOpen.value = true;
 }
 
-const updateDialogOpen = ref(false);
+function createDialogClose() {
+  createDialogOpen.value = false;
+}
+
+const updateNodeCharacterNodeModal = ref(false);
+
 function openUpdateDialog() {
-  updateDialogOpen.value = true;
+  if (!firstSelectedNodeId.value) return;
+  updateNodeCharacterNodeModal.value = true;
+}
+
+
+function updateDialogModalClose() {
+  updateNodeCharacterNodeModal.value = false;
 }
 
 function onCharacterCreated(node: CharacterNode) {
@@ -206,7 +217,7 @@ function onCharacterUpdated(updatedCharacter: VersionedCharacter) {
 
   nodeList.value[idx]!.characterData.id = updatedCharacter.id;
   nodeList.value[idx]!.updateName(updatedCharacter.name);
-  updateDialogOpen.value = false;
+  updateNodeCharacterNodeModal.value = false;
 }
 
 function onEdgeKnowDeleted(deletedEdgeId: string) {

@@ -1,13 +1,26 @@
 <template>
-  <div class="update-character-node-form">
-    <input
-      id="update-character-node-name-input"
-      type="text"
-      placeholder="Enter new name"
-      v-model="characterData.name"
-    />
-    <br />
-    <button id="update-character-node-submit-button" @click="onClickUpdateCharacter">Update</button>
+  <div class="modal" :class="{ 'is-active': open }" >
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Update character node</p>
+      </header>
+      <section class="modal-card-body">
+        <input
+          class="input"
+          id="update-character-node-name-input"
+          type="text"
+          placeholder="Enter new name"
+          v-model="characterData.name"
+        />
+      </section>
+      <footer class="modal-card-foot">
+        <div class="buttons">
+          <button class="button is-light" id="update-character-node-submit-button" @click="onClickUpdateCharacter">Update</button>
+          <button class="button is-ghost" @click="onClickCancel">Cancel</button>
+        </div>
+      </footer>
+    </div>
   </div>
 </template>
 
@@ -20,10 +33,12 @@ import { VersionedCharacter } from '@/services/Models/VersionedCharacter.ts';
 const props = defineProps<{
   rpgAssistantService: RpgAssistantService;
   characterId: string | null;
+  open: boolean;
 }>();
 let characterData = ref(new VersionedCharacter('', '', ''));
 let controller: AbortController | null = null;
 const emit = defineEmits<{
+  (e: 'closeUpdateCharacter'): void;
   (e: 'updatedCharacter', characterData: VersionedCharacter): void;
 }>();
 
@@ -42,6 +57,11 @@ async function onClickUpdateCharacter() {
   );
 
   emit('updatedCharacter', characterData.value);
+  emit("closeUpdateCharacter");
+}
+
+async function onClickCancel(){
+  emit("closeUpdateCharacter");
 }
 
 async function loadCharacterById(id: string) {

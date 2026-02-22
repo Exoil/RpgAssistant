@@ -1,14 +1,27 @@
 <template>
-  <div class="create-character-node-form">
-    <input
-      id="create-character-node-name-input"
-      type="text"
-      placeholder="Enter new name"
-      v-model="characterCreateName"
-    />
-    <br />
-    <button id="create-character-node-submit-button" @click="onClickCreateCharacter">Create</button>
-  </div>
+    <div class="modal" :class="{ 'is-active': open }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Create character node</p>
+        </header>
+        <section class="modal-card-body">
+          <input
+            class="input"
+            id="create-character-node-name-input"
+            type="text"
+            placeholder="Enter new name"
+            v-model="characterCreateName"
+          />
+        </section>
+        <footer class="modal-card-foot">
+          <div class="buttons">
+            <button id="create-character-node-submit-button is-light" @click="onClickCreateCharacter">Create</button>
+            <button class="button is-ghost" @click="onClickCancel">Cancel</button>
+          </div>
+        </footer>
+      </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -17,12 +30,14 @@ import type { RpgAssistantService } from '@/services/RpgAssistantService';
 import { CharacterNode } from '@/models/CharacterNode.ts';
 import { Character } from '@/services/Models/Character.ts';
 
-const { rpgAssistantService } = defineProps<{
+const { rpgAssistantService, open } = defineProps<{
   rpgAssistantService: RpgAssistantService;
+  open: boolean;
 }>();
 let controller: AbortController | null = null;
 const characterCreateName = ref('');
 const emit = defineEmits<{
+  (e: 'closeCreateCharacter'): void;
   (e: 'characterCreated', node: CharacterNode): void;
 }>();
 
@@ -38,7 +53,13 @@ async function onClickCreateCharacter() {
   const node = new CharacterNode(new Character(createResult, characterCreateName.value));
 
   emit('characterCreated', node);
+  emit("closeCreateCharacter");
   characterCreateName.value = '';
+}
+
+async function onClickCancel(){
+  characterCreateName.value = '';
+  emit("closeCreateCharacter");
 }
 
 onBeforeUnmount(() => {
