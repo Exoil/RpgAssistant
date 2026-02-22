@@ -137,7 +137,8 @@ const edgesForGraph = computed<vNG.Edges>(() =>
 );
 
 onBeforeMount(() => {
-  rpgAssistantService = new RpgAssistantService('http://localhost:8080');
+  const apiUrl = import.meta.env.VITE_API_RPG_ASSISTANT_BASE_URL
+  rpgAssistantService = new RpgAssistantService(apiUrl);
   SetupGraphConfig();
 });
 
