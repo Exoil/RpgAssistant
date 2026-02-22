@@ -62,7 +62,12 @@ function hideMenu() {
   }
 }
 
-const { rpgAssistantService, firstSelectedCharacterId, secondSelectedCharacterId, edgeIdSeparator } = defineProps<{
+const {
+  rpgAssistantService,
+  firstSelectedCharacterId,
+  secondSelectedCharacterId,
+  edgeIdSeparator,
+} = defineProps<{
   rpgAssistantService: RpgAssistantService;
   firstSelectedCharacterId: string | null;
   secondSelectedCharacterId: string | null;

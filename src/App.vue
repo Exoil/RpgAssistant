@@ -31,8 +31,8 @@
     <CreateCharacterComponent
       :rpgAssistantService="rpgAssistantService"
       @characterCreated="onCharacterCreated"
-      :open = "createDialogOpen"
-      @closeCreateCharacter = "createDialogClose"
+      :open="createDialogOpen"
+      @closeCreateCharacter="createDialogClose"
     />
 
     <UpdateCharacterComponent
@@ -42,7 +42,6 @@
       @updatedCharacter="onCharacterUpdated"
       @closeUpdateCharacter="updateDialogModalClose"
     />
-
   </div>
 </template>
 
@@ -59,7 +58,7 @@ import NodeContextMenuComponent from '@/components/menus/NodeContextMenuComponen
 import EdgeContextMenuComponent from '@/components/menus/EdgeContextMenuComponent.vue';
 import ViewContextMenuComponent from '@/components/menus/ViewContextMenuComponent.vue';
 import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue';
-import UpdateCharacterComponent from "@/components/UpdateCharacterComponent.vue";
+import UpdateCharacterComponent from '@/components/UpdateCharacterComponent.vue';
 
 let rpgAssistantService: RpgAssistantService;
 const viewMenuRef = ref<InstanceType<typeof ViewContextMenuComponent> | null>(null);
@@ -190,7 +189,6 @@ function openUpdateDialog() {
   if (!firstSelectedNodeId.value) return;
   updateNodeCharacterNodeModal.value = true;
 }
-
 
 function updateDialogModalClose() {
   updateNodeCharacterNodeModal.value = false;

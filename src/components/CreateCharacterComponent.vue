@@ -1,27 +1,29 @@
 <template>
-    <div class="modal" :class="{ 'is-active': open }">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Create character node</p>
-        </header>
-        <section class="modal-card-body">
-          <input
-            class="input"
-            id="create-character-node-name-input"
-            type="text"
-            placeholder="Enter new name"
-            v-model="characterCreateName"
-          />
-        </section>
-        <footer class="modal-card-foot">
-          <div class="buttons">
-            <button id="create-character-node-submit-button is-light" @click="onClickCreateCharacter">Create</button>
-            <button class="button is-ghost" @click="onClickCancel">Cancel</button>
-          </div>
-        </footer>
-      </div>
+  <div class="modal" :class="{ 'is-active': open }">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Create character node</p>
+      </header>
+      <section class="modal-card-body">
+        <input
+          class="input"
+          id="create-character-node-name-input"
+          type="text"
+          placeholder="Enter new name"
+          v-model="characterCreateName"
+        />
+      </section>
+      <footer class="modal-card-foot">
+        <div class="buttons">
+          <button id="create-character-node-submit-button is-light" @click="onClickCreateCharacter">
+            Create
+          </button>
+          <button class="button is-ghost" @click="onClickCancel">Cancel</button>
+        </div>
+      </footer>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -53,13 +55,13 @@ async function onClickCreateCharacter() {
   const node = new CharacterNode(new Character(createResult, characterCreateName.value));
 
   emit('characterCreated', node);
-  emit("closeCreateCharacter");
+  emit('closeCreateCharacter');
   characterCreateName.value = '';
 }
 
-async function onClickCancel(){
+async function onClickCancel() {
   characterCreateName.value = '';
-  emit("closeCreateCharacter");
+  emit('closeCreateCharacter');
 }
 
 onBeforeUnmount(() => {

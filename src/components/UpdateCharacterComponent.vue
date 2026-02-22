@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" :class="{ 'is-active': open }" >
+  <div class="modal" :class="{ 'is-active': open }">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
@@ -16,7 +16,13 @@
       </section>
       <footer class="modal-card-foot">
         <div class="buttons">
-          <button class="button is-light" id="update-character-node-submit-button" @click="onClickUpdateCharacter">Update</button>
+          <button
+            class="button is-light"
+            id="update-character-node-submit-button"
+            @click="onClickUpdateCharacter"
+          >
+            Update
+          </button>
           <button class="button is-ghost" @click="onClickCancel">Cancel</button>
         </div>
       </footer>
@@ -57,11 +63,11 @@ async function onClickUpdateCharacter() {
   );
 
   emit('updatedCharacter', characterData.value);
-  emit("closeUpdateCharacter");
+  emit('closeUpdateCharacter');
 }
 
-async function onClickCancel(){
-  emit("closeUpdateCharacter");
+async function onClickCancel() {
+  emit('closeUpdateCharacter');
 }
 
 async function loadCharacterById(id: string) {
