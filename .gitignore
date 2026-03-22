@@ -12,6 +12,9 @@ riderModule.iml
 *.sln.docstates
 .claude/
 
+CLAUDE.md
+**/CLAUDE.md
+
 # Build results
 
 [Dd]ebug/
