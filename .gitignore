@@ -11,6 +11,7 @@ riderModule.iml
 *.user
 *.sln.docstates
 .claude/
+.claude/docs
 
 CLAUDE.md
 **/CLAUDE.md
