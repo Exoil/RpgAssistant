@@ -28,7 +28,6 @@ export class RpgAssistantService {
 
   public async getCharacterAsync(id: string, signal?: AbortSignal): Promise<VersionedCharacter> {
     const response = await this._rpgAssistantClient.getCharacterById(id, signal);
-    response;
     return new VersionedCharacter(
       response.result.id,
       response.result.name,

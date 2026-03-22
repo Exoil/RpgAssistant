@@ -1,11 +1,6 @@
-<template>
-  <div class="delete-know-edge-form">
-    <button id="delete-know-edge-button" @click="onClickDeleteKnowEdge">Delete know edge</button>
-  </div>
-</template>
-
 <script setup lang="ts">
-import type { RpgAssistantService } from '@/services/RpgAssistantService.ts';
+import { onBeforeUnmount } from 'vue';
+import type { RpgAssistantService } from '@/services/RpgAssistantService';
 
 const { rpgAssistantService, edgeId, edgeIdSeparator } = defineProps<{
   rpgAssistantService: RpgAssistantService;
@@ -13,7 +8,6 @@ const { rpgAssistantService, edgeId, edgeIdSeparator } = defineProps<{
   edgeIdSeparator: string;
 }>();
 let controller: AbortController | null = null;
-const emitDeleteName = 'deletedKnowEdge';
 const emit = defineEmits<{
   (e: 'deletedKnowEdge', deletedEdgeId: string): void;
 }>();
@@ -27,6 +21,16 @@ async function onClickDeleteKnowEdge() {
   const [fromId, toId] = edgeId.split(edgeIdSeparator);
   await rpgAssistantService.deleteKnowRelationBetweenCharacters(fromId!, toId!, signal);
 
-  emit(emitDeleteName, edgeId);
+  emit('deletedKnowEdge', edgeId);
 }
+
+onBeforeUnmount(() => {
+  controller?.abort();
+});
 </script>
+
+<template>
+  <div class="delete-know-edge-form">
+    <button id="delete-know-edge-button" @click="onClickDeleteKnowEdge">Delete know edge</button>
+  </div>
+</template>

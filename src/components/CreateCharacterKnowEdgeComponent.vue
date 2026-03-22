@@ -1,17 +1,6 @@
-<template>
-  <div class="create-know-edge-form">
-    <button
-      id="create-know-edge-button"
-      @click="onClickCreateKnowEdge"
-      :disabled="!fromNodeId && !targetNodeId"
-    >
-      Create know edge
-    </button>
-  </div>
-</template>
-
 <script setup lang="ts">
-import type { RpgAssistantService } from '@/services/RpgAssistantService.ts';
+import { onBeforeUnmount } from 'vue';
+import type { RpgAssistantService } from '@/services/RpgAssistantService';
 
 const { rpgAssistantService, fromNodeId, targetNodeId, edgeIdSeparator } = defineProps<{
   rpgAssistantService: RpgAssistantService;
@@ -20,14 +9,12 @@ const { rpgAssistantService, fromNodeId, targetNodeId, edgeIdSeparator } = defin
   edgeIdSeparator: string;
 }>();
 let controller: AbortController | null = null;
-const emitDeleteName = 'createKnowEdge';
 const emit = defineEmits<{
   (e: 'createKnowEdge', createdEdgeId: string): void;
 }>();
 
 async function onClickCreateKnowEdge() {
   controller?.abort();
-
   if (!fromNodeId || !targetNodeId) return;
 
   controller = new AbortController();
@@ -40,9 +27,25 @@ async function onClickCreateKnowEdge() {
   );
 
   const edgeId = fromNodeId + edgeIdSeparator + targetNodeId;
-  emit(emitDeleteName, edgeId);
+  emit('createKnowEdge', edgeId);
 }
+
+onBeforeUnmount(() => {
+  controller?.abort();
+});
 </script>
+
+<template>
+  <div class="create-know-edge-form">
+    <button
+      id="create-know-edge-button"
+      @click="onClickCreateKnowEdge"
+      :disabled="!fromNodeId || !targetNodeId"
+    >
+      Create know edge
+    </button>
+  </div>
+</template>
 
 <style scoped>
 #create-know-edge-button:disabled {

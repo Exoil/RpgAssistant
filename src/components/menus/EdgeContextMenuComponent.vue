@@ -1,6 +1,42 @@
+<script setup lang="ts">
+import * as vNG from 'v-network-graph';
+import type { RpgAssistantService } from '@/services/RpgAssistantService';
+import DeleteKnowCharacterEdgeComponent from '@/components/DeleteKnowCharacterEdgeComponent.vue';
+import { useContextMenu } from '@/composables/useContextMenu';
+
+const { menuEl, isOpen, pos, showContextMenu, hideMenu } = useContextMenu();
+
+const { rpgAssistantService, selectedEdgeId, edgeIdSeparator } = defineProps<{
+  rpgAssistantService: RpgAssistantService;
+  selectedEdgeId: string | undefined;
+  edgeIdSeparator: string;
+}>();
+
+const emit = defineEmits<{
+  (e: 'deleteKnowEdgeFromMenu', createdEdgeId: string): void;
+}>();
+
+function onEdgeKnowDeleted(deletedEdgeId: string) {
+  emit('deleteKnowEdgeFromMenu', deletedEdgeId);
+  hideMenu();
+}
+
+function showEdgeContextMenu(params: vNG.EdgeEvent<MouseEvent>) {
+  const { event } = params;
+  event.stopPropagation();
+  event.preventDefault();
+  showContextMenu(event);
+}
+
+defineExpose({
+  showEdgeContextMenu,
+  hideMenu,
+});
+</script>
+
 <template>
   <div
-    ref="edgeMenu"
+    ref="menuEl"
     class="dropdown context-dropdown"
     :class="{ 'is-active': isOpen }"
     :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
@@ -19,73 +55,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import * as vNG from 'v-network-graph';
-import type { RpgAssistantService } from '@/services/RpgAssistantService.ts';
-import DeleteKnowCharacterEdgeComponent from '@/components/DeleteKnowCharacterEdgeComponent.vue';
-
-const edgeMenu = ref<HTMLDivElement>();
-
-const isOpen = ref(false);
-const pos = ref({ x: 0, y: 0 });
-
-let outsidePointerHandler: ((event: PointerEvent) => void) | null = null;
-
-function hideMenu() {
-  isOpen.value = false;
-
-  if (outsidePointerHandler) {
-    document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
-    outsidePointerHandler = null;
-  }
-}
-
-const { rpgAssistantService, selectedEdgeId, edgeIdSeparator } = defineProps<{
-  rpgAssistantService: RpgAssistantService;
-  selectedEdgeId: string | undefined;
-  edgeIdSeparator: string;
-}>();
-
-const emit = defineEmits<{
-  (e: 'deleteKnowEdgeFromMenu', createdEdgeId: string): void;
-}>();
-
-function onEdgeKnowDeleted(createdEdgeId: string) {
-  emit('deleteKnowEdgeFromMenu', createdEdgeId);
-  hideMenu();
-}
-
-function showContextMenu(event: MouseEvent) {
-  pos.value = { x: event.clientX, y: event.clientY };
-  isOpen.value = true;
-
-  if (outsidePointerHandler) {
-    document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
-  }
-
-  outsidePointerHandler = (e: PointerEvent) => {
-    const el = edgeMenu.value;
-    if (!el) return;
-    if (!e.target || !el.contains(e.target as Node)) hideMenu();
-  };
-
-  document.addEventListener('pointerdown', outsidePointerHandler, { passive: true, capture: true });
-}
-
-function showEdgeContextMenu(params: vNG.EdgeEvent<MouseEvent>) {
-  const { event } = params;
-  event.stopPropagation();
-  event.preventDefault();
-  showContextMenu(event);
-}
-
-defineExpose({
-  showEdgeContextMenu,
-  hideMenu,
-});
-</script>
 
 <style scoped>
 .context-dropdown {
@@ -117,11 +86,11 @@ defineExpose({
   background: #ffffff;
   color: #111827;
   padding: 0.5rem 0.75rem;
-  cursor: pointer; /* optional: makes it feel like a menu row */
+  cursor: pointer;
 }
 
 .context-dropdown .dropdown-item:hover {
-  background: #f3f4f6; /* light gray */
+  background: #f3f4f6;
   color: #111827;
 }
 </style>

@@ -1,20 +1,12 @@
-<template>
-  <div class="delete-character-form">
-    <button id="delete-character-button" @click="onClickDeleteCharacter" :disabled="!characterId">
-      Delete character
-    </button>
-  </div>
-</template>
-
 <script setup lang="ts">
-import type { RpgAssistantService } from '@/services/RpgAssistantService.ts';
+import { onBeforeUnmount } from 'vue';
+import type { RpgAssistantService } from '@/services/RpgAssistantService';
 
 const { rpgAssistantService, characterId } = defineProps<{
   rpgAssistantService: RpgAssistantService;
   characterId: string | null;
 }>();
 let controller: AbortController | null = null;
-const emitDeleteName = 'deletedCharacter';
 const emit = defineEmits<{
   (e: 'deletedCharacter', deletedCharacterId: string): void;
 }>();
@@ -27,8 +19,18 @@ async function onClickDeleteCharacter() {
   const signal = controller.signal;
   await rpgAssistantService.deleteCharacterAsync(characterId, signal);
 
-  emit(emitDeleteName, characterId);
+  emit('deletedCharacter', characterId);
 }
+
+onBeforeUnmount(() => {
+  controller?.abort();
+});
 </script>
 
-<style scoped></style>
+<template>
+  <div class="delete-character-form">
+    <button id="delete-character-button" @click="onClickDeleteCharacter" :disabled="!characterId">
+      Delete character
+    </button>
+  </div>
+</template>

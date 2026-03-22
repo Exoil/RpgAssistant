@@ -1,37 +1,8 @@
-<template>
-  <div
-    ref="viewMenu"
-    class="dropdown context-dropdown"
-    :class="{ 'is-active': isOpen }"
-    :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
-  >
-    <div class="dropdown-menu" role="menu">
-      <div class="dropdown-content">
-        <button class="dropdown-item" type="button" @click="onCreateClick">Create character</button>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref } from 'vue';
 import * as vNG from 'v-network-graph';
+import { useContextMenu } from '@/composables/useContextMenu';
 
-const viewMenu = ref<HTMLDivElement>();
-
-const isOpen = ref(false);
-const pos = ref({ x: 0, y: 0 });
-
-let outsidePointerHandler: ((event: PointerEvent) => void) | null = null;
-
-function hideMenu() {
-  isOpen.value = false;
-
-  if (outsidePointerHandler) {
-    document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
-    outsidePointerHandler = null;
-  }
-}
+const { menuEl, isOpen, pos, showContextMenu, hideMenu } = useContextMenu();
 
 const emit = defineEmits<{
   (e: 'openCreateCharacterDialog'): void;
@@ -40,23 +11,6 @@ const emit = defineEmits<{
 function onCreateClick() {
   emit('openCreateCharacterDialog');
   hideMenu();
-}
-
-function showContextMenu(event: MouseEvent) {
-  pos.value = { x: event.clientX, y: event.clientY };
-  isOpen.value = true;
-
-  if (outsidePointerHandler) {
-    document.removeEventListener('pointerdown', outsidePointerHandler, { capture: true });
-  }
-
-  outsidePointerHandler = (e: PointerEvent) => {
-    const el = viewMenu.value;
-    if (!el) return;
-    if (!e.target || !el.contains(e.target as Node)) hideMenu();
-  };
-
-  document.addEventListener('pointerdown', outsidePointerHandler, { passive: true, capture: true });
 }
 
 function showViewContextMenu(params: vNG.ViewEvent<MouseEvent>) {
@@ -71,6 +25,21 @@ defineExpose({
   hideMenu,
 });
 </script>
+
+<template>
+  <div
+    ref="menuEl"
+    class="dropdown context-dropdown"
+    :class="{ 'is-active': isOpen }"
+    :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
+  >
+    <div class="dropdown-menu" role="menu">
+      <div class="dropdown-content">
+        <button class="dropdown-item" type="button" @click="onCreateClick">Create character</button>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .context-dropdown {

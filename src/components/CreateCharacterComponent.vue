@@ -1,3 +1,46 @@
+<script setup lang="ts">
+import { onBeforeUnmount, ref } from 'vue';
+import type { RpgAssistantService } from '@/services/RpgAssistantService';
+import { CharacterNode } from '@/models/CharacterNode';
+import { Character } from '@/services/Models/Character';
+
+const { rpgAssistantService, open } = defineProps<{
+  rpgAssistantService: RpgAssistantService;
+  open: boolean;
+}>();
+let controller: AbortController | null = null;
+const characterCreateName = ref('');
+const emit = defineEmits<{
+  (e: 'closeCreateCharacter'): void;
+  (e: 'characterCreated', node: CharacterNode): void;
+}>();
+
+async function onClickCreateCharacter() {
+  controller?.abort();
+  controller = new AbortController();
+
+  const signal = controller.signal;
+  const createResult = await rpgAssistantService.createCharacterAsync(
+    characterCreateName.value,
+    signal,
+  );
+  const node = new CharacterNode(new Character(createResult, characterCreateName.value));
+
+  emit('characterCreated', node);
+  emit('closeCreateCharacter');
+  characterCreateName.value = '';
+}
+
+function onClickCancel() {
+  characterCreateName.value = '';
+  emit('closeCreateCharacter');
+}
+
+onBeforeUnmount(() => {
+  controller?.abort();
+});
+</script>
+
 <template>
   <div class="modal" :class="{ 'is-active': open }">
     <div class="modal-background"></div>
@@ -16,7 +59,11 @@
       </section>
       <footer class="modal-card-foot">
         <div class="buttons">
-          <button id="create-character-node-submit-button is-light" @click="onClickCreateCharacter">
+          <button
+            id="create-character-node-submit-button"
+            class="button is-light"
+            @click="onClickCreateCharacter"
+          >
             Create
           </button>
           <button class="button is-ghost" @click="onClickCancel">Cancel</button>
@@ -25,46 +72,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { onBeforeUnmount, ref } from 'vue';
-import type { RpgAssistantService } from '@/services/RpgAssistantService';
-import { CharacterNode } from '@/models/CharacterNode.ts';
-import { Character } from '@/services/Models/Character.ts';
-
-const { rpgAssistantService, open } = defineProps<{
-  rpgAssistantService: RpgAssistantService;
-  open: boolean;
-}>();
-let controller: AbortController | null = null;
-const characterCreateName = ref('');
-const emit = defineEmits<{
-  (e: 'closeCreateCharacter'): void;
-  (e: 'characterCreated', node: CharacterNode): void;
-}>();
-
-async function onClickCreateCharacter() {
-  controller?.abort();
-  controller = new AbortController();
-
-  const signal = controller.signal;
-  let createResult = await rpgAssistantService.createCharacterAsync(
-    characterCreateName.value,
-    signal,
-  );
-  const node = new CharacterNode(new Character(createResult, characterCreateName.value));
-
-  emit('characterCreated', node);
-  emit('closeCreateCharacter');
-  characterCreateName.value = '';
-}
-
-async function onClickCancel() {
-  characterCreateName.value = '';
-  emit('closeCreateCharacter');
-}
-
-onBeforeUnmount(() => {
-  controller?.abort();
-});
-</script>
