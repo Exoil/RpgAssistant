@@ -5,32 +5,24 @@
  * In .NET terms: this is like unit-testing a service class whose repository
  * dependency is swapped for an in-memory fake via dependency injection.
  *
- * vi.hoisted() ensures the mock object exists before Vitest hoists vi.mock()
- * to the top of the file — without it, the variable would be undefined inside
- * the mock factory.
+ * How the mock works:
+ *  1. vi.mock() replaces the entire module before any test runs.
+ *  2. We import RpgAssistantClient from the (now-mocked) module — it is a vi.fn() spy.
+ *  3. In beforeEach we use vi.mocked(RpgAssistantClient).mockImplementation() to make
+ *     the constructor return a fresh object of vi.fn() methods for each test.
+ *  4. Because the service receives this object via `new RpgAssistantClient()`, every
+ *     method call on the underlying client is interceptable in assertions.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { RpgAssistantService } from '@/services/RpgAssistantService';
+import { RpgAssistantClient } from '@/services/HttpClients/RpgAssistantClient';
 import { UpdateCharacter } from '@/services/Models/UpdateCharacter';
 import { PageQuery } from '@/services/Models/PageQuery';
 
-// --- Mock the auto-generated HTTP client ---
-const mockClient = vi.hoisted(() => ({
-  createCharacter: vi.fn(),
-  getCharacterById: vi.fn(),
-  updateCharacter: vi.fn(),
-  deleteCharacter: vi.fn(),
-  getPagedCharacters: vi.fn(),
-  createKnowRelationship: vi.fn(),
-  deleteKnowRelationship: vi.fn(),
-}));
-
+// Replace the entire module. The factory runs at module-load time.
+// DTOs are plain data containers so we just copy the fields onto `this`.
 vi.mock('@/services/HttpClients/RpgAssistantClient', () => ({
-  // Regular function (not arrow) so it can be called with `new`
-  RpgAssistantClient: vi.fn(function () {
-    return mockClient;
-  }),
-  // DTOs are plain data containers — use a class so `new Dto(data)` just copies the fields
+  RpgAssistantClient: vi.fn(),
   CreateCharacterDto: class {
     constructor(data: object) {
       Object.assign(this, data);
@@ -50,9 +42,37 @@ vi.mock('@/services/HttpClients/RpgAssistantClient', () => ({
 
 describe('RpgAssistantService', () => {
   let service: RpgAssistantService;
+  // A fresh set of mock methods is created before every test.
+  let mockClient: {
+    createCharacter: ReturnType<typeof vi.fn>;
+    getCharacterById: ReturnType<typeof vi.fn>;
+    updateCharacter: ReturnType<typeof vi.fn>;
+    deleteCharacter: ReturnType<typeof vi.fn>;
+    getPagedCharacters: ReturnType<typeof vi.fn>;
+    createKnowRelationship: ReturnType<typeof vi.fn>;
+    deleteKnowRelationship: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    // Build a fresh mock client object so tests never share state.
+    mockClient = {
+      createCharacter: vi.fn(),
+      getCharacterById: vi.fn(),
+      updateCharacter: vi.fn(),
+      deleteCharacter: vi.fn(),
+      getPagedCharacters: vi.fn(),
+      createKnowRelationship: vi.fn(),
+      deleteKnowRelationship: vi.fn(),
+    };
+
+    // Make the RpgAssistantClient constructor return our mock client.
+    // vi.mocked() gives TypeScript the correct mock types for the class.
+    vi.mocked(RpgAssistantClient).mockImplementation(
+      function () {
+        return mockClient as unknown as RpgAssistantClient;
+      } as unknown as typeof RpgAssistantClient,
+    );
+
     service = new RpgAssistantService('http://localhost:8080');
   });
 
