@@ -122,5 +122,19 @@ public static class CharacterEndpoints
                         Results.NoContent,
                         cancellationToken)
             );
+
+        endpointGroup
+            .MapGet(
+                "/path/{from:guid}/to/{to:guid}",
+                async (
+                        [FromServices] ResultsToHttpResponses responseResolver,
+                        [FromRoute] Guid from,
+                        [FromRoute] Guid to,
+                        [FromQuery] int maxHops = 10,
+                        CancellationToken cancellationToken = default) =>
+                    await responseResolver.GetResult<FindRelationBetweenCharacterQuery, RelationPathPayload>(
+                        new FindRelationBetweenCharacterQuery(from, to, maxHops),
+                        Results.Ok,
+                        cancellationToken));
     }
 }

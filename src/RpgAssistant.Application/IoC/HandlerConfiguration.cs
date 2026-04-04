@@ -28,7 +28,8 @@ public static class HandlerConfiguration
             .AddAsyncRequestHandler<GetCharacterByIdQueryHandler>()
             .AddAsyncRequestHandler<GetCharacterPageQueryHandler>()
             .AddAsyncRequestHandler<CreateKnowRelationCommandHandler>()
-            .AddAsyncRequestHandler<DeleteKnowRelationCommandHandler>();
+            .AddAsyncRequestHandler<DeleteKnowRelationCommandHandler>()
+            .AddAsyncRequestHandler<FindRelationBetweenCharacterQueryHandler>();
 
         return services;
     }

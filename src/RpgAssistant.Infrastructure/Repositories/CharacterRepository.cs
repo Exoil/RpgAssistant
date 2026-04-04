@@ -172,4 +172,37 @@ public class CharacterRepository : ICharacterRepository
 
         await transaction.RunAsync(query);
     }
+
+    public async Task<IReadOnlyCollection<Ulid>> FindPathBetweenCharactersAsync(
+        IAsyncTransaction transaction,
+        Ulid fromCharacterId,
+        Ulid toCharacterId,
+        int maxHops)
+    {
+        var queryString = $@"
+            MATCH path = shortestPath(
+                (from:Character {{Id: $FromCharacterId}})-[:KNOWS*..{maxHops}]-(to:Character {{Id: $ToCharacterId}})
+            )
+            RETURN [node IN nodes(path) | node.Id] AS CharacterIds";
+
+        var query = new Query(queryString, new
+        {
+            FromCharacterId = fromCharacterId.ToDatabaseId(),
+            ToCharacterId = toCharacterId.ToDatabaseId()
+        });
+
+        var cursorResult = await transaction.RunAsync(query);
+        var records = await cursorResult.ToListAsync();
+
+        if (records.Count == 0)
+        {
+            return Array.Empty<Ulid>();
+        }
+
+        return records[0]["CharacterIds"]
+            .As<List<string>>()
+            .Select(id => id.DatabaseIdToUlid())
+            .ToList()
+            .AsReadOnly();
+    }
 }
