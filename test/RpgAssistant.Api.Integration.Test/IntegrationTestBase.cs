@@ -28,7 +28,10 @@ public abstract class IntegrationTestBase : IAsyncLifetime
     }
 
     public virtual async Task DisposeAsync()
-        => await _neo4JContainerRunner.ResetAsync();
+    {
+        await _neo4JContainerRunner.ResetAsync();
+        await Factory.DisposeAsync();
+    }
 
     protected Task<IDriver> GetDriverAsync() => Task.FromResult(_neo4JContainerRunner.CreateDriver());
 

@@ -25,4 +25,10 @@ public interface ICharacterRepository
     Task CreateKnowRelationAsync(IAsyncTransaction transaction, CreateKnowRelation createKnowRelation);
 
     Task DeleteKnowRelationAsync(IAsyncTransaction transaction, DeleteKnowRelation createKnowRelation);
+
+    Task<IReadOnlyCollection<Ulid>> FindPathBetweenCharactersAsync(
+        IAsyncTransaction transaction,
+        Ulid fromCharacterId,
+        Ulid toCharacterId,
+        int maxHops);
 }

@@ -118,6 +118,44 @@ paths:
                 '400':
                     $ref: '#/components/responses/BadRequest'
 
+    /v1/characters/path/{from}/to/{to}:
+        get:
+            operationId: findRelationBetweenCharacters
+            summary: Find shortest path between two characters through KNOWS relationships
+            parameters:
+                -   name: from
+                    in: path
+                    required: true
+                    description: Source character identifier
+                    schema:
+                        type: string
+                        format: uuid
+                -   name: to
+                    in: path
+                    required: true
+                    description: Target character identifier
+                    schema:
+                        type: string
+                        format: uuid
+                -   name: maxHops
+                    in: query
+                    required: false
+                    description: Maximum number of hops to traverse (default 10)
+                    schema:
+                        type: integer
+                        format: int32
+                        default: 10
+                        minimum: 1
+            responses:
+                '200':
+                    description: Path found or empty path if no connection
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RelationPathPayload'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+
     /v1/characters/knows/{from}/to/{to}:
         delete:
             operationId: deleteKnowRelationship
@@ -265,6 +303,22 @@ components:
                         type: string
                         format: uuid
 
+        RelationPathPayload:
+            title: RelationPathPayload
+            type: object
+            required: [ characterIds, hops ]
+            properties:
+                characterIds:
+                    type: array
+                    description: Ordered list of character IDs forming the path from source to target
+                    items:
+                        type: string
+                        format: uuid
+                hops:
+                    type: integer
+                    format: int32
+                    description: Number of relationships traversed (characterIds.length - 1)
+                    minimum: 0
         CreateCharacterDto:
             type: object
             title: CreateCharacterDto
