@@ -65,8 +65,7 @@ const selectedEdgeIds = computed<string[]>({
     selectedEdgeId.value = next;
   },
 });
-const nodeInitPositionX = ref<number>(50)
-const nodeInitPositionY = ref<number>(50)
+
 const nodeList = ref<CharacterNode[]>([]);
 const nodesForGraph = computed<vNG.Nodes>(() =>
   Object.fromEntries(
