@@ -12,6 +12,12 @@ import EdgeContextMenuComponent from '@/components/menus/EdgeContextMenuComponen
 import ViewContextMenuComponent from '@/components/menus/ViewContextMenuComponent.vue';
 import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue';
 import UpdateCharacterComponent from '@/components/UpdateCharacterComponent.vue';
+import type {Character} from "@/services/Models/Character.ts";
+import {
+  type ForceEdgeDatum,
+  ForceLayout,
+  type ForceNodeDatum
+} from "v-network-graph/lib/force-layout";
 
 let rpgAssistantService: RpgAssistantService;
 const viewMenuRef = ref<InstanceType<typeof ViewContextMenuComponent> | null>(null);
@@ -59,7 +65,8 @@ const selectedEdgeIds = computed<string[]>({
     selectedEdgeId.value = next;
   },
 });
-
+const nodeInitPositionX = ref<number>(50)
+const nodeInitPositionY = ref<number>(50)
 const nodeList = ref<CharacterNode[]>([]);
 const nodesForGraph = computed<vNG.Nodes>(() =>
   Object.fromEntries(
@@ -90,18 +97,24 @@ onBeforeMount(() => {
   setupGraphConfig();
 });
 
-onMounted(async () => {
-  const controller = new AbortController();
-  const signal = controller.signal;
-  const pageQuery = new PageQuery(1, 10, 'name', 'Asc');
-  const result = await rpgAssistantService.getCharactersAsync(pageQuery, signal);
+function loadData(result: Character[]) {
   nodeList.value = result.map((c) => new CharacterNode(c));
   nodeList.value.forEach((n) => {
     n.characterData.knowCharacterIds.forEach((knowId) => {
       edges.value.push(new KnowEdge(n.id, knowId));
     });
   });
+}
+
+onMounted(async () => {
+  const controller = new AbortController();
+  const signal = controller.signal;
+  const pageQuery = new PageQuery(1, 10, 'name', 'Asc');
+  const result = await rpgAssistantService.getCharactersAsync(pageQuery, signal);
+  loadData(result);
 });
+
+
 
 function setupGraphConfig() {
   graphConfiguration.node.selectable = 2;
@@ -118,7 +131,59 @@ function setupGraphConfig() {
   graphConfiguration.view.grid.thick.color = '#cccccc';
   graphConfiguration.view.grid.thick.width = 1;
   graphConfiguration.view.grid.thick.dasharray = 0;
-  graphConfiguration.view.layoutHandler = new vNG.GridLayout({ grid: 10 });
+  graphConfiguration.view.layoutHandler = new ForceLayout({
+    positionFixedByDrag: true,         // lock node after dragging
+    positionFixedByClickWithAltKey: true,
+    createSimulation: (d3, nodes, edges) => {
+      const forceLink = d3
+        .forceLink<ForceNodeDatum, ForceEdgeDatum>(edges)
+        .id((d: { id: any }) => d.id);
+
+      /**
+       * Controls the ideal length and stiffness of edges between connected nodes.
+       * - distance: target edge length in pixels
+       * - strength: how hard the spring pulls nodes to that distance (0–1)
+       */
+      const createEdgeSpringForce = (distance: number, strength: number) =>
+        forceLink.distance(distance).strength(strength);
+
+      /**
+       * Makes every node repel every other node, like same-pole magnets.
+       * Use negative values for repulsion — the larger the absolute value, the more spread out nodes become.
+       */
+      const createNodeRepulsionForce = (strength: number) =>
+        d3.forceManyBody().strength(strength);
+
+      /**
+       * Pulls all nodes gently toward the center of the viewport.
+       * Keep strength low (e.g. 0.05) so it doesn't fight other forces.
+       */
+      const createCenteringForce = (strength: number) =>
+        d3.forceCenter().strength(strength);
+
+      /**
+       * Prevents nodes from overlapping by enforcing a minimum distance between node centers.
+       * - radius: minimum distance in pixels (should be >= your node's visual radius)
+       */
+      const createCollisionForce = (radius: number) =>
+        d3.forceCollide(radius);
+
+      return d3
+        .forceSimulation(nodes)
+        .force("edge",    createEdgeSpringForce(120, 0.5))
+        .force("charge",  createNodeRepulsionForce(-200))
+        .force("center",  createCenteringForce(0.05))
+        .force("collide", createCollisionForce(60))
+        /**
+         * alphaMin: the cooling threshold at which the simulation stops.
+         * Alpha starts at 1.0 and decays each tick toward this value.
+         * Lower = runs longer and settles more accurately.
+         * Higher = stops sooner (faster but less precise layout).
+         */
+        .alphaMin(0.001);
+    }
+  })
+  graphConfiguration.edge.keepOrder = "clock";
 }
 
 const createDialogOpen = ref(false);
