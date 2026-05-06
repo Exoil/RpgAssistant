@@ -20,7 +20,10 @@ public interface ICharacterRepository
 
     Task<Character> GetAsync(IAsyncTransaction transaction, Ulid id);
 
-    Task<IReadOnlyCollection<CharacterWithKnowRelation>> GetAsync(IAsyncTransaction transaction, GetCharacterPage characterPage);
+    Task<IReadOnlyCollection<CharacterWithKnowRelation>> GetAsync(
+        IAsyncTransaction transaction,
+        GetCharacterPage characterPage,
+        CharacterSearchFilter searchFilter);
 
     Task CreateKnowRelationAsync(IAsyncTransaction transaction, CreateKnowRelation createKnowRelation);
 

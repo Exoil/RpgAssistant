@@ -14,6 +14,7 @@ paths:
                 -   $ref: '#/components/parameters/PageSize'
                 -   $ref: '#/components/parameters/SortType'
                 -   $ref: '#/components/parameters/SortOrder'
+                -   $ref: '#/components/parameters/NameFilter'
             responses:
                 '200':
                     description: List of characters
@@ -214,6 +215,9 @@ components:
             description: Field to sort by
             schema:
                 type: string
+                minLength: 0
+                maxLength: 50
+                pattern: "^(name|id)$"
         SortOrder:
             name: sortOrder
             in: query
@@ -221,6 +225,16 @@ components:
             description: Sort direction (e.g., asc, desc)
             schema:
                 type: string
+                pattern: "^(Asc|Desc)$"
+        NameFilter:
+            name: nameFilter
+            in: query
+            required: false
+            description: Filter for character name.
+            schema:
+                type: string
+                minLength: 0
+                maxLength: 50
         IfMatch:
             name: If-Match
             in: header

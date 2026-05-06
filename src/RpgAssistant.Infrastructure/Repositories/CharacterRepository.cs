@@ -1,3 +1,5 @@
+using System.Text;
+
 using Neo4j.Driver;
 
 using RpgAssistant.Domain.Entities.Characters;
@@ -101,33 +103,37 @@ public class CharacterRepository : ICharacterRepository
         return character;
     }
 
-    public async Task<IReadOnlyCollection<CharacterWithKnowRelation>> GetAsync(IAsyncTransaction transaction,
-        GetCharacterPage characterPage)
+    public async Task<IReadOnlyCollection<CharacterWithKnowRelation>> GetAsync(
+        IAsyncTransaction transaction,
+        GetCharacterPage characterPage,
+        CharacterSearchFilter searchFilter)
     {
         var skip = (int)((characterPage.Page - 1) * characterPage.Size);
         var limit = (int)characterPage.Size;
 
-        const string queryString = @"
-            MATCH (ch:Character)
-            OPTIONAL MATCH (ch)-[:KNOWS]->(toCh:Character)
-            WITH
-                ch,
-                [x IN collect(toCh.Id) WHERE x IS NOT NULL] AS KnowRelationIds
-            ORDER BY
-                CASE WHEN $SortType = 'Id' AND $SortOrder = 'Asc' THEN ch.Id END ASC,
-                CASE WHEN $SortType = 'Id' AND $SortOrder = 'Desc' THEN ch.Id END DESC,
-                CASE WHEN $SortType = 'Name' AND $SortOrder = 'Asc' THEN ch.Name END ASC,
-                CASE WHEN $SortType = 'Name' AND $SortOrder = 'Desc' THEN ch.Name END DESC
-            SKIP $Skip
-            LIMIT $Limit
-            RETURN ch.Id AS Id, ch.Name AS Name, KnowRelationIds";
+        var queryStringBuilder = new StringBuilder(
+            "MATCH (ch:Character)");
 
-        var query = new Query(queryString, new
+        queryStringBuilder
+            .AppendLine("WHERE $NameFilter = '' OR toLower(ch.Name) CONTAINS toLower($NameFilter)")
+            .AppendLine("OPTIONAL MATCH (ch)-[:KNOWS]->(toCh:Character)")
+            .AppendLine("WITH ch, collect(toCh.Id) AS KnowRelationIds")
+            .AppendLine("ORDER BY")
+            .AppendLine("CASE WHEN $SortType = 'Id' AND $SortOrder = 'Asc' THEN ch.Id END ASC,")
+            .AppendLine("CASE WHEN $SortType = 'Id' AND $SortOrder = 'Desc' THEN ch.Id END DESC,")
+            .AppendLine("CASE WHEN $SortType = 'Name' AND $SortOrder = 'Asc' THEN ch.Name END ASC,")
+            .AppendLine("CASE WHEN $SortType = 'Name' AND $SortOrder = 'Desc' THEN ch.Name END DESC")
+            .AppendLine("SKIP $Skip")
+            .AppendLine("LIMIT $Limit")
+            .AppendLine("RETURN ch.Id AS Id, ch.Name AS Name, KnowRelationIds");
+
+        var query = new Query(queryStringBuilder.ToString(), new
         {
             characterPage.SortType,
             characterPage.SortOrder,
             Skip = skip,
-            Limit = limit
+            Limit = limit,
+            NameFilter = searchFilter.Name ?? ""
         });
 
         var cursorResult = await transaction.RunAsync(query);
