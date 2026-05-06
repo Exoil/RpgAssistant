@@ -2,7 +2,6 @@ using System.Text;
 
 using Neo4j.Driver;
 
-using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Entities.Characters;
 using RpgAssistant.Domain.Entities.Characters.Commands;
 using RpgAssistant.Domain.Entities.Characters.Queries;
