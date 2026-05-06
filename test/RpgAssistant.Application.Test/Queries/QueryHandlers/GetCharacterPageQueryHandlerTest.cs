@@ -41,7 +41,7 @@ public class GetCharacterPageQueryHandlerTest
     public async Task InvokeAsync_WhenCharactersExist_ReturnsPageWithRelations()
     {
         // Arrange
-        var query = new GetCharacterPageQuery(1, 10, "Name", "Asc");
+        var query = new GetCharacterPageQuery(1, 10, "Name", "Asc", null);
         var knownCharacterId = Ulid.NewUlid();
         var characters = new List<CharacterWithKnowRelation>
         {
@@ -50,7 +50,7 @@ public class GetCharacterPageQueryHandlerTest
         }.AsReadOnly();
 
         _characterRepository
-            .GetAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<GetCharacterPage>())
+            .GetAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<GetCharacterPage>(), Arg.Any<CharacterSearchFilter>())
             .Returns(characters);
 
         // Act
@@ -70,9 +70,9 @@ public class GetCharacterPageQueryHandlerTest
     public async Task InvokeAsync_WhenNoCharactersExist_ReturnsEmptyCollection()
     {
         // Arrange
-        var query = new GetCharacterPageQuery(1, 10, "Name", "Asc");
+        var query = new GetCharacterPageQuery(1, 10, "Name", "Asc", null);
         _characterRepository
-            .GetAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<GetCharacterPage>())
+            .GetAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<GetCharacterPage>(), Arg.Any<CharacterSearchFilter>())
             .Returns(new List<CharacterWithKnowRelation>().AsReadOnly());
 
         // Act
@@ -88,10 +88,10 @@ public class GetCharacterPageQueryHandlerTest
     public async Task InvokeAsync_WhenRepositoryThrows_ReturnsException()
     {
         // Arrange
-        var query = new GetCharacterPageQuery(1, 10, "Name", "Asc");
+        var query = new GetCharacterPageQuery(1, 10, "Name", "Asc", null);
         var expectedException = new Exception("DB error");
         _characterRepository
-            .GetAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<GetCharacterPage>())
+            .GetAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<GetCharacterPage>(), Arg.Any<CharacterSearchFilter>())
             .ThrowsAsync(expectedException);
 
         // Act
