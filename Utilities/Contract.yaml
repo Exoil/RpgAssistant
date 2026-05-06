@@ -14,6 +14,7 @@ paths:
                 -   $ref: '#/components/parameters/PageSize'
                 -   $ref: '#/components/parameters/SortType'
                 -   $ref: '#/components/parameters/SortOrder'
+                -   $ref: '#/components/parameters/NameFilter'
             responses:
                 '200':
                     description: List of characters
@@ -219,6 +220,13 @@ components:
             in: query
             required: true
             description: Sort direction (e.g., asc, desc)
+            schema:
+                type: string
+        NameFilter:
+            name: nameFilter
+            in: query
+            required: false
+            description: Filter for character name.
             schema:
                 type: string
         IfMatch:
