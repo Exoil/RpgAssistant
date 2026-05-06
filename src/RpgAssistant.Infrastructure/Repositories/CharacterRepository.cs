@@ -115,10 +115,9 @@ public class CharacterRepository : ICharacterRepository
             "MATCH (ch:Character)");
 
         queryStringBuilder
+            .AppendLine("WHERE $NameFilter = '' OR toLower(ch.Name) CONTAINS toLower($NameFilter)")
             .AppendLine("OPTIONAL MATCH (ch)-[:KNOWS]->(toCh:Character)")
-            .AppendLine("WITH")
-            .AppendLine("ch,")
-            .AppendLine("[x IN collect(CASE WHEN toCh IS NOT NULL AND toLower(toCh.Name) CONTAINS toLower($NameFilter) THEN toCh.Id END) WHERE x IS NOT NULL] AS KnowRelationIds")
+            .AppendLine("WITH ch, collect(toCh.Id) AS KnowRelationIds")
             .AppendLine("ORDER BY")
             .AppendLine("CASE WHEN $SortType = 'Id' AND $SortOrder = 'Asc' THEN ch.Id END ASC,")
             .AppendLine("CASE WHEN $SortType = 'Id' AND $SortOrder = 'Desc' THEN ch.Id END DESC,")
