@@ -5,6 +5,7 @@ using Neo4j.Driver;
 using RpgAssistant.Application.Models;
 using RpgAssistant.Domain.Entities.Characters.Queries;
 using RpgAssistant.Domain.Factories;
+using RpgAssistant.Domain.Models;
 using RpgAssistant.Domain.Repositories;
 
 using ILogger = Serilog.ILogger;
@@ -36,12 +37,15 @@ public class GetCharacterPageQueryHandler
 
         try
         {
-            var character = await _characterRepository.GetAsync(transaction,
+            var character = await _characterRepository.GetAsync(
+                transaction,
                 new GetCharacterPage(
                     request.Number,
                     request.Size,
                     request.SortType,
-                    request.SortOrder));
+                    request.SortOrder),
+                new CharacterSearchFilter(
+                    request.CharacterName));
 
             _logger.Information(
                 "Character page found: {Number} - {Size}",

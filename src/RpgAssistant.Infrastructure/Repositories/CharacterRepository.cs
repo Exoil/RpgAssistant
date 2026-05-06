@@ -119,7 +119,7 @@ public class CharacterRepository : ICharacterRepository
             .AppendLine("OPTIONAL MATCH (ch)-[:KNOWS]->(toCh:Character)")
             .AppendLine("WITH")
             .AppendLine("ch,")
-            .AppendLine("[x IN collect(toCh.Id) WHERE x IS NOT NULL] AS KnowRelationIds")
+            .AppendLine("[x IN collect(CASE WHEN toCh IS NOT NULL AND toLower(toCh.Name) CONTAINS toLower($NameFilter) THEN toCh.Id END) WHERE x IS NOT NULL] AS KnowRelationIds")
             .AppendLine("ORDER BY")
             .AppendLine("CASE WHEN $SortType = 'Id' AND $SortOrder = 'Asc' THEN ch.Id END ASC,")
             .AppendLine("CASE WHEN $SortType = 'Id' AND $SortOrder = 'Desc' THEN ch.Id END DESC,")
@@ -134,7 +134,8 @@ public class CharacterRepository : ICharacterRepository
             characterPage.SortType,
             characterPage.SortOrder,
             Skip = skip,
-            Limit = limit
+            Limit = limit,
+            NameFilter = searchFilter.Name ?? ""
         });
 
         var cursorResult = await transaction.RunAsync(query);
