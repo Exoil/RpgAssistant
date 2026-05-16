@@ -12,6 +12,7 @@ import EdgeContextMenuComponent from '@/components/menus/EdgeContextMenuComponen
 import ViewContextMenuComponent from '@/components/menus/ViewContextMenuComponent.vue';
 import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue';
 import UpdateCharacterComponent from '@/components/UpdateCharacterComponent.vue';
+import FindPathToCharacterComponent from '@/components/FindPathToCharacterComponent.vue';
 import type { Character } from '@/services/Models/Character.ts';
 import {
   type ForceEdgeDatum,
@@ -66,6 +67,18 @@ const selectedEdgeIds = computed<string[]>({
   },
 });
 
+const pathCharacterIds = ref<string[]>([]);
+
+const highlightedNodeIds = computed<Set<string>>(() => new Set(pathCharacterIds.value));
+
+const highlightedEdgeKeys = computed<Set<string>>(() => {
+  const keys = new Set<string>();
+  for (let i = 0; i < pathCharacterIds.value.length - 1; i++) {
+    keys.add(pathCharacterIds.value[i]! + EdgeIdSeparator + pathCharacterIds.value[i + 1]!);
+  }
+  return keys;
+});
+
 const nodeList = ref<CharacterNode[]>([]);
 const nodesForGraph = computed<vNG.Nodes>(() =>
   Object.fromEntries(
@@ -73,6 +86,7 @@ const nodesForGraph = computed<vNG.Nodes>(() =>
       n.id,
       {
         name: n.name,
+        highlighted: highlightedNodeIds.value.has(n.id),
       },
     ]),
   ),
@@ -80,13 +94,17 @@ const nodesForGraph = computed<vNG.Nodes>(() =>
 const edges = ref<KnowEdge[]>([]);
 const edgesForGraph = computed<vNG.Edges>(() =>
   Object.fromEntries(
-    edges.value.map((e) => [
-      e.source + EdgeIdSeparator + e.target,
-      {
-        source: e.source,
-        target: e.target,
-      },
-    ]),
+    edges.value.map((e) => {
+      const key = e.source + EdgeIdSeparator + e.target;
+      return [
+        key,
+        {
+          source: e.source,
+          target: e.target,
+          highlighted: highlightedEdgeKeys.value.has(key),
+        },
+      ];
+    }),
   ),
 );
 
@@ -113,9 +131,18 @@ onMounted(async () => {
   loadData(result);
 });
 
+const PATH_HIGHLIGHT_COLOR = '#f97316';
+const DEFAULT_NODE_COLOR = '#4466cc';
+const DEFAULT_EDGE_COLOR = '#aaaaaa';
+
 function setupGraphConfig() {
   graphConfiguration.node.selectable = 2;
+  graphConfiguration.node.normal.color = (node) =>
+    node.highlighted ? PATH_HIGHLIGHT_COLOR : DEFAULT_NODE_COLOR;
   graphConfiguration.edge.selectable = 1;
+  graphConfiguration.edge.normal.color = (edge) =>
+    edge.highlighted ? PATH_HIGHLIGHT_COLOR : DEFAULT_EDGE_COLOR;
+  graphConfiguration.edge.normal.width = (edge) => (edge.highlighted ? 3 : 1);
   graphConfiguration.edge.type = 'straight';
   graphConfiguration.edge.marker.source.type = 'none';
   graphConfiguration.edge.marker.target.type = 'arrow';
@@ -192,6 +219,21 @@ const updateNodeCharacterNodeModal = ref(false);
 function openUpdateDialog() {
   if (!firstSelectedNodeId.value) return;
   updateNodeCharacterNodeModal.value = true;
+}
+
+const findPathDialogOpen = ref(false);
+
+function openFindPathDialog() {
+  if (!firstSelectedNodeId.value) return;
+  findPathDialogOpen.value = true;
+}
+
+function onPathFound(characterIds: string[]) {
+  pathCharacterIds.value = characterIds;
+}
+
+function clearHighlightedPath() {
+  pathCharacterIds.value = [];
 }
 
 function onCharacterCreated(node: CharacterNode) {
@@ -308,6 +350,7 @@ const eventHandlers: vNG.EventHandlers = {
       :secondSelectedCharacterId="secondSelectedNodeId"
       :edgeIdSeparator="EdgeIdSeparator"
       @openUpdateCharacterDialog="openUpdateDialog"
+      @openFindPathDialog="openFindPathDialog"
       @deletedCharacterFromMenu="onCharacterDeleted"
       @createKnowEdgeFromMenu="onEdgeKnowCreated"
     />
@@ -332,6 +375,23 @@ const eventHandlers: vNG.EventHandlers = {
       :characterId="firstSelectedNodeId"
       @updatedCharacter="onCharacterUpdated"
     />
+
+    <FindPathToCharacterComponent
+      v-model:open="findPathDialogOpen"
+      :rpgAssistantService="rpgAssistantService"
+      :fromCharacterId="firstSelectedNodeId"
+      @pathFound="onPathFound"
+    />
+
+    <button
+      v-if="pathCharacterIds.length > 0"
+      id="clear-highlighted-path-button"
+      class="button is-warning clear-path-button"
+      type="button"
+      @click="clearHighlightedPath"
+    >
+      Clear path
+    </button>
   </div>
 </template>
 
@@ -339,10 +399,19 @@ const eventHandlers: vNG.EventHandlers = {
 .app {
   display: flex;
   height: 100vh;
+  position: relative;
 }
 
 .graph-host {
   flex: 1;
   background: #ffffff;
+}
+
+.clear-path-button {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 </style>

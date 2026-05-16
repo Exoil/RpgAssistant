@@ -8,6 +8,7 @@ import { VersionedCharacter } from './Models/VersionedCharacter';
 import type { PageQuery } from './Models/PageQuery';
 import type { UpdateCharacter } from './Models/UpdateCharacter';
 import { Character } from '@/services/Models/Character.ts';
+import { RelationPath } from '@/services/Models/RelationPath.ts';
 
 export class RpgAssistantService {
   private _rpgAssistantClient: RpgAssistantClient;
@@ -61,6 +62,7 @@ export class RpgAssistantService {
       pageQuery.pageSize,
       pageQuery.sortType,
       pageQuery.sortOrder,
+      undefined,
       signal,
     );
 
@@ -89,5 +91,38 @@ export class RpgAssistantService {
     signal?: AbortSignal,
   ): Promise<void> {
     return (await this._rpgAssistantClient.deleteKnowRelationship(fromId, toId, signal)).result;
+  }
+
+  public async searchCharactersByNameAsync(
+    nameFilter: string,
+    pageNumber: number,
+    pageSize: number,
+    signal?: AbortSignal,
+  ): Promise<Character[]> {
+    const response = await this._rpgAssistantClient.getPagedCharacters(
+      pageNumber,
+      pageSize,
+      'name',
+      'Asc',
+      nameFilter,
+      signal,
+    );
+
+    return response.result.map((c) => new Character(c.id, c.name, c.knowCharacterIds));
+  }
+
+  public async findRelationBetweenCharactersAsync(
+    fromId: string,
+    toId: string,
+    signal?: AbortSignal,
+  ): Promise<RelationPath> {
+    const response = await this._rpgAssistantClient.findRelationBetweenCharacters(
+      fromId,
+      toId,
+      undefined,
+      signal,
+    );
+
+    return new RelationPath(response.result.characterIds ?? [], response.result.hops ?? 0);
   }
 }

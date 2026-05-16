@@ -16,6 +16,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   openUpdateCharacterDialog: [];
+  openFindPathDialog: [];
   deletedCharacterFromMenu: [deletedCharacterId: string];
   createKnowEdgeFromMenu: [createdEdgeId: string];
 }>();
@@ -23,6 +24,12 @@ const emit = defineEmits<{
 function onUpdateClick() {
   if (!props.firstSelectedCharacterId) return;
   emit('openUpdateCharacterDialog');
+  hideMenu();
+}
+
+function onFindPathClick() {
+  if (!props.firstSelectedCharacterId) return;
+  emit('openFindPathDialog');
   hideMenu();
 }
 
@@ -65,6 +72,16 @@ defineExpose({
           :disabled="!firstSelectedCharacterId"
         >
           Update character
+        </button>
+
+        <button
+          id="node-context-find-path-button"
+          class="dropdown-item"
+          type="button"
+          @click="onFindPathClick"
+          :disabled="!firstSelectedCharacterId"
+        >
+          Search path to
         </button>
 
         <div class="dropdown-item">
