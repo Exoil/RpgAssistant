@@ -87,6 +87,8 @@ const nodesForGraph = computed<vNG.Nodes>(() =>
       {
         name: n.name,
         highlighted: highlightedNodeIds.value.has(n.id),
+        isFirstSelected: firstSelectedNodeId.value === n.id,
+        isSecondSelected: secondSelectedNodeId.value === n.id,
       },
     ]),
   ),
@@ -96,12 +98,20 @@ const edgesForGraph = computed<vNG.Edges>(() =>
   Object.fromEntries(
     edges.value.map((e) => {
       const key = e.source + EdgeIdSeparator + e.target;
+      const first = firstSelectedNodeId.value;
+      const second = secondSelectedNodeId.value;
+      const connectsSelected =
+        !!first &&
+        !!second &&
+        ((e.source === first && e.target === second) ||
+          (e.source === second && e.target === first));
       return [
         key,
         {
           source: e.source,
           target: e.target,
           highlighted: highlightedEdgeKeys.value.has(key),
+          connectsSelected,
         },
       ];
     }),
@@ -131,18 +141,34 @@ onMounted(async () => {
   loadData(result);
 });
 
-const PATH_HIGHLIGHT_COLOR = '#f97316';
+const PATH_HIGHLIGHT_COLOR = '#a855f7';
 const DEFAULT_NODE_COLOR = '#4466cc';
 const DEFAULT_EDGE_COLOR = '#aaaaaa';
+const FIRST_SELECTED_STROKE_COLOR = '#16a34a';
+const SECOND_SELECTED_STROKE_COLOR = '#14532d';
+const SELECTED_PAIR_EDGE_COLOR = '#22c55e';
+const SELECTED_STROKE_WIDTH = 4;
 
 function setupGraphConfig() {
   graphConfiguration.node.selectable = 2;
+  graphConfiguration.node.focusring.visible = false;
   graphConfiguration.node.normal.color = (node) =>
     node.highlighted ? PATH_HIGHLIGHT_COLOR : DEFAULT_NODE_COLOR;
+  graphConfiguration.node.normal.strokeWidth = (node) =>
+    node.isFirstSelected || node.isSecondSelected ? SELECTED_STROKE_WIDTH : 0;
+  graphConfiguration.node.normal.strokeColor = (node) => {
+    if (node.isSecondSelected) return SECOND_SELECTED_STROKE_COLOR;
+    if (node.isFirstSelected) return FIRST_SELECTED_STROKE_COLOR;
+    return undefined;
+  };
   graphConfiguration.edge.selectable = 1;
-  graphConfiguration.edge.normal.color = (edge) =>
-    edge.highlighted ? PATH_HIGHLIGHT_COLOR : DEFAULT_EDGE_COLOR;
-  graphConfiguration.edge.normal.width = (edge) => (edge.highlighted ? 3 : 1);
+  graphConfiguration.edge.normal.color = (edge) => {
+    if (edge.connectsSelected) return SELECTED_PAIR_EDGE_COLOR;
+    if (edge.highlighted) return PATH_HIGHLIGHT_COLOR;
+    return DEFAULT_EDGE_COLOR;
+  };
+  graphConfiguration.edge.normal.width = (edge) =>
+    edge.connectsSelected || edge.highlighted ? 3 : 1;
   graphConfiguration.edge.type = 'straight';
   graphConfiguration.edge.marker.source.type = 'none';
   graphConfiguration.edge.marker.target.type = 'arrow';
