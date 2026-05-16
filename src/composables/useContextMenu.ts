@@ -28,7 +28,10 @@ export function useContextMenu() {
       if (!e.target || !el.contains(e.target as Node)) hideMenu();
     };
 
-    document.addEventListener('pointerdown', outsidePointerHandler, { passive: true, capture: true });
+    document.addEventListener('pointerdown', outsidePointerHandler, {
+      passive: true,
+      capture: true,
+    });
   }
 
   return { menuEl, isOpen, pos, showContextMenu, hideMenu };

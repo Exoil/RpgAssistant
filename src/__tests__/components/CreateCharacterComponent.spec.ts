@@ -54,7 +54,7 @@ describe('CreateCharacterComponent', () => {
     expect(emitted![0]![0]).toMatchObject({ id: 'new-id', name: 'Gandalf' });
   });
 
-  it('emits closeCreateCharacter after create', async () => {
+  it('emits update:open=false after create', async () => {
     const wrapper = mount(CreateCharacterComponent, {
       props: { rpgAssistantService: makeService(), open: true },
     });
@@ -63,7 +63,7 @@ describe('CreateCharacterComponent', () => {
     await wrapper.find('#create-character-node-submit-button').trigger('click');
     await flushPromises();
 
-    expect(wrapper.emitted('closeCreateCharacter')).toHaveLength(1);
+    expect(wrapper.emitted('update:open')).toEqual([[false]]);
   });
 
   it('clears the input after create', async () => {
@@ -79,7 +79,7 @@ describe('CreateCharacterComponent', () => {
     expect(input.element.value).toBe('');
   });
 
-  it('Cancel button emits closeCreateCharacter without calling the service', async () => {
+  it('Cancel button emits update:open=false without calling the service', async () => {
     const service = makeService();
     const wrapper = mount(CreateCharacterComponent, {
       props: { rpgAssistantService: service, open: true },
@@ -87,7 +87,7 @@ describe('CreateCharacterComponent', () => {
 
     await wrapper.find('.button.is-ghost').trigger('click');
 
-    expect(wrapper.emitted('closeCreateCharacter')).toHaveLength(1);
+    expect(wrapper.emitted('update:open')).toEqual([[false]]);
     expect(service.createCharacterAsync).not.toHaveBeenCalled();
   });
 });

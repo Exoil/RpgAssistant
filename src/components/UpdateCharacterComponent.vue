@@ -7,14 +7,16 @@ import { VersionedCharacter } from '@/services/Models/VersionedCharacter';
 const props = defineProps<{
   rpgAssistantService: RpgAssistantService;
   characterId: string | null;
-  open: boolean;
 }>();
+
+const open = defineModel<boolean>('open', { required: true });
+
+const emit = defineEmits<{
+  updatedCharacter: [characterData: VersionedCharacter];
+}>();
+
 const characterData = ref(new VersionedCharacter('', '', ''));
 let controller: AbortController | null = null;
-const emit = defineEmits<{
-  (e: 'closeUpdateCharacter'): void;
-  (e: 'updatedCharacter', characterData: VersionedCharacter): void;
-}>();
 
 async function onClickUpdateCharacter() {
   controller?.abort();
@@ -31,11 +33,11 @@ async function onClickUpdateCharacter() {
   );
 
   emit('updatedCharacter', characterData.value);
-  emit('closeUpdateCharacter');
+  open.value = false;
 }
 
 function onClickCancel() {
-  emit('closeUpdateCharacter');
+  open.value = false;
 }
 
 async function loadCharacterById(id: string) {

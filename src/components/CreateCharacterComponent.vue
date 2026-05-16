@@ -4,36 +4,38 @@ import type { RpgAssistantService } from '@/services/RpgAssistantService';
 import { CharacterNode } from '@/models/CharacterNode';
 import { Character } from '@/services/Models/Character';
 
-const { rpgAssistantService, open } = defineProps<{
+const props = defineProps<{
   rpgAssistantService: RpgAssistantService;
-  open: boolean;
 }>();
+
+const open = defineModel<boolean>('open', { required: true });
+
+const emit = defineEmits<{
+  characterCreated: [node: CharacterNode];
+}>();
+
 let controller: AbortController | null = null;
 const characterCreateName = ref('');
-const emit = defineEmits<{
-  (e: 'closeCreateCharacter'): void;
-  (e: 'characterCreated', node: CharacterNode): void;
-}>();
 
 async function onClickCreateCharacter() {
   controller?.abort();
   controller = new AbortController();
 
   const signal = controller.signal;
-  const createResult = await rpgAssistantService.createCharacterAsync(
+  const createResult = await props.rpgAssistantService.createCharacterAsync(
     characterCreateName.value,
     signal,
   );
   const node = new CharacterNode(new Character(createResult, characterCreateName.value));
 
   emit('characterCreated', node);
-  emit('closeCreateCharacter');
+  open.value = false;
   characterCreateName.value = '';
 }
 
 function onClickCancel() {
   characterCreateName.value = '';
-  emit('closeCreateCharacter');
+  open.value = false;
 }
 
 onBeforeUnmount(() => {

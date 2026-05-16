@@ -7,12 +7,7 @@ import { useContextMenu } from '@/composables/useContextMenu';
 
 const { menuEl, isOpen, pos, showContextMenu, hideMenu } = useContextMenu();
 
-const {
-  rpgAssistantService,
-  firstSelectedCharacterId,
-  secondSelectedCharacterId,
-  edgeIdSeparator,
-} = defineProps<{
+const props = defineProps<{
   rpgAssistantService: RpgAssistantService;
   firstSelectedCharacterId: string | null;
   secondSelectedCharacterId: string | null;
@@ -20,13 +15,13 @@ const {
 }>();
 
 const emit = defineEmits<{
-  (e: 'openUpdateCharacterDialog'): void;
-  (e: 'deletedCharacterFromMenu', deletedCharacterId: string): void;
-  (e: 'createKnowEdgeFromMenu', createdEdgeId: string): void;
+  openUpdateCharacterDialog: [];
+  deletedCharacterFromMenu: [deletedCharacterId: string];
+  createKnowEdgeFromMenu: [createdEdgeId: string];
 }>();
 
 function onUpdateClick() {
-  if (!firstSelectedCharacterId) return;
+  if (!props.firstSelectedCharacterId) return;
   emit('openUpdateCharacterDialog');
   hideMenu();
 }

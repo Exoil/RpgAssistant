@@ -45,7 +45,9 @@ describe('NodeContextMenuComponent', () => {
   it('showNodeContextMenu opens the menu at the click position', async () => {
     const wrapper = mount(NodeContextMenuComponent, { props: defaultProps() });
 
-    (wrapper.vm as unknown as ExposedNodeMenu).showNodeContextMenu(makeNodeEvent('char-1', 80, 160));
+    (wrapper.vm as unknown as ExposedNodeMenu).showNodeContextMenu(
+      makeNodeEvent('char-1', 80, 160),
+    );
     await nextTick();
 
     expect(wrapper.find('.dropdown').classes()).toContain('is-active');

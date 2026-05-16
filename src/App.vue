@@ -12,12 +12,12 @@ import EdgeContextMenuComponent from '@/components/menus/EdgeContextMenuComponen
 import ViewContextMenuComponent from '@/components/menus/ViewContextMenuComponent.vue';
 import CreateCharacterComponent from '@/components/CreateCharacterComponent.vue';
 import UpdateCharacterComponent from '@/components/UpdateCharacterComponent.vue';
-import type {Character} from "@/services/Models/Character.ts";
+import type { Character } from '@/services/Models/Character.ts';
 import {
   type ForceEdgeDatum,
   ForceLayout,
-  type ForceNodeDatum
-} from "v-network-graph/lib/force-layout";
+  type ForceNodeDatum,
+} from 'v-network-graph/lib/force-layout';
 
 let rpgAssistantService: RpgAssistantService;
 const viewMenuRef = ref<InstanceType<typeof ViewContextMenuComponent> | null>(null);
@@ -113,8 +113,6 @@ onMounted(async () => {
   loadData(result);
 });
 
-
-
 function setupGraphConfig() {
   graphConfiguration.node.selectable = 2;
   graphConfiguration.edge.selectable = 1;
@@ -131,7 +129,7 @@ function setupGraphConfig() {
   graphConfiguration.view.grid.thick.width = 1;
   graphConfiguration.view.grid.thick.dasharray = 0;
   graphConfiguration.view.layoutHandler = new ForceLayout({
-    positionFixedByDrag: true,         // lock node after dragging
+    positionFixedByDrag: true, // lock node after dragging
     positionFixedByClickWithAltKey: true,
     createSimulation: (d3, nodes, edges) => {
       const forceLink = d3
@@ -150,48 +148,43 @@ function setupGraphConfig() {
        * Makes every node repel every other node, like same-pole magnets.
        * Use negative values for repulsion — the larger the absolute value, the more spread out nodes become.
        */
-      const createNodeRepulsionForce = (strength: number) =>
-        d3.forceManyBody().strength(strength);
+      const createNodeRepulsionForce = (strength: number) => d3.forceManyBody().strength(strength);
 
       /**
        * Pulls all nodes gently toward the center of the viewport.
        * Keep strength low (e.g. 0.05) so it doesn't fight other forces.
        */
-      const createCenteringForce = (strength: number) =>
-        d3.forceCenter().strength(strength);
+      const createCenteringForce = (strength: number) => d3.forceCenter().strength(strength);
 
       /**
        * Prevents nodes from overlapping by enforcing a minimum distance between node centers.
        * - radius: minimum distance in pixels (should be >= your node's visual radius)
        */
-      const createCollisionForce = (radius: number) =>
-        d3.forceCollide(radius);
+      const createCollisionForce = (radius: number) => d3.forceCollide(radius);
 
-      return d3
-        .forceSimulation(nodes)
-        .force("edge",    createEdgeSpringForce(120, 0.5))
-        .force("charge",  createNodeRepulsionForce(-200))
-        .force("center",  createCenteringForce(0.05))
-        .force("collide", createCollisionForce(60))
-        /**
-         * alphaMin: the cooling threshold at which the simulation stops.
-         * Alpha starts at 1.0 and decays each tick toward this value.
-         * Lower = runs longer and settles more accurately.
-         * Higher = stops sooner (faster but less precise layout).
-         */
-        .alphaMin(0.001);
-    }
-  })
-  graphConfiguration.edge.keepOrder = "clock";
+      return (
+        d3
+          .forceSimulation(nodes)
+          .force('edge', createEdgeSpringForce(120, 0.5))
+          .force('charge', createNodeRepulsionForce(-200))
+          .force('center', createCenteringForce(0.05))
+          .force('collide', createCollisionForce(60))
+          /**
+           * alphaMin: the cooling threshold at which the simulation stops.
+           * Alpha starts at 1.0 and decays each tick toward this value.
+           * Lower = runs longer and settles more accurately.
+           * Higher = stops sooner (faster but less precise layout).
+           */
+          .alphaMin(0.001)
+      );
+    },
+  });
+  graphConfiguration.edge.keepOrder = 'clock';
 }
 
 const createDialogOpen = ref(false);
 function openCreateDialog() {
   createDialogOpen.value = true;
-}
-
-function createDialogClose() {
-  createDialogOpen.value = false;
 }
 
 const updateNodeCharacterNodeModal = ref(false);
@@ -201,14 +194,9 @@ function openUpdateDialog() {
   updateNodeCharacterNodeModal.value = true;
 }
 
-function updateDialogModalClose() {
-  updateNodeCharacterNodeModal.value = false;
-}
-
 function onCharacterCreated(node: CharacterNode) {
   nodeList.value.push(node);
   firstSelectedNodeId.value = node.id;
-  createDialogOpen.value = false;
 }
 
 function onCharacterDeleted(id: string) {
@@ -222,7 +210,6 @@ function onCharacterUpdated(updatedCharacter: VersionedCharacter) {
   if (idx === -1) return;
   nodeList.value[idx]!.characterData.id = updatedCharacter.id;
   nodeList.value[idx]!.updateName(updatedCharacter.name);
-  updateNodeCharacterNodeModal.value = false;
 }
 
 function onEdgeKnowDeleted(deletedEdgeId: string) {
@@ -334,18 +321,16 @@ const eventHandlers: vNG.EventHandlers = {
     <ViewContextMenuComponent ref="viewMenuRef" @openCreateCharacterDialog="openCreateDialog" />
 
     <CreateCharacterComponent
+      v-model:open="createDialogOpen"
       :rpgAssistantService="rpgAssistantService"
       @characterCreated="onCharacterCreated"
-      :open="createDialogOpen"
-      @closeCreateCharacter="createDialogClose"
     />
 
     <UpdateCharacterComponent
+      v-model:open="updateNodeCharacterNodeModal"
       :rpgAssistantService="rpgAssistantService"
       :characterId="firstSelectedNodeId"
-      :open="updateNodeCharacterNodeModal"
       @updatedCharacter="onCharacterUpdated"
-      @closeUpdateCharacter="updateDialogModalClose"
     />
   </div>
 </template>

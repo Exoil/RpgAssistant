@@ -27,7 +27,11 @@ type ExposedEdgeMenu = {
 describe('EdgeContextMenuComponent', () => {
   it('menu is hidden by default', () => {
     const wrapper = mount(EdgeContextMenuComponent, {
-      props: { rpgAssistantService: makeService(), selectedEdgeId: 'char-1_char-2', edgeIdSeparator: '_' },
+      props: {
+        rpgAssistantService: makeService(),
+        selectedEdgeId: 'char-1_char-2',
+        edgeIdSeparator: '_',
+      },
     });
 
     expect(wrapper.find('.dropdown').classes()).not.toContain('is-active');
@@ -35,7 +39,11 @@ describe('EdgeContextMenuComponent', () => {
 
   it('showEdgeContextMenu opens the menu', async () => {
     const wrapper = mount(EdgeContextMenuComponent, {
-      props: { rpgAssistantService: makeService(), selectedEdgeId: 'char-1_char-2', edgeIdSeparator: '_' },
+      props: {
+        rpgAssistantService: makeService(),
+        selectedEdgeId: 'char-1_char-2',
+        edgeIdSeparator: '_',
+      },
     });
 
     (wrapper.vm as unknown as ExposedEdgeMenu).showEdgeContextMenu(makeEdgeEvent());
@@ -46,7 +54,11 @@ describe('EdgeContextMenuComponent', () => {
 
   it('hideMenu closes the menu', async () => {
     const wrapper = mount(EdgeContextMenuComponent, {
-      props: { rpgAssistantService: makeService(), selectedEdgeId: 'char-1_char-2', edgeIdSeparator: '_' },
+      props: {
+        rpgAssistantService: makeService(),
+        selectedEdgeId: 'char-1_char-2',
+        edgeIdSeparator: '_',
+      },
     });
     (wrapper.vm as unknown as ExposedEdgeMenu).showEdgeContextMenu(makeEdgeEvent());
     await nextTick();
@@ -60,7 +72,11 @@ describe('EdgeContextMenuComponent', () => {
   it('deleting an edge emits deleteKnowEdgeFromMenu and closes the menu', async () => {
     const service = makeService();
     const wrapper = mount(EdgeContextMenuComponent, {
-      props: { rpgAssistantService: service, selectedEdgeId: 'char-1_char-2', edgeIdSeparator: '_' },
+      props: {
+        rpgAssistantService: service,
+        selectedEdgeId: 'char-1_char-2',
+        edgeIdSeparator: '_',
+      },
     });
     (wrapper.vm as unknown as ExposedEdgeMenu).showEdgeContextMenu(makeEdgeEvent());
     await nextTick();

@@ -6,14 +6,14 @@ import { useContextMenu } from '@/composables/useContextMenu';
 
 const { menuEl, isOpen, pos, showContextMenu, hideMenu } = useContextMenu();
 
-const { rpgAssistantService, selectedEdgeId, edgeIdSeparator } = defineProps<{
+defineProps<{
   rpgAssistantService: RpgAssistantService;
   selectedEdgeId: string | undefined;
   edgeIdSeparator: string;
 }>();
 
 const emit = defineEmits<{
-  (e: 'deleteKnowEdgeFromMenu', createdEdgeId: string): void;
+  deleteKnowEdgeFromMenu: [createdEdgeId: string];
 }>();
 
 function onEdgeKnowDeleted(deletedEdgeId: string) {

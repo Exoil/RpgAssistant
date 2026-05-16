@@ -2,26 +2,26 @@
 import { onBeforeUnmount } from 'vue';
 import type { RpgAssistantService } from '@/services/RpgAssistantService';
 
-const { rpgAssistantService, edgeId, edgeIdSeparator } = defineProps<{
+const props = defineProps<{
   rpgAssistantService: RpgAssistantService;
   edgeId: string | undefined;
   edgeIdSeparator: string;
 }>();
 let controller: AbortController | null = null;
 const emit = defineEmits<{
-  (e: 'deletedKnowEdge', deletedEdgeId: string): void;
+  deletedKnowEdge: [deletedEdgeId: string];
 }>();
 
 async function onClickDeleteKnowEdge() {
   controller?.abort();
-  if (!edgeId) return;
+  if (!props.edgeId) return;
 
   controller = new AbortController();
   const signal = controller.signal;
-  const [fromId, toId] = edgeId.split(edgeIdSeparator);
-  await rpgAssistantService.deleteKnowRelationBetweenCharacters(fromId!, toId!, signal);
+  const [fromId, toId] = props.edgeId.split(props.edgeIdSeparator);
+  await props.rpgAssistantService.deleteKnowRelationBetweenCharacters(fromId!, toId!, signal);
 
-  emit('deletedKnowEdge', edgeId);
+  emit('deletedKnowEdge', props.edgeId);
 }
 
 onBeforeUnmount(() => {

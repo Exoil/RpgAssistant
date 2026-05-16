@@ -5,7 +5,7 @@ import { useContextMenu } from '@/composables/useContextMenu';
 const { menuEl, isOpen, pos, showContextMenu, hideMenu } = useContextMenu();
 
 const emit = defineEmits<{
-  (e: 'openCreateCharacterDialog'): void;
+  openCreateCharacterDialog: [];
 }>();
 
 function onCreateClick() {

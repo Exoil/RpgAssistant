@@ -2,7 +2,7 @@
 import { onBeforeUnmount } from 'vue';
 import type { RpgAssistantService } from '@/services/RpgAssistantService';
 
-const { rpgAssistantService, fromNodeId, targetNodeId, edgeIdSeparator } = defineProps<{
+const props = defineProps<{
   rpgAssistantService: RpgAssistantService;
   fromNodeId: string | null;
   targetNodeId: string | null;
@@ -10,23 +10,23 @@ const { rpgAssistantService, fromNodeId, targetNodeId, edgeIdSeparator } = defin
 }>();
 let controller: AbortController | null = null;
 const emit = defineEmits<{
-  (e: 'createKnowEdge', createdEdgeId: string): void;
+  createKnowEdge: [createdEdgeId: string];
 }>();
 
 async function onClickCreateKnowEdge() {
   controller?.abort();
-  if (!fromNodeId || !targetNodeId) return;
+  if (!props.fromNodeId || !props.targetNodeId) return;
 
   controller = new AbortController();
   const signal = controller.signal;
-  await rpgAssistantService.createKnowRelationBetweenCharacters(
-    fromNodeId,
-    targetNodeId,
+  await props.rpgAssistantService.createKnowRelationBetweenCharacters(
+    props.fromNodeId,
+    props.targetNodeId,
     '',
     signal,
   );
 
-  const edgeId = fromNodeId + edgeIdSeparator + targetNodeId;
+  const edgeId = props.fromNodeId + props.edgeIdSeparator + props.targetNodeId;
   emit('createKnowEdge', edgeId);
 }
 
