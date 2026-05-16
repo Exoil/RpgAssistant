@@ -17,6 +17,7 @@ export interface IRpgAssistantClient {
    * @param pageSize Page size
    * @param sortType Field to sort by
    * @param sortOrder Sort direction (e.g., asc, desc)
+   * @param nameFilter (optional) Filter for character name.
    * @return List of characters
    */
   getPagedCharacters(
@@ -24,6 +25,7 @@ export interface IRpgAssistantClient {
     pageSize: number,
     sortType: string,
     sortOrder: string,
+    nameFilter?: string | undefined,
     signal?: AbortSignal,
   ): Promise<SwaggerResponse<CharacterPayload[]>>;
   /**
@@ -104,6 +106,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
    * @param pageSize Page size
    * @param sortType Field to sort by
    * @param sortOrder Sort direction (e.g., asc, desc)
+   * @param nameFilter (optional) Filter for character name.
    * @return List of characters
    */
   getPagedCharacters(
@@ -111,6 +114,7 @@ export class RpgAssistantClient implements IRpgAssistantClient {
     pageSize: number,
     sortType: string,
     sortOrder: string,
+    nameFilter?: string | undefined,
     signal?: AbortSignal,
   ): Promise<SwaggerResponse<CharacterPayload[]>> {
     let url_ = this.baseUrl + '/v1/characters?';
@@ -126,6 +130,10 @@ export class RpgAssistantClient implements IRpgAssistantClient {
     if (sortOrder === undefined || sortOrder === null)
       throw new globalThis.Error("The parameter 'sortOrder' must be defined and cannot be null.");
     else url_ += 'sortOrder=' + encodeURIComponent('' + sortOrder) + '&';
+    if (nameFilter === null)
+      throw new globalThis.Error("The parameter 'nameFilter' cannot be null.");
+    else if (nameFilter !== undefined)
+      url_ += 'nameFilter=' + encodeURIComponent('' + nameFilter) + '&';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: AxiosRequestConfig = {
