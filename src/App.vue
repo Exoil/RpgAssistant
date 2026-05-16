@@ -119,8 +119,9 @@ const edgesForGraph = computed<vNG.Edges>(() =>
 );
 
 onBeforeMount(() => {
-  const apiUrl = import.meta.env.VITE_API_RPG_ASSISTANT_BASE_URL;
-  rpgAssistantService = new RpgAssistantService(apiUrl);
+  // Pusty baseUrl -> zadania HTTP leca wzgledem origin strony.
+  // W Dockerze gateway na :8080 obsluguje /v1; w `bun run dev` proxy w vite.config.ts.
+  rpgAssistantService = new RpgAssistantService('');
   setupGraphConfig();
 });
 
