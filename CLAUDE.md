@@ -23,6 +23,8 @@ RpgAssistantProject/
 │   └── sequences/           <- *.md (mermaid)
 └── RpgAssistant/
     ├── CLAUDE.md            <- this file: project overview + schema pointers
+    ├── docs/
+    │   └── adr/             <- Architecture Decision Records (see "ADRs" below)
     ├── backend/             <- ASP.NET Core 10 Web API (C#, Neo4j)
     │   ├── CLAUDE.md        <- general backend coding rules
     │   ├── src/RpgAssistant.Application/CLAUDE.md
@@ -81,6 +83,21 @@ Current component diagrams:
 - `../schemas/components/ComponentSchema.drawio` — overall service topology
 
 When you add a new endpoint or flow, add a matching schema in the same style.
+
+## Architecture Decision Records (ADRs)
+
+Non-trivial architectural choices (new third-party dependencies,
+cross-cutting pattern changes, reversals of earlier decisions) are recorded
+under `docs/adr/`. Each ADR captures the **context**, the **chosen option**,
+the **alternatives rejected**, and the **trade-offs accepted**.
+
+- Template: `docs/adr/0000-template.md`.
+- Conventions: `docs/adr/README.md`.
+- Scaffold a new ADR with the `/adr <kebab-title>` skill — it picks the next
+  free number and copies the template.
+
+Existing ADRs are append-only: to change a decision, write a new ADR that
+supersedes the old one rather than editing the body of the old one.
 
 ## Local development
 
