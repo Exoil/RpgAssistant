@@ -1,5 +1,5 @@
 ---
-name: asyncapi-spec-generation
+name: asyncapi-designer
 description: Author and maintain the RpgAssistant AsyncAPI contract at `backend/Utilities/AsyncContract.yaml`. The backend is **API-first**: the contract is the source of truth for every message-driven interaction and must be updated **before** code. Targets AsyncAPI **3.1.0** with **Apache Kafka** as the broker and **SignalR** (modeled via the WebSocket binding) for real-time push to the UI. Every schema MUST declare bounds (`minLength`/`maxLength`, `minItems`/`maxItems`, `minimum`/`maximum`).
 ---
 

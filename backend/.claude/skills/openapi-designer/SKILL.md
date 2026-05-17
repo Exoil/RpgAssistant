@@ -1,5 +1,5 @@
 ---
-name: openapi-spec-generation
+name: openapi-designer
 description: Author and maintain the RpgAssistant OpenAPI contract at `backend/Utilities/Contract.yaml`. The backend is **API-first**: the contract is the source of truth and must be updated **before** code. Use when adding/changing endpoints or schemas, regenerating clients, or validating the contract. Every schema MUST declare bounds (`minLength`/`maxLength`, `minItems`/`maxItems`, `minimum`/`maximum`).
 ---
 
