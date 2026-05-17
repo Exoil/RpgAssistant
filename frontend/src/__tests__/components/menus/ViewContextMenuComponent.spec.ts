@@ -6,7 +6,7 @@
  *
  * wrapper.vm gives you the component instance so you can call those exposed methods.
  */
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import ViewContextMenuComponent from '@/components/menus/ViewContextMenuComponent.vue';

@@ -5,7 +5,7 @@ import { KnowEdge } from '@/models/KnowEdge';
 import * as vNG from 'v-network-graph';
 import { RpgAssistantService } from '@/services/RpgAssistantService';
 import { PageQuery } from '@/services/Models/PageQuery';
-import { type EdgeEvent, type NodeEvent, type ViewEvent } from 'v-network-graph';
+import { type EdgeEvent, type NodeEvent } from 'v-network-graph';
 import type { VersionedCharacter } from '@/services/Models/VersionedCharacter';
 import NodeContextMenuComponent from '@/components/menus/NodeContextMenuComponent.vue';
 import EdgeContextMenuComponent from '@/components/menus/EdgeContextMenuComponent.vue';
@@ -188,7 +188,7 @@ function setupGraphConfig() {
     createSimulation: (d3, nodes, edges) => {
       const forceLink = d3
         .forceLink<ForceNodeDatum, ForceEdgeDatum>(edges)
-        .id((d: { id: any }) => d.id);
+        .id((d: { id: string }) => d.id);
 
       /**
        * Controls the ideal length and stiffness of edges between connected nodes.
@@ -307,7 +307,7 @@ function edgeClickHandler(edgeEvent: EdgeEvent<MouseEvent>) {
   selectedEdgeId.value = edgeEvent.edge;
 }
 
-function viewClickHandler(_clickEvent: ViewEvent<MouseEvent>) {
+function viewClickHandler() {
   if (suppressNextViewClickClear.value) {
     suppressNextViewClickClear.value = false;
     return;
