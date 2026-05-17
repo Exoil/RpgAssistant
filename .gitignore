@@ -10,11 +10,6 @@ riderModule.iml
 *.suo
 *.user
 *.sln.docstates
-.claude/
-.claude/docs
-
-CLAUDE.md
-**/CLAUDE.md
 
 # Build results
 

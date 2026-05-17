@@ -7,11 +7,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-.claude/
-.claude/docs
-
-CLAUDE.md
-**/CLAUDE.md
 
 
 
