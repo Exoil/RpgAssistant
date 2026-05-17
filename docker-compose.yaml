@@ -1,4 +1,18 @@
 services:
+  gateway:
+    image: nginx:1.27-alpine
+    container_name: rpgassistant-gateway
+    depends_on:
+      - api
+      - ui
+    ports:
+      - "8080:80"
+    volumes:
+      - ./gateway/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+    networks:
+      - app_net
+    restart: unless-stopped
+
   api:
     build:
       context: ./backend
@@ -7,13 +21,24 @@ services:
     depends_on:
       neo4j:
         condition: service_healthy
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       Neo4j__ConnectionString: "bolt://neo4j:17687"
       Neo4j__UserName: "neo4j"
       Neo4j__Password: "${NEO4J_PASSWORD}"
+    networks:
+      - app_net
+    restart: unless-stopped
+
+  ui:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: rpgassistant-ui
+    expose:
+      - "80"
     networks:
       - app_net
     restart: unless-stopped

@@ -6,9 +6,11 @@ A character and relationship manager for tabletop RPGs, backed by a Neo4j graph 
 
 ```
 RpgAssistant/
-├── backend/    ASP.NET Core 10 Web API (CQRS, Neo4j)
-├── frontend/   Vue 3 + Vite SPA (Bun, TypeScript)
-└── docker-compose.yaml   API + Neo4j for local development
+├── backend/             ASP.NET Core 10 Web API (CQRS, Neo4j)
+├── frontend/            Vue 3 + Vite SPA (Bun, TypeScript)
+├── gateway/             nginx reverse proxy (single public entrypoint)
+├── docker-compose.yaml  full local stack (gateway + api + ui + neo4j)
+└── .env.example         template for the .env file consumed by compose
 ```
 
 ## Backend (ASP.NET Core 10)
@@ -81,11 +83,38 @@ bun run test:run         # Vitest (single run)
 
 ## Running the full stack locally
 
+The compose file wires four services behind a single nginx gateway:
+
+| Service | Image / build context | Exposed to host | Role |
+|---------|-----------------------|-----------------|------|
+| `gateway` | `nginx:1.27-alpine` (`./gateway`) | `:8080` → `:80` | Public entrypoint. Routes `/v1/*` to the API, everything else to the UI. |
+| `api` | `./backend` | internal only | ASP.NET Core API, listens on `:8080` inside `app_net`. |
+| `ui` | `./frontend` | internal only | Built Vite SPA served by nginx with a SPA fallback. |
+| `neo4j` | `neo4j:latest` | `:17474` (browser), `:17687` (bolt) | Graph database. Data persisted under `$HOME/neo4j/`. |
+
+### First-time setup
+
 ```bash
-docker-compose up
+cp .env.example .env        # then edit NEO4J_PASSWORD
+docker compose up --build
 ```
 
-Spins up the API on `:8080` and Neo4j (bolt on `:17687`, browser on `:17474`).
+Once everything is up, open <http://localhost:8080> — the UI loads from the gateway and its API calls (`/v1/...`) are proxied to the backend on the internal network. The API itself is **not** published to the host; reach it through the gateway.
+
+Useful URLs:
+
+- App (UI + API): <http://localhost:8080>
+- Neo4j Browser: <http://localhost:17474>
+- Neo4j Bolt: `bolt://localhost:17687`
+
+### Common commands
+
+```bash
+docker compose ps              # see container status
+docker compose logs -f api     # tail logs for one service
+docker compose down            # stop and remove containers (keeps Neo4j data on host)
+docker compose up -d --build   # rebuild after backend/frontend changes
+```
 
 ## Continuous integration
 
