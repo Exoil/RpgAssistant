@@ -2,7 +2,7 @@ server {
     listen       80;
     server_name  _;
 
-    # Routing do API: wszystko pod /v1/ trafia do serwisu `api` w sieci app_net.
+    # API routing: everything under /v1/ goes to the `api` service on the app_net network.
     location /v1/ {
         proxy_pass         http://api:8080;
         proxy_http_version 1.1;
@@ -12,7 +12,7 @@ server {
         proxy_set_header   X-Forwarded-Proto $scheme;
     }
 
-    # Wszystko inne -> serwis `ui` (nginx z plikami SPA + wlasny SPA fallback).
+    # Everything else -> `ui` service (nginx serving SPA files + its own SPA fallback).
     location / {
         proxy_pass         http://ui:80;
         proxy_http_version 1.1;
