@@ -89,7 +89,7 @@ Spins up the API on `:8080` and Neo4j (bolt on `:17687`, browser on `:17474`).
 
 ## Continuous integration
 
-`.github/workflows/RunTests.yml` runs on every push and PR to `master`:
+Each side has its own workflow, triggered only when files in that subfolder change:
 
-- **Backend:** restore → build → unit tests + integration tests
-- **Frontend:** lint, type-check + build, Vitest
+- `.github/workflows/backend.yml` — restore → build → unit tests + integration tests. Runs when `backend/**` changes.
+- `.github/workflows/frontend.yml` — lint, type-check + build, Vitest. Runs when `frontend/**` changes.
