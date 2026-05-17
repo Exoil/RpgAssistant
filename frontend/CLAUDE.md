@@ -1,6 +1,6 @@
 # CLAUDE.md — Frontend (RpgAssistant SPA)
 
-This file applies to all code under `frontend/`.
+This file applies to **every** file under `frontend/`.
 
 ## Context
 
@@ -18,41 +18,47 @@ Vue, Vite, and TypeScript documentation for best practices.
 | Build / dev server | Vite |
 | Package manager / runtime | Bun (`bun.lock` is the lockfile) |
 | Router | `vue-router` |
-| HTTP | `axios` |
+| HTTP | `axios` (via an NSwag-generated client) |
 | Event bus | `mitt` |
 | Styling | Bulma |
 | Graph rendering | `v-network-graph` (+ `d3-force` layout) |
 | Linting / formatting | ESLint, Prettier |
 | Type check | `vue-tsc` |
+| Tests | Vitest, `@vue/test-utils`, jsdom |
 
 ## Directory layout
 
 ```
 frontend/src/
-├── App.vue                  <- root component
-├── main.ts                  <- bootstrap (createApp, router, mount)
-├── router/                  <- vue-router config
-├── components/              <- reusable Vue components
-├── composables/             <- reusable composition functions (use*)
-├── models/                  <- TS types / DTOs mirroring backend contracts
-├── services/                <- axios-based API clients
-└── __tests__/               <- Vitest unit tests (separate test rules)
+├── App.vue                         <- root component
+├── main.ts                         <- bootstrap (createApp, router, mount)
+├── router/                         <- vue-router config
+├── components/                     <- reusable Vue components
+│   └── menus/                      <- context menus
+├── composables/                    <- reusable composition functions (use*)
+├── models/                         <- UI-only models (e.g. CharacterNode, KnowEdge for v-network-graph)
+├── services/
+│   ├── RpgAssistantService.ts      <- friendly wrapper used by UI
+│   ├── Models/                     <- API/domain models (Character, RelationPath, PageQuery, ...)
+│   └── httpClients/
+│       └── RpgAssistantClient.ts   <- NSwag-generated (do not hand-edit)
+└── __tests__/                      <- Vitest specs, mirroring src layout
+    ├── components/
+    ├── composables/
+    └── models/
 ```
 
-## Rules
+Path alias: `@/<x>` resolves to `src/<x>` (configured in `tsconfig.app.json`
+and `vite.config.ts`).
+
+## General rules
 
 <Rules>
+    <Rule>Always give generated code for review. Help the user understand it.</Rule>
+    <Rule>Before you edit/create a file you must plan each step and inform the user about the plan.</Rule>
+    <Rule>Answers must be short and understandable.</Rule>
     <Rule>
-        Always give generated code for review. Help the user understand the code.
-    </Rule>
-    <Rule>
-        Before you edit/create a file you must plan each step and inform the user about the plan.
-    </Rule>
-    <Rule>
-        Answers must be short and understandable.
-    </Rule>
-    <Rule>
-        Use the latest Vue 3 features. Write single-file components with
+        Use the latest Vue 3 features. Single-file components with
         `<script setup lang="ts">`, Composition API only — no Options API.
     </Rule>
     <Rule>
@@ -65,26 +71,9 @@ frontend/src/
         Naming:
             - Components: `PascalCase.vue`.
             - Composables: `useXxx.ts`, returning a plain object of refs / functions.
-            - Models: `PascalCase` interfaces / types mirroring backend payloads.
-            - Services: `xxx.service.ts`, exporting an object or factory of API calls.
-    </Rule>
-    <Rule>
-        Performance:
-            - Use `computed` for derived state; do not duplicate reactive sources.
-            - Prefer `shallowRef` / `shallowReactive` for large external objects (e.g. graph data).
-            - Lazy-load route components with dynamic `import()`.
-            - Avoid unnecessary deep watchers; use targeted watchers or `computed`.
-    </Rule>
-    <Rule>
-        HTTP / API:
-            - All HTTP calls go through `services/` (axios). Components and composables must not call axios directly.
-            - Reflect backend DTOs in `models/`; keep field names aligned with the API.
-            - Handle errors at the service boundary; surface user-facing messages from composables/components.
-    </Rule>
-    <Rule>
-        Styling:
-            - Use Bulma utility classes first; add scoped `<style>` only when Bulma cannot express the layout.
-            - Keep component styles `scoped` to avoid leaks.
+            - UI models in `models/`: `PascalCase.ts` classes.
+            - API/domain models in `services/Models/`: `PascalCase.ts` classes mirroring backend payloads.
+            - Service: `XxxService.ts` (single instance, wraps an http client).
     </Rule>
     <Rule>
         Tooling:
@@ -92,15 +81,8 @@ frontend/src/
             - Run `bun run type-check` and ensure it passes.
             - Do not disable ESLint or Prettier rules without a comment explaining why.
     </Rule>
-    <Rule>
-        Before implementing a feature, check the matching sequence schema in
-        `../../schemas/sequences/` and the component schema in
-        `../../schemas/components/`. Update the schema when the flow changes.
-        See the "Schemas" section below for the full layout.
-    </Rule>
-    <Rule>
-        If you do not know the answer, write "Don't know."
-    </Rule>
+    <Rule>Before implementing a feature, check the matching sequence schema in `../../schemas/sequences/` and the component schema in `../../schemas/components/`. Update the schema when the flow changes.</Rule>
+    <Rule>If you do not know the answer, write "Don't know."</Rule>
 </Rules>
 
 ## Schemas
@@ -113,11 +95,119 @@ stacks share the same design source of truth.
 | Component / architecture | `../../schemas/components/` | `*.drawio` |
 | Sequence diagrams | `../../schemas/sequences/` | `*.md` (mermaid) |
 
-Rule: drawio for everything **except sequence diagrams**, which are mermaid.
+Rule: **drawio for everything except sequence diagrams**, which are **mermaid**.
+For the canonical schemas list see the top-level `../CLAUDE.md`.
 
-Read the matching sequence schema **before** implementing a feature, and update
-it when the flow changes. For the canonical schemas list see the top-level
-`../CLAUDE.md`.
+## HTTP / API layer
+
+The frontend talks to the backend through **three** layers — keep this split
+strict:
+
+1. `services/httpClients/RpgAssistantClient.ts` — **auto-generated by NSwag**
+   from the backend OpenAPI contract. Header at the top of the file says
+   `<auto-generated>` — never hand-edit. To pick up backend contract changes,
+   regenerate this file via the NSwag toolchain.
+2. `services/RpgAssistantService.ts` — friendly wrapper that the rest of the
+   app consumes. It:
+   - Owns a single `RpgAssistantClient` instance.
+   - Exposes `*Async` methods that accept `AbortSignal` and return
+     domain models from `services/Models/` (not the generated DTOs).
+   - Translates generated DTOs into `services/Models/*` classes.
+3. Components / composables — call **only** `RpgAssistantService`. Never
+   import `axios` or `RpgAssistantClient` directly.
+
+When adding a new endpoint: regenerate `RpgAssistantClient`, add a wrapping
+method on `RpgAssistantService`, and define any new `services/Models/*` types
+that mirror the payload.
+
+## Models
+
+Two distinct model folders — keep them separate:
+
+| Folder | Purpose | Examples |
+|--------|---------|----------|
+| `services/Models/` | API / domain shapes that flow in and out of `RpgAssistantService` | `Character`, `VersionedCharacter`, `PageQuery`, `UpdateCharacter`, `RelationPath` |
+| `models/` | UI-only shapes wrapping the API models for the view layer | `CharacterNode` (wraps `Character` for `v-network-graph`), `KnowEdge` |
+
+UI models live closer to the view; do not push them down into `services/`.
+
+## Components
+
+- `<script setup lang="ts">` only. Composition API.
+- Declare contracts explicitly:
+  ```ts
+  const props = defineProps<{ rpgAssistantService: RpgAssistantService }>();
+  const open = defineModel<boolean>('open', { required: true });
+  const emit = defineEmits<{ characterCreated: [node: CharacterNode] }>();
+  ```
+- Inject the service via props (`rpgAssistantService`) — do not import a
+  singleton inside the component.
+- Async work uses an `AbortController` declared in the setup scope:
+  ```ts
+  let controller: AbortController | null = null;
+  async function onClick() {
+    controller?.abort();
+    controller = new AbortController();
+    await props.rpgAssistantService.fooAsync(..., controller.signal);
+  }
+  onBeforeUnmount(() => controller?.abort());
+  ```
+- Styling uses **Bulma** utility classes first; add scoped `<style>` only when
+  Bulma cannot express the layout. Keep component styles `scoped`.
+- Give interactive elements stable `id` attributes when they are likely to be
+  targeted by tests (`#create-character-node-submit-button`, etc.).
+
+## Composables
+
+- Filename and export are `useXxx`.
+- Return a plain object of refs / computeds / functions — no classes.
+- Manage their own `AbortController` and debounce timer; expose `cancel()` and
+  `reset()` helpers when long-running.
+- Read-only outputs should be `computed` (not raw refs); accept inputs as refs
+  or option callbacks (e.g. `excludeId: () => string | null | undefined`).
+- Swallow `CanceledError` / `AbortError` from axios; rethrow everything else.
+
+Reference shape:
+
+```ts
+export interface UseXxxOptions { /* options with sensible defaults */ }
+
+export function useXxx(service: RpgAssistantService, options: UseXxxOptions = {}) {
+  const query = ref('');
+  const items = ref<Foo[]>([]);
+  const loading = ref(false);
+  // ... internal state, AbortController, debounce, watcher ...
+  return { query, items, loading, cancel, reset, loadMore };
+}
+```
+
+## Performance
+
+- Use `computed` for derived state; do not duplicate reactive sources.
+- Prefer `shallowRef` / `shallowReactive` for large external objects
+  (e.g. graph data, `v-network-graph` configs).
+- Lazy-load route components via dynamic `import()`.
+- Avoid `watch(..., { deep: true })` — use targeted watchers or `computed`.
+- Cancel in-flight requests (`AbortController`) before starting a new one.
+
+## Testing (Vitest)
+
+- Specs live under `src/__tests__/`, mirroring the src tree, with names
+  `*.spec.ts`.
+- Mount with `@vue/test-utils`:
+  ```ts
+  const wrapper = mount(MyComponent, { props: { ... } });
+  await wrapper.find('#submit').trigger('click');
+  await flushPromises();
+  ```
+- Mock the service with `vi.fn().mockResolvedValue(...)` via a small
+  `makeService(overrides)` factory cast as `RpgAssistantService`.
+- Target DOM with the same `id` attributes used in the component.
+- Assert emitted events with `wrapper.emitted('eventName')`.
+- Cover the happy path **and** at least one not-happy path (cancel, abort,
+  validation, error response).
+- Run `bun run test` (watch) or `bun run test:run` (single shot).
+  `bun run coverage` for V8 coverage.
 
 ## Commands
 

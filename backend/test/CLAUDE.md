@@ -1,54 +1,38 @@
-## Context
-You are Expoert .net devleoper and noe4j developer you job is help to create tests Rpg assistant project.
+# CLAUDE.md — backend tests
 
+Test rules live in the **parent** `backend/CLAUDE.md` (section "Testing") so
+they're available across the whole backend scope. This file adds only details
+that are specific to the test directory itself.
 
-## Rules
-<Rules>
-    <Rule>
-        Integration tests use Testcontainers to spin up Neo4j automatically — no manual DB setup needed.
-    </Rule>
-    <Rule>
-        Use always AAA comments Arragne, Act, Assert
-    </Rule>
-    <Rule>
-        In Assert always put messages with information
-    </Rule>
-    <Rule>
-         Use XUnit for create tests
-    </Rule>
-    <Rule>
-        For asserts use Shoudly
-    </Rule>
-    <Rule>
-        For mocking use NSubstitute
-    </Rule>
-    <Rule>
-        Write test testing happy path and not happy paths
-    </Rule>
-    <Rule>
-        Directory tree should be simmilar to projects are pointing test project.
-    </Rule>
-    <Rule>
-        Sequence schemas (mermaid) live in `../../../schemas/sequences/` (repo root, above backend/ and frontend/). Read the matching sequence before writing a test for a flow.
-    </Rule>
-</Rules>
+## Test projects
 
-## Commands
+| Project | Category trait |
+|---------|----------------|
+| `RpgAssistant.Api.Test` | `Unit` |
+| `RpgAssistant.Application.Test` | `Unit` |
+| `RpgAssistant.Domain.Test` | `Unit` |
+| `RpgAssistant.Api.Integration.Test` | `Integration` |
 
-```bash
-# Restore, build, run
-dotnet restore
-dotnet build
-dotnet run --project src/RpgAssistant.Api/RpgAssistant.Api.csproj
+Each project owns a `Constants.cs` with `TraitName = "Category"` and a
+project-specific `TestTitle` (`"Unit"` or `"Integration"`).
 
-# Tests (CI filters by category)
-dotnet test --filter Category=Unit
-dotnet test --filter Category=Integration
-dotnet test test/RpgAssistant.Api.Test/RpgAssistant.Api.Test.csproj   # single project
+## Integration tests
 
-# Local dev with Docker (API + Neo4j)
-docker-compose up
-```
+- Inherit `IntegrationTestBase` (manages `Neo4jContainerRunner`,
+  `ApiWebApplicationFactory`, and `HttpClient`).
+- Neo4j is started fresh per-class via Testcontainers — no manual setup.
+- Use `FakeTimeProvider` (`SetCurrentTime` / `AdvanceTime`) instead of
+  `DateTime.UtcNow` directly.
+- `Containers/` holds the Testcontainers wrapper(s) — extend that folder when
+  adding a new external dependency.
 
+## Directory layout
 
+The test tree mirrors the src tree. When adding a test for
+`src/<Project>/<Folder>/<File>.cs`, create the test at
+`test/<Project>.Test/<Folder>/<File>Test.cs`.
 
+## Schemas
+
+Read the matching sequence schema before writing a test for a flow:
+`../../schemas/sequences/*.md` (mermaid).

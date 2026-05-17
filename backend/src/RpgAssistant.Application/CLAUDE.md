@@ -1,12 +1,17 @@
-# CLAUDE.md
+# CLAUDE.md — Application layer
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+General backend rules (testing, ID conventions, optimistic concurrency,
+mapping, schemas) live in `../../CLAUDE.md`. **Read that first.** This file
+only documents the concrete CQRS handler templates for the Application layer.
 
 ## Application Layer Patterns
 
-This layer uses **CQRS via MessagePipe**. Every operation is a Command or Query record dispatched to a dedicated handler. The `LogFilter<TRequest, TResponse>` wraps all handlers automatically — no per-handler logging setup needed.
+This layer uses **CQRS via MessagePipe**. Every operation is a Command or Query
+record dispatched to a dedicated handler. The `LogFilter<TRequest, TResponse>`
+wraps all handlers automatically — no per-handler logging setup needed.
 
-Sequence diagrams for all existing flows are in `../../../../schemas/sequences/` (i.e. `schemas/sequences/` at the repo root, above `backend/` and `frontend/`).
+Sequence diagrams for all existing flows are in `../../../../schemas/sequences/`
+(i.e. `schemas/sequences/` at the repo root, above `backend/` and `frontend/`).
 
 ---
 
