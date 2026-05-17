@@ -53,37 +53,32 @@ and `vite.config.ts`).
 
 ## General rules
 
-<Rules>
-    <Rule>Always give generated code for review. Help the user understand it.</Rule>
-    <Rule>Before you edit/create a file you must plan each step and inform the user about the plan.</Rule>
-    <Rule>Answers must be short and understandable.</Rule>
-    <Rule>
-        Use the latest Vue 3 features. Single-file components with
-        `<script setup lang="ts">`, Composition API only — no Options API.
-    </Rule>
-    <Rule>
-        TypeScript:
-            - `strict` mode is on; do not weaken it.
-            - Avoid `any`; prefer `unknown` + narrowing or precise types.
-            - Type all props, emits, and composable return values explicitly.
-    </Rule>
-    <Rule>
-        Naming:
-            - Components: `PascalCase.vue`.
-            - Composables: `useXxx.ts`, returning a plain object of refs / functions.
-            - UI models in `models/`: `PascalCase.ts` classes.
-            - API/domain models in `services/Models/`: `PascalCase.ts` classes mirroring backend payloads.
-            - Service: `XxxService.ts` (single instance, wraps an http client).
-    </Rule>
-    <Rule>
-        Tooling:
-            - Run `bun run lint` and `bun run format` before finishing work.
-            - Run `bun run type-check` and ensure it passes.
-            - Do not disable ESLint or Prettier rules without a comment explaining why.
-    </Rule>
-    <Rule>Before implementing a feature, check the matching sequence schema in `../../schemas/sequences/` and the component schema in `../../schemas/components/`. Update the schema when the flow changes.</Rule>
-    <Rule>If you do not know the answer, write "Don't know."</Rule>
-</Rules>
+- Always give generated code for review. Help the user understand it.
+- Before you edit/create a file you must plan each step and inform the user about the plan.
+- Answers must be short and understandable.
+- Use the latest Vue 3 features. Single-file components with `<script setup lang="ts">`, Composition API only — no Options API.
+- Before implementing a feature, check the matching sequence schema in `../../schemas/sequences/` and the component schema in `../../schemas/components/`. Update the schema when the flow changes.
+- If you do not know the answer, write "Don't know."
+
+### TypeScript
+
+- `strict` mode is on; do not weaken it.
+- Avoid `any`; prefer `unknown` + narrowing or precise types.
+- Type all props, emits, and composable return values explicitly.
+
+### Naming
+
+- Components: `PascalCase.vue`.
+- Composables: `useXxx.ts`, returning a plain object of refs / functions.
+- UI models in `models/`: `PascalCase.ts` classes.
+- API/domain models in `services/Models/`: `PascalCase.ts` classes mirroring backend payloads.
+- Service: `XxxService.ts` (single instance, wraps an http client).
+
+### Tooling
+
+- Run `bun run lint` and `bun run format` before finishing work.
+- Run `bun run type-check` and ensure it passes.
+- Do not disable ESLint or Prettier rules without a comment explaining why.
 
 ## Schemas
 

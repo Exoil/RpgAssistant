@@ -26,34 +26,28 @@ references nothing outside itself.
 
 ## General rules
 
-<Rules>
-    <Rule>Always give generated code for review. Help the user understand it.</Rule>
-    <Rule>Before you edit/create a file you must plan each step and inform the user about the plan.</Rule>
-    <Rule>Answers must be short and understandable.</Rule>
-    <Rule>Use .NET 10 and the newest C# language version.</Rule>
-    <Rule>
-        Follow the C# Coding Conventions
-        (https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions).
-        Use expressive syntax (null-conditional operators, string interpolation, pattern matching).
-        Use `var` when the type is obvious.
-    </Rule>
-    <Rule>
-        Performance:
-            - Async/await for I/O.
-            - Cache with `IMemoryCache` or distributed cache when appropriate.
-            - Efficient LINQ; avoid N+1 problems.
-            - Paginate large result sets.
-    </Rule>
-    <Rule>
-        Dependency Injection for loose coupling. Register keyed services when needed.
-        Do not use AutoMapper — write mapping extension methods and unit-test them.
-        Background work uses `IHostedService` / `BackgroundService`.
-    </Rule>
-    <Rule>API design: RESTful; **minimal APIs**, not controllers.</Rule>
-    <Rule>API documentation: when adding a new endpoint, also add its contract (request/response schema) under `Utilities/contract`.</Rule>
-    <Rule>Before implementing or changing a flow, read the matching sequence schema in `../../schemas/sequences/` and update it when the flow changes.</Rule>
-    <Rule>If you do not know the answer, write "Don't know."</Rule>
-</Rules>
+- Always give generated code for review. Help the user understand it.
+- Before you edit/create a file you must plan each step and inform the user about the plan.
+- Answers must be short and understandable.
+- Use .NET 10 and the newest C# language version.
+- Follow the [C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions). Use expressive syntax (null-conditional operators, string interpolation, pattern matching). Use `var` when the type is obvious.
+- API design: RESTful; **minimal APIs**, not controllers.
+- API documentation: when adding a new endpoint, also add its contract (request/response schema) under `Utilities/contract`.
+- Before implementing or changing a flow, read the matching sequence schema in `../../schemas/sequences/` and update it when the flow changes.
+- If you do not know the answer, write "Don't know."
+
+### Performance
+
+- Use `async`/`await` for I/O.
+- Cache with `IMemoryCache` or a distributed cache when appropriate.
+- Write efficient LINQ; avoid N+1 problems.
+- Paginate large result sets.
+
+### Dependency injection & background work
+
+- Use DI for loose coupling. Register keyed services when needed.
+- Do **not** use AutoMapper — write mapping extension methods and unit-test them.
+- Implement background work with `IHostedService` / `BackgroundService`.
 
 ## Schemas
 
@@ -191,26 +185,16 @@ Tests are XUnit + Shouldly + NSubstitute. The test directory tree **mirrors**
 the src tree (e.g. `Application/Commands/CommandHandlers/Xxx.cs` →
 `Application.Test/Commands/CommandHandlers/XxxTest.cs`).
 
-<Rules>
-    <Rule>Use XUnit (`[Fact]`, `[Theory]`).</Rule>
-    <Rule>
-        Every test must be categorized with `[Trait(Constants.TraitName, Constants.TestTitle)]`.
-        `Constants.TraitName = "Category"`; `Constants.TestTitle` is `"Unit"` or `"Integration"`
-        (defined per test project). CI filters by this trait.
-    </Rule>
-    <Rule>Use AAA comments — `// Arrange`, `// Act`, `// Assert`.</Rule>
-    <Rule>Assert with **Shouldly**; every assertion includes a message: `result.Value.ShouldBe(expected, "why this should match")`.</Rule>
-    <Rule>Mock with **NSubstitute**: `Substitute.For<IFoo>()`, `.Returns(...)`, `.ThrowsAsync(...)`, `.Received(1)`.</Rule>
-    <Rule>Name the system under test `_sut`. Test method names follow `Method_WhenCondition_ExpectedBehavior`.</Rule>
-    <Rule>Cover the happy path **and** at least one not-happy path (exception, validation, concurrency).</Rule>
-    <Rule>For command handlers, assert both transaction outcome (`CommitAsync` / `RollbackAsync` received counts) and result.</Rule>
-    <Rule>
-        Integration tests inherit `IntegrationTestBase` (in `RpgAssistant.Api.Integration.Test`).
-        Neo4j is spun up automatically by Testcontainers — no manual DB setup. Use
-        `FakeTimeProvider` for time-dependent assertions.
-    </Rule>
-    <Rule>Each test project keeps its own `Constants.cs` with `TraitName` and the project-specific `TestTitle`.</Rule>
-</Rules>
+- Use XUnit (`[Fact]`, `[Theory]`).
+- Every test must be categorized with `[Trait(Constants.TraitName, Constants.TestTitle)]`. `Constants.TraitName = "Category"`; `Constants.TestTitle` is `"Unit"` or `"Integration"` (defined per test project). CI filters by this trait.
+- Use AAA comments — `// Arrange`, `// Act`, `// Assert`.
+- Assert with **Shouldly**; every assertion includes a message: `result.Value.ShouldBe(expected, "why this should match")`.
+- Mock with **NSubstitute**: `Substitute.For<IFoo>()`, `.Returns(...)`, `.ThrowsAsync(...)`, `.Received(1)`.
+- Name the system under test `_sut`. Test method names follow `Method_WhenCondition_ExpectedBehavior`.
+- Cover the happy path **and** at least one not-happy path (exception, validation, concurrency).
+- For command handlers, assert both transaction outcome (`CommitAsync` / `RollbackAsync` received counts) and result.
+- Integration tests inherit `IntegrationTestBase` (in `RpgAssistant.Api.Integration.Test`). Neo4j is spun up automatically by Testcontainers — no manual DB setup. Use `FakeTimeProvider` for time-dependent assertions.
+- Each test project keeps its own `Constants.cs` with `TraitName` and the project-specific `TestTitle`.
 
 ## Project conventions
 
