@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
@@ -24,12 +27,15 @@ jobs:
         with:
           name: build-output
           path: |
-            **/bin/Debug/
-            **/obj/
+            backend/**/bin/Debug/
+            backend/**/obj/
 
   unit-tests:
     needs: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
@@ -46,6 +52,9 @@ jobs:
   integration-tests:
     needs: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
