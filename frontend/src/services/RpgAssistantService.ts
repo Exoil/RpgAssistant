@@ -3,7 +3,7 @@ import {
   CreateKnowsDto,
   RpgAssistantClient,
   UpdateCharacterDto,
-} from './HttpClients/RpgAssistantClient';
+} from './httpClients/RpgAssistantClient';
 import { VersionedCharacter } from './Models/VersionedCharacter';
 import type { PageQuery } from './Models/PageQuery';
 import type { UpdateCharacter } from './Models/UpdateCharacter';
