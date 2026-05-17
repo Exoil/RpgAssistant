@@ -58,15 +58,15 @@ When SKILL.md's step 0.5 identified a preset, it fully replaces the built-in pal
 1. **Load the extraction reference.** Read `references/style-extraction.md` into context.
 2. **Extract** following the XML path or image path procedure in the reference.
 3. **Normalize and build candidate.** Convert the user-provided preset name to lowercase. Use this normalized name for ALL file paths in this flow. Build the candidate preset JSON and write it to `/tmp/drawio-preset-<name>.json` (where `<name>` is the already-normalized name). Do **not** save to `~/.drawio-skill/styles/<name>.json` yet.
-4. **Render a sample** using the sample-diagram skeleton in `references/style-extraction.md`, parameterized by the candidate preset. Export PNG to `./preset-<name>-sample.png` using the same `draw.io -x -f png -e -s 2 -o ./preset-<name>-sample.png /tmp/drawio-preset-<name>.drawio` command the main workflow uses.
+4. **Write a sample** using the sample-diagram skeleton in `references/style-extraction.md`, parameterized by the candidate preset. Save the filled XML to `./preset-<name>-sample.drawio` in the user's working directory. **Do not export** — this skill only writes `.drawio` files.
 5. **Show the user:**
    - Preset summary table (palette hex values, shapes per role, font, edge style, extras).
-   - The sample PNG path (and embed the image if the environment supports it).
+   - The sample `.drawio` path, with a note: *"open this in draw.io desktop to visually confirm."*
    - Provenance line: `source.type`, `source.path`, `extracted_at`, `confidence`.
 6. **Wait for approval:**
-   - "save" / "looks good" → write candidate to `~/.drawio-skill/styles/<name>.json`. Create `~/.drawio-skill/styles/` if it doesn't exist. Delete tempfile and sample PNG.
-   - "change `<field>` to `<value>`" → edit the in-memory candidate, re-render, re-ask.
-   - "cancel" / "abort" / "no" → delete tempfile and sample PNG; nothing saved.
+   - "save" / "looks good" → write candidate to `~/.drawio-skill/styles/<name>.json`. Create `~/.drawio-skill/styles/` if it doesn't exist. Delete the tempfile and sample `.drawio`.
+   - "change `<field>` to `<value>`" → edit the in-memory candidate, rewrite the sample `.drawio`, re-ask.
+   - "cancel" / "abort" / "no" → delete the tempfile and sample `.drawio`; nothing saved.
 
 **Error behavior:**
 
@@ -79,7 +79,7 @@ When SKILL.md's step 0.5 identified a preset, it fully replaces the built-in pal
 | Extraction yields <3 distinct color pairs | Continue; mark `confidence: "low"` (image) or `"medium"` (XML); warn in summary. |
 | Preset name collides with existing user preset | Ask: overwrite, or pick a new name. |
 | Preset name collides with a built-in preset | Save to user dir (shadows the built-in); warn once. |
-| Sample render fails | Still show summary; note "could not render sample — saving on your OK anyway". Do not block. |
+| Sample `.drawio` write fails | Still show summary; note "could not write sample file — saving the preset on your OK anyway". Do not block. |
 
 ## Management operations
 

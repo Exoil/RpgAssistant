@@ -1,6 +1,8 @@
-# Troubleshooting — Common Mistakes
+# Troubleshooting — Common XML / layout mistakes
 
-Read this when something looks wrong in the output (rendering, export, layout, edges) or when a CLI invocation fails. Most rows have a one-line fix.
+Read this when the diagram XML refuses to parse, the rendering looks wrong,
+or the layout looks broken when the user opens the file in draw.io desktop.
+Each row has a one-line fix.
 
 | Mistake | Fix |
 |---------|-----|
@@ -13,13 +15,4 @@ Read this when something looks wrong in the output (rendering, export, layout, e
 | Overlapping shapes | Scale spacing with complexity (200–350px); leave routing corridors |
 | Edges crossing through shapes | Add waypoints, distribute entry/exit points, or increase spacing |
 | Arrowhead overlaps bend | Final edge segment before target must be ≥20px — increase spacing or add waypoints |
-| Iteration loop never ends | After 5 rounds, suggest user open .drawio in draw.io desktop for fine-tuning |
-| Export command not found on macOS | Try full path `/Applications/draw.io.app/Contents/MacOS/draw.io` |
-| Linux: blank/error output headlessly | Prefix command with `xvfb-run -a` |
-| Linux: `--no-sandbox` placed before input file (parsed as filename) | Move `--no-sandbox` to the very end of the command (drawio-desktop#249, #1056) |
-| Linux: `Failed to get 'appData' path` / `Home directory not accessible` | `export HOME=/tmp` before invoking drawio (drawio-desktop#127) |
-| Linux server: segfault / EGL / MESA `failed to load driver` errors | Add `--disable-gpu` (suppresses Chromium GL init when no GPU available) |
-| PDF export fails | Ensure Chromium is available (draw.io bundles it on desktop) |
-| Background color wrong in CLI export | Known CLI bug; add `--transparent` flag or set background via style |
-| Vision returns 400 "Could not process image" on draft PNG | Re-export the preview without `-e` (issue #8). Root cause is a truncated IEND chunk in `-e` PNGs, not the `zTXt` chunk itself — but skipping `-e` for the preview is the simplest fix. |
-| Final `-e` PNG won't open in image viewers / vision APIs | Run `python3 <this-skill-dir>/scripts/repair_png.py <path>`. draw.io CLI emits `-e` PNGs with an 8-byte truncation at IEND. SVG/PDF unaffected. |
+| Iteration loop never ends | After 5 rounds, suggest the user open `.drawio` in draw.io desktop for fine-tuning |

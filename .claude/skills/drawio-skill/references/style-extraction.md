@@ -92,22 +92,17 @@ The edge style is built as:
 </mxfile>
 ```
 
-### Rendering the sample
+### Saving the sample
 
-1. Write the filled XML to `/tmp/drawio-preset-<name>.drawio`.
-2. Run the same `draw.io -x -f png -e -s 2 -o <preset-name>-sample.png <tmp>.drawio` command the main workflow uses.
-3. Save the PNG as `./preset-<name>-sample.png` (the user's working directory).
-4. Show the user: preset summary table + PNG path + provenance/confidence line.
+1. Write the filled XML to `./preset-<name>-sample.drawio` in the user's working directory.
+2. Show the user: preset summary table + sample `.drawio` path + provenance/confidence line.
+3. Ask the user to open the `.drawio` file in draw.io desktop to visually confirm the preset before approving.
 
 ### Approval loop
 
-- "save" / "looks good" → write candidate to `~/.drawio-skill/styles/<name>.json`; delete tempfile and sample PNG.
-- "change <field> to <value>" → edit the in-memory candidate; re-render; re-ask.
-- "cancel" → delete tempfile and sample PNG; no save.
-
-### If sample render fails (draw.io CLI missing / export error)
-
-Still show the summary table and the provenance line. Note: *"Could not render sample PNG (CLI unavailable). Save anyway on your OK."* Do not block.
+- "save" / "looks good" → write candidate to `~/.drawio-skill/styles/<name>.json`; delete the tempfile and sample `.drawio`.
+- "change <field> to <value>" → edit the in-memory candidate; rewrite the sample `.drawio`; re-ask.
+- "cancel" → delete the tempfile and sample `.drawio`; no save.
 
 ## XML extraction path
 
@@ -170,12 +165,12 @@ Input: a `.drawio` file path. Output: candidate preset JSON. Deterministic, no L
 
 Input: path to a PNG/JPG (or any vision-readable image format). Output: candidate preset JSON. Inference-based; `confidence: "medium"` at best.
 
-**Prerequisite:** the agent's vision capability must be available (same mechanism the main workflow's self-check uses). If vision is not available, stop and tell the user:
+**Prerequisite:** the agent's vision capability must be available. If vision is not available, stop and tell the user:
 *"Image-based learning needs a vision-enabled model (Claude Sonnet or Opus). Re-run on such a model, or provide the `.drawio` source file instead."*
 
 ### Steps
 
-1. **Read the image.** Use the agent's vision input — the same path the main workflow's step 5 uses to read exported PNGs during self-check.
+1. **Read the image.** Use the agent's vision input on the image file the user provided.
 
 2. **Extract palette by visual inspection.** Identify distinct fill-color regions on shape bodies.
 
