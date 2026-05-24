@@ -1,7 +1,7 @@
 ---
 paths:
-  - "src/components/**"
-  - "src/App.vue"
+  - 'src/components/**'
+  - 'src/App.vue'
 ---
 
 # Component rules

@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
+    "build:foundry": "run-s type-check build:foundry-only",
+    "build:foundry-only": "vite build --config vite.config.foundry.ts",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
@@ -47,6 +49,7 @@
     "jiti": "^2.6.1",
     "jsdom": "^29.0.1",
     "npm-run-all2": "^8.0.4",
+    "postcss-prefix-selector": "^2.1.1",
     "prettier": "^3.8.1",
     "typescript": "~5.9.0",
     "typescript-eslint": "^8.59.3",

@@ -4,6 +4,36 @@ server {
 
     # API routing: everything under /v1/ goes to the `api` service on the app_net network.
     location /v1/ {
+        # CORS: the Foundry container serves the RpgAssistant module on
+        # http://localhost:30000; the browser fetches /v1/ from this gateway
+        # on :8080, so it must accept that cross-origin. Dev-only origin —
+        # tighten before exposing this gateway to the internet.
+        if ($request_method = OPTIONS) {
+            add_header Access-Control-Allow-Origin  "http://localhost:30000" always;
+            add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+            add_header Access-Control-Allow-Headers "Authorization, Content-Type, If-Match, If-None-Match" always;
+            add_header Access-Control-Expose-Headers "ETag, Location" always;
+            add_header Access-Control-Max-Age      "86400" always;
+            add_header Content-Length              0;
+            add_header Content-Type                "text/plain";
+            return 204;
+        }
+        # Strip CORS headers emitted by the ASP.NET backend so only the
+        # gateway's single Access-Control-Allow-Origin reaches the browser.
+        # Without this, the response carries both `*` (from the API) and
+        # `http://localhost:30000` (added below). Browsers reject any CORS
+        # response with multiple ACAO headers, so the create-character POST
+        # *succeeds on the wire* (the row lands in Neo4j) but the response
+        # is dropped and the SPA's await throws with no useful diagnostic.
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_hide_header Access-Control-Expose-Headers;
+        proxy_hide_header Access-Control-Allow-Methods;
+        proxy_hide_header Access-Control-Allow-Headers;
+        proxy_hide_header Access-Control-Allow-Credentials;
+
+        add_header Access-Control-Allow-Origin   "http://localhost:30000" always;
+        add_header Access-Control-Expose-Headers "ETag, Location" always;
+
         proxy_pass         http://api:8080;
         proxy_http_version 1.1;
         proxy_set_header   Host              $host;
@@ -12,13 +42,11 @@ server {
         proxy_set_header   X-Forwarded-Proto $scheme;
     }
 
-    # Everything else -> `ui` service (nginx serving SPA files + its own SPA fallback).
+    # No UI is served from this gateway anymore — RpgAssistant lives only
+    # inside Foundry (port 30000). Anything that isn't /v1/ gets a 404
+    # so misconfigured clients fail fast instead of silently hitting a
+    # default page.
     location / {
-        proxy_pass         http://ui:80;
-        proxy_http_version 1.1;
-        proxy_set_header   Host              $host;
-        proxy_set_header   X-Real-IP         $remote_addr;
-        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
-        proxy_set_header   X-Forwarded-Proto $scheme;
+        return 404;
     }
 }

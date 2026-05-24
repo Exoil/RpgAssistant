@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/composables/**"
+  - 'src/composables/**'
 ---
 
 # Composable rules
@@ -16,7 +16,9 @@ paths:
 ## Reference shape
 
 ```ts
-export interface UseXxxOptions { /* options with sensible defaults */ }
+export interface UseXxxOptions {
+  /* options with sensible defaults */
+}
 
 export function useXxx(service: RpgAssistantService, options: UseXxxOptions = {}) {
   const query = ref('');

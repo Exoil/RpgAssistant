@@ -57,6 +57,21 @@ defineExpose({
 </script>
 
 <template>
+  <!-- Teleport to <body> so `position: fixed` resolves against the viewport.
+       Inside Foundry's ApplicationV2 window the window root has a
+       `transform: translate(...)`, which makes any descendant fixed-position
+       element snap to the window's origin instead of the viewport — the menu
+       would land at the cursor *offset by the window's top-left*. Moving the
+       menu out of the transformed subtree restores normal fixed positioning,
+       so `event.clientX/Y` from v-network-graph match the rendered location.
+
+       The outer `.rpg-assistant` wrapper is required because the Foundry
+       build prefixes every scoped selector with `.rpg-assistant ` (see
+       vite.config.foundry.ts → cssPrefixPlugin). Without an ancestor
+       carrying that class, none of the menu styles match and the dropdown
+       renders unstyled / invisible. -->
+  <Teleport to="body">
+  <div class="rpg-assistant">
   <div
     ref="menuEl"
     class="dropdown node-context-dropdown"
@@ -84,7 +99,7 @@ defineExpose({
           Search path to
         </button>
 
-        <div class="dropdown-item">
+        <div class="dropdown-item dropdown-item--embedded">
           <DeleteCharacterComponent
             :disabled="!firstSelectedCharacterId"
             :rpgAssistantService="rpgAssistantService"
@@ -93,7 +108,7 @@ defineExpose({
           />
         </div>
 
-        <div class="dropdown-item">
+        <div class="dropdown-item dropdown-item--embedded">
           <CreateCharacterKnowEdgeComponent
             :rpgAssistantService="rpgAssistantService"
             :fromNodeId="firstSelectedCharacterId"
@@ -105,6 +120,8 @@ defineExpose({
       </div>
     </div>
   </div>
+  </div>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -129,6 +146,42 @@ defineExpose({
 
 .node-context-dropdown .dropdown-divider {
   background-color: #e5e7eb;
+}
+
+/* Items whose action lives in a child component (DeleteCharacter,
+   CreateCharacterKnowEdge) used to inherit `.dropdown-item` padding from the
+   wrapper *and* render a raw browser button inside it — net result was a
+   narrow, off-centre control. Zero the wrapper's padding/margin and pin the
+   inner button to fill the row with the same padding the plain dropdown-item
+   buttons get, so every menu row looks identical. */
+.node-context-dropdown .dropdown-item--embedded {
+  padding: 0;
+}
+
+.node-context-dropdown .dropdown-item--embedded > :deep(*) {
+  margin: 0;
+}
+
+.node-context-dropdown .dropdown-item--embedded :deep(button) {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0.375rem 1rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.node-context-dropdown .dropdown-item--embedded :deep(button:hover:not(:disabled)) {
+  background: #f3f4f6;
+}
+
+.node-context-dropdown .dropdown-item--embedded :deep(button:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .is-disabled {

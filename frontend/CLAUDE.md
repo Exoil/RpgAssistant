@@ -4,13 +4,14 @@ This file applies to **every** file under `frontend/` and holds only
 cross-cutting frontend rules. Path-scoped guidance lives in
 `.claude/rules/` and loads only when Claude reads matching files:
 
-| Topic | Rule file | Loads for |
-|---|---|---|
-| HTTP / API client layering | `.claude/rules/http-client.md` | `src/services/**` |
-| Components | `.claude/rules/components.md` | `src/components/**`, `src/App.vue` |
-| Composables | `.claude/rules/composables.md` | `src/composables/**` |
-| Models (API vs UI) | `.claude/rules/models.md` | `src/models/**`, `src/services/Models/**` |
-| Testing (Vitest) | `.claude/rules/testing.md` | `src/__tests__/**`, `*.spec.ts` |
+| Topic                      | Rule file                      | Loads for                                        |
+| -------------------------- | ------------------------------ | ------------------------------------------------ |
+| HTTP / API client layering | `.claude/rules/http-client.md` | `src/services/**`                                |
+| Components                 | `.claude/rules/components.md`  | `src/components/**`, `src/App.vue`               |
+| Composables                | `.claude/rules/composables.md` | `src/composables/**`                             |
+| Models (API vs UI)         | `.claude/rules/models.md`      | `src/models/**`, `src/services/Models/**`        |
+| Testing (Vitest)           | `.claude/rules/testing.md`     | `src/__tests__/**`, `*.spec.ts`                  |
+| Foundry VTT module         | `../.claude/rules/foundry.md`  | `frontend/**`, `**/module.json`, `**/foundry/**` |
 
 ## Context
 
@@ -21,20 +22,20 @@ Vue, Vite, and TypeScript documentation for best practices.
 
 ## Stack
 
-| Concern | Tool |
-|---------|------|
-| Framework | Vue 3 (Composition API, `<script setup>`) |
-| Language | TypeScript (strict) |
-| Build / dev server | Vite |
-| Package manager / runtime | Bun (`bun.lock` is the lockfile) |
-| Router | `vue-router` |
-| HTTP | `axios` (via an NSwag-generated client) |
-| Event bus | `mitt` |
-| Styling | Bulma |
-| Graph rendering | `v-network-graph` (+ `d3-force` layout) |
-| Linting / formatting | ESLint, Prettier |
-| Type check | `vue-tsc` |
-| Tests | Vitest, `@vue/test-utils`, jsdom |
+| Concern                   | Tool                                      |
+| ------------------------- | ----------------------------------------- |
+| Framework                 | Vue 3 (Composition API, `<script setup>`) |
+| Language                  | TypeScript (strict)                       |
+| Build / dev server        | Vite                                      |
+| Package manager / runtime | Bun (`bun.lock` is the lockfile)          |
+| Router                    | `vue-router`                              |
+| HTTP                      | `axios` (via an NSwag-generated client)   |
+| Event bus                 | `mitt`                                    |
+| Styling                   | Bulma                                     |
+| Graph rendering           | `v-network-graph` (+ `d3-force` layout)   |
+| Linting / formatting      | ESLint, Prettier                          |
+| Type check                | `vue-tsc`                                 |
+| Tests                     | Vitest, `@vue/test-utils`, jsdom          |
 
 ## Directory layout
 
@@ -95,10 +96,10 @@ and `vite.config.ts`).
 Schemas live at the **repo root**, above `backend/` and `frontend/`, so both
 stacks share the same design source of truth.
 
-| Kind | Directory (from this file) | Format |
-|------|----------------------------|--------|
-| Component / architecture | `../schemas/components/` | `*.drawio` |
-| Sequence diagrams | `../schemas/sequences/` | `*.md` (mermaid) |
+| Kind                     | Directory (from this file) | Format           |
+| ------------------------ | -------------------------- | ---------------- |
+| Component / architecture | `../schemas/components/`   | `*.drawio`       |
+| Sequence diagrams        | `../schemas/sequences/`    | `*.md` (mermaid) |
 
 Rule: **drawio for everything except sequence diagrams**, which are **mermaid**.
 For the canonical schemas list see the top-level `../CLAUDE.md`.

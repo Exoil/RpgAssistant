@@ -7,9 +7,9 @@ A character and relationship manager for tabletop RPGs, backed by a Neo4j graph 
 ```
 RpgAssistant/
 ├── backend/             ASP.NET Core 10 Web API (CQRS, Neo4j)
-├── frontend/            Vue 3 + Vite SPA (Bun, TypeScript)
-├── gateway/             nginx reverse proxy (single public entrypoint)
-├── docker-compose.yaml  full local stack (gateway + api + ui + neo4j)
+├── frontend/            Vue 3 + Vite source; built as a Foundry VTT module
+├── gateway/             nginx API gateway (CORS-allowed for the Foundry origin)
+├── docker-compose.yaml  full local stack (gateway + api + neo4j + foundry)
 └── .env.example         template for the .env file consumed by compose
 ```
 
@@ -83,13 +83,15 @@ bun run test:run         # Vitest (single run)
 
 ## Running the full stack locally
 
-The compose file wires four services behind a single nginx gateway:
+RpgAssistant is a **Foundry VTT module** — there is no standalone web UI.
+The compose file wires four services; users interact only with Foundry on
+`:30000`, which loads the module and calls the backend through the gateway:
 
 | Service | Image / build context | Exposed to host | Role |
 |---------|-----------------------|-----------------|------|
-| `gateway` | `nginx:1.27-alpine` (`./gateway`) | `:8080` → `:80` | Public entrypoint. Routes `/v1/*` to the API, everything else to the UI. |
+| `foundry` | `ghcr.io/felddy/foundryvtt:14` | `:30000` | Foundry VTT host. Bind-mounts `frontend/dist` into `/data/Data/modules/rpg-assistant` so the built module loads live. **This is the only UI.** |
+| `gateway` | `nginx:1.27-alpine` (`./gateway`) | `:8080` → `:80` | API-only gateway. Routes `/v1/*` to the API with CORS allowed for `http://localhost:30000`. Everything else returns 404. |
 | `api` | `./backend` | internal only | ASP.NET Core API, listens on `:8080` inside `app_net`. |
-| `ui` | `./frontend` | internal only | Built Vite SPA served by nginx with a SPA fallback. |
 | `neo4j` | `neo4j:latest` | `:17474` (browser), `:17687` (bolt) | Graph database. Data persisted under `$HOME/neo4j/`. |
 
 ### First-time setup
@@ -99,11 +101,12 @@ cp .env.example .env        # then edit NEO4J_PASSWORD
 docker compose up --build
 ```
 
-Once everything is up, open <http://localhost:8080> — the UI loads from the gateway and its API calls (`/v1/...`) are proxied to the backend on the internal network. The API itself is **not** published to the host; reach it through the gateway.
+Once everything is up, open <http://localhost:30000> — Foundry VTT. Inside a world, enable the **RpgAssistant** module; its window calls `/v1/...` on the gateway (`:8080`) and the gateway proxies to the backend over `app_net`. The API itself is **not** published to the host; reach it only through the gateway.
 
 Useful URLs:
 
-- App (UI + API): <http://localhost:8080>
+- Foundry VTT (the app): <http://localhost:30000>
+- API gateway (`/v1/*` only, returns 404 for anything else): <http://localhost:8080/v1/>
 - Neo4j Browser: <http://localhost:17474>
 - Neo4j Bolt: `bolt://localhost:17687`
 

@@ -147,6 +147,10 @@ onBeforeUnmount(() => {
   padding: 0.5rem 0.75rem;
   cursor: pointer;
   border-bottom: 1px solid #f3f4f6;
+  /* Bulma's modal-card-body inherits a light-grey body color which makes
+     plain text in the list almost unreadable on the white background. Pin
+     the row text to near-black so character names are legible. */
+  color: #111827;
 }
 
 .result-item:last-child {
@@ -155,6 +159,7 @@ onBeforeUnmount(() => {
 
 .result-item:hover {
   background: #f3f4f6;
+  color: #111827;
 }
 
 .result-item.is-disabled {
@@ -164,7 +169,7 @@ onBeforeUnmount(() => {
 
 .results-empty {
   padding: 0.5rem 0.75rem;
-  color: #6b7280;
+  color: #4b5563;
   font-style: italic;
 }
 
