@@ -32,15 +32,19 @@ function openWindow(): void {
     const result = app.render(true);
     Promise.resolve(result).catch((err) => {
       console.error(`[${MODULE_ID}] render() rejected:`, err);
-      (globalThis as { ui?: { notifications?: { error?: (m: string) => void } } }).ui
-        ?.notifications
-        ?.error?.(`RpgAssistant failed to open: ${String((err as Error)?.message ?? err)}`);
+      (
+        globalThis as { ui?: { notifications?: { error?: (m: string) => void } } }
+      ).ui?.notifications?.error?.(
+        `RpgAssistant failed to open: ${String((err as Error)?.message ?? err)}`,
+      );
     });
   } catch (err) {
     console.error(`[${MODULE_ID}] open threw:`, err);
-    (globalThis as { ui?: { notifications?: { error?: (m: string) => void } } }).ui
-      ?.notifications
-      ?.error?.(`RpgAssistant failed to open: ${String((err as Error)?.message ?? err)}`);
+    (
+      globalThis as { ui?: { notifications?: { error?: (m: string) => void } } }
+    ).ui?.notifications?.error?.(
+      `RpgAssistant failed to open: ${String((err as Error)?.message ?? err)}`,
+    );
   }
 }
 

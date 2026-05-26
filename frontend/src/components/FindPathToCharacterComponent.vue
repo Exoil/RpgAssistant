@@ -147,9 +147,6 @@ onBeforeUnmount(() => {
   padding: 0.5rem 0.75rem;
   cursor: pointer;
   border-bottom: 1px solid #f3f4f6;
-  /* Bulma's modal-card-body inherits a light-grey body color which makes
-     plain text in the list almost unreadable on the white background. Pin
-     the row text to near-black so character names are legible. */
   color: #111827;
 }
 

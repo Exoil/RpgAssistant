@@ -27,10 +27,8 @@ defineExpose({
 </script>
 
 <template>
-  <!-- See NodeContextMenuComponent for why this teleports + wraps in
-       `.rpg-assistant` (transform-ancestor + CSS prefix-scope). -->
   <Teleport to="body">
-    <div class="rpg-assistant">
+    <div class="rpg-assistant-root">
       <div
         ref="menuEl"
         class="dropdown context-dropdown"
