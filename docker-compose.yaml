@@ -1,4 +1,4 @@
-## Deployment profiles (see ADR-0002):
+## Deployment profiles (see ADR-0003):
 ##   - `foundry`    → API + DB + CORS-enabled gateway on :8080 + Foundry on :30000
 ##   - `standalone` → API + DB + SPA nginx on :8080 (same-origin, no CORS)
 ##
