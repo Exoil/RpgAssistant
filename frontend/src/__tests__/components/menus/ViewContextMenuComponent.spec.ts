@@ -7,10 +7,14 @@
  * wrapper.vm gives you the component instance so you can call those exposed methods.
  */
 import { describe, it, expect } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { mount, config } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import ViewContextMenuComponent from '@/components/menus/ViewContextMenuComponent.vue';
 import type { ViewEvent } from 'v-network-graph';
+
+// The menu renders its dropdown through `<Teleport to="body">`. Stub the
+// teleport so the content renders inline and stays queryable via `wrapper`.
+config.global.stubs = { teleport: true };
 
 function makeViewEvent(x = 100, y = 200): ViewEvent<MouseEvent> {
   return {

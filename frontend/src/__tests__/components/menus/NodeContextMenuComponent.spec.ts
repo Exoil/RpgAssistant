@@ -1,9 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
-import { mount, flushPromises } from '@vue/test-utils';
+import { mount, flushPromises, config } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import NodeContextMenuComponent from '@/components/menus/NodeContextMenuComponent.vue';
 import type { RpgAssistantService } from '@/services/RpgAssistantService';
 import type { NodeEvent } from 'v-network-graph';
+
+// The menu renders its dropdown through `<Teleport to="body">`. Stub the
+// teleport so the content renders inline and stays queryable via `wrapper`.
+config.global.stubs = { teleport: true };
 
 function makeService(overrides: Partial<RpgAssistantService> = {}): RpgAssistantService {
   return {
