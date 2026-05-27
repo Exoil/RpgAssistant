@@ -20,7 +20,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./gateway/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./gateways-config-sample/gateway/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
     networks:
       - app_net
     restart: unless-stopped
@@ -34,7 +34,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./ui/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./gateways-config-sample/ui/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
       # Build with `bun run build-only` (in frontend/) before bringing this
       # profile up — Vite emits dist-standalone/ (see vite.config.ts → outDir).
       - ./frontend/dist-standalone:/usr/share/nginx/html:ro
