@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/services/**"
+  - 'src/services/**'
 ---
 
 # HTTP / API layer rules

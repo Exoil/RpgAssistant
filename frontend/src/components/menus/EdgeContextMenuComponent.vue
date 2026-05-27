@@ -35,25 +35,29 @@ defineExpose({
 </script>
 
 <template>
-  <div
-    ref="menuEl"
-    class="dropdown context-dropdown"
-    :class="{ 'is-active': isOpen }"
-    :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
-  >
-    <div class="dropdown-menu" role="menu">
-      <div class="dropdown-content">
-        <div class="dropdown-item">
-          <DeleteKnowCharacterEdgeComponent
-            :rpgAssistantService="rpgAssistantService"
-            :edgeId="selectedEdgeId"
-            :edgeIdSeparator="edgeIdSeparator"
-            @deletedKnowEdge="onEdgeKnowDeleted"
-          />
+  <Teleport to="body">
+    <div class="rpg-assistant-root">
+      <div
+        ref="menuEl"
+        class="dropdown context-dropdown"
+        :class="{ 'is-active': isOpen }"
+        :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
+      >
+        <div class="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <div class="dropdown-item">
+              <DeleteKnowCharacterEdgeComponent
+                :rpgAssistantService="rpgAssistantService"
+                :edgeId="selectedEdgeId"
+                :edgeIdSeparator="edgeIdSeparator"
+                @deletedKnowEdge="onEdgeKnowDeleted"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <style scoped>

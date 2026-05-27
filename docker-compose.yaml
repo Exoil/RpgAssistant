@@ -1,14 +1,43 @@
+## Deployment profiles (see ADR-0003):
+##   - `foundry`    → API + DB + CORS-enabled gateway on :8080 + Foundry on :30000
+##   - `standalone` → API + DB + SPA nginx on :8080 (same-origin, no CORS)
+##
+## Run with:   docker compose --profile foundry    up
+##         or  docker compose --profile standalone up
+##
+## `api` and `neo4j` have no profile so they always start, regardless of which
+## UI front-door is active. The `gateway` and `ui` services both bind host
+## port 8080 — they are mutually exclusive by design; never enable both
+## profiles at once.
+
 services:
   gateway:
+    profiles: ["foundry"]
     image: nginx:1.27-alpine
     container_name: rpgassistant-gateway
     depends_on:
       - api
-      - ui
     ports:
       - "8080:80"
     volumes:
-      - ./gateway/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./gateways-config-sample/gateway/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+    networks:
+      - app_net
+    restart: unless-stopped
+
+  ui:
+    profiles: ["standalone"]
+    image: nginx:1.27-alpine
+    container_name: rpgassistant-ui
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+    volumes:
+      - ./gateways-config-sample/ui/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+      # Build with `bun run build-only` (in frontend/) before bringing this
+      # profile up — Vite emits dist-standalone/ (see vite.config.ts → outDir).
+      - ./frontend/dist-standalone:/usr/share/nginx/html:ro
     networks:
       - app_net
     restart: unless-stopped
@@ -28,17 +57,6 @@ services:
       Neo4j__ConnectionString: "bolt://neo4j:17687"
       Neo4j__UserName: "neo4j"
       Neo4j__Password: "${NEO4J_PASSWORD}"
-    networks:
-      - app_net
-    restart: unless-stopped
-
-  ui:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: rpgassistant-ui
-    expose:
-      - "80"
     networks:
       - app_net
     restart: unless-stopped
@@ -73,6 +91,35 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+
+  foundry:
+    profiles: ["foundry"]
+    image: ghcr.io/felddy/foundryvtt:14
+    # License is bound to `hostname` — do not change casually.
+    hostname: rpgassistant-foundry
+    container_name: rpgassistant-foundry
+    depends_on:
+      - api
+    ports:
+      - "30000:30000"
+    environment:
+      FOUNDRY_USERNAME: "${FOUNDRY_USERNAME}"
+      FOUNDRY_PASSWORD: "${FOUNDRY_PASSWORD}"
+      FOUNDRY_ADMIN_KEY: "${FOUNDRY_ADMIN_KEY}"
+      # Optional: the long key from your foundryvtt.com email
+      # (format XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX). Only needed if you
+      # leave USERNAME/PASSWORD empty; with both set, the container fetches
+      # the license from foundryvtt.com on first run.
+      FOUNDRY_LICENSE_KEY: "${FOUNDRY_LICENSE_KEY:-}"
+      FOUNDRY_TELEMETRY: "false"
+    volumes:
+      - $HOME/foundry/data:/data
+      # Single directory mount: vite.config.foundry.ts copies module.json
+      # and lang/ into dist/ during build, so dist/ IS the module folder.
+      - ./frontend/dist:/data/Data/modules/rpg-assistant:ro
+    networks:
+      - app_net
+    restart: unless-stopped
 
 networks:
   app_net:

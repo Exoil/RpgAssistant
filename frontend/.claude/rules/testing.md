@@ -1,7 +1,7 @@
 ---
 paths:
-  - "src/__tests__/**"
-  - "**/*.spec.ts"
+  - 'src/__tests__/**'
+  - '**/*.spec.ts'
 ---
 
 # Vitest rules

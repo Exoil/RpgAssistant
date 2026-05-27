@@ -147,6 +147,7 @@ onBeforeUnmount(() => {
   padding: 0.5rem 0.75rem;
   cursor: pointer;
   border-bottom: 1px solid #f3f4f6;
+  color: #111827;
 }
 
 .result-item:last-child {
@@ -155,6 +156,7 @@ onBeforeUnmount(() => {
 
 .result-item:hover {
   background: #f3f4f6;
+  color: #111827;
 }
 
 .result-item.is-disabled {
@@ -164,7 +166,7 @@ onBeforeUnmount(() => {
 
 .results-empty {
   padding: 0.5rem 0.75rem;
-  color: #6b7280;
+  color: #4b5563;
   font-style: italic;
 }
 

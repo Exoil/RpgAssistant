@@ -1,0 +1,24 @@
+{
+  "id": "rpg-assistant",
+  "title": "RpgAssistant",
+  "description": "Track tabletop RPG characters and their relationships inside Foundry VTT.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14",
+    "maximum": "14"
+  },
+  "authors": [{ "name": "RpgAssistant" }],
+  "esmodules": ["main.js"],
+  "styles": ["style.css"],
+  "languages": [{ "lang": "en", "name": "English", "path": "lang/en.json" }],
+  "url": "",
+  "manifest": "",
+  "download": "",
+  "license": "",
+  "readme": "README.md",
+  "relationships": {
+    "systems": [],
+    "requires": []
+  }
+}

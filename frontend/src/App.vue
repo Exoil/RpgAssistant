@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, onMounted, computed, reactive } from 'vue';
+import { ref, onBeforeMount, onMounted, computed, reactive, inject } from 'vue';
+import { API_BASE_URL_KEY } from '@/foundry/injection-keys';
 import { CharacterNode } from '@/models/CharacterNode';
 import { KnowEdge } from '@/models/KnowEdge';
 import * as vNG from 'v-network-graph';
@@ -118,10 +119,14 @@ const edgesForGraph = computed<vNG.Edges>(() =>
   ),
 );
 
+// Host injects the API base URL:
+//  - Standalone SPA: '' (same-origin; nginx gateway proxies /v1/).
+//  - Foundry module: absolute URL from the rpg-assistant.apiBaseUrl world
+//    setting (Foundry lives on :30000 and cannot serve /v1/).
+const apiBaseUrl = inject(API_BASE_URL_KEY, '');
+
 onBeforeMount(() => {
-  // Pusty baseUrl -> zadania HTTP leca wzgledem origin strony.
-  // W Dockerze gateway na :8080 obsluguje /v1; w `bun run dev` proxy w vite.config.ts.
-  rpgAssistantService = new RpgAssistantService('');
+  rpgAssistantService = new RpgAssistantService(apiBaseUrl);
   setupGraphConfig();
 });
 
@@ -425,7 +430,12 @@ const eventHandlers: vNG.EventHandlers = {
 <style scoped>
 .app {
   display: flex;
-  height: 100vh;
+  /* When hosted inside a Foundry ApplicationV2 window the parent already
+     constrains height; 100vh would overflow the window. 100% lets the
+     window's resize handle drive the layout. Standalone SPA gets the same
+     value because index.html sets html, body, #app to 100%. */
+  height: 100%;
+  min-height: 480px;
   position: relative;
 }
 

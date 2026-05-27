@@ -27,18 +27,24 @@ defineExpose({
 </script>
 
 <template>
-  <div
-    ref="menuEl"
-    class="dropdown context-dropdown"
-    :class="{ 'is-active': isOpen }"
-    :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
-  >
-    <div class="dropdown-menu" role="menu">
-      <div class="dropdown-content">
-        <button class="dropdown-item" type="button" @click="onCreateClick">Create character</button>
+  <Teleport to="body">
+    <div class="rpg-assistant-root">
+      <div
+        ref="menuEl"
+        class="dropdown context-dropdown"
+        :class="{ 'is-active': isOpen }"
+        :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
+      >
+        <div class="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <button class="dropdown-item" type="button" @click="onCreateClick">
+              Create character
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <style scoped>

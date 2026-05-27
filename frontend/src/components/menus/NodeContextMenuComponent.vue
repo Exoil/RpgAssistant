@@ -57,54 +57,58 @@ defineExpose({
 </script>
 
 <template>
-  <div
-    ref="menuEl"
-    class="dropdown node-context-dropdown"
-    :class="{ 'is-active': isOpen }"
-    :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
-  >
-    <div class="dropdown-menu" role="menu">
-      <div class="dropdown-content">
-        <button
-          class="dropdown-item"
-          type="button"
-          @click="onUpdateClick"
-          :disabled="!firstSelectedCharacterId"
-        >
-          Update character
-        </button>
+  <Teleport to="body">
+    <div class="rpg-assistant-root">
+      <div
+        ref="menuEl"
+        class="dropdown node-context-dropdown"
+        :class="{ 'is-active': isOpen }"
+        :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
+      >
+        <div class="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <button
+              class="dropdown-item"
+              type="button"
+              @click="onUpdateClick"
+              :disabled="!firstSelectedCharacterId"
+            >
+              Update character
+            </button>
 
-        <button
-          id="node-context-find-path-button"
-          class="dropdown-item"
-          type="button"
-          @click="onFindPathClick"
-          :disabled="!firstSelectedCharacterId"
-        >
-          Search path to
-        </button>
+            <button
+              id="node-context-find-path-button"
+              class="dropdown-item"
+              type="button"
+              @click="onFindPathClick"
+              :disabled="!firstSelectedCharacterId"
+            >
+              Search path to
+            </button>
 
-        <div class="dropdown-item">
-          <DeleteCharacterComponent
-            :disabled="!firstSelectedCharacterId"
-            :rpgAssistantService="rpgAssistantService"
-            :characterId="firstSelectedCharacterId"
-            @deletedCharacter="onCharacterDeleted"
-          />
-        </div>
+            <div class="dropdown-item dropdown-item--embedded">
+              <DeleteCharacterComponent
+                :disabled="!firstSelectedCharacterId"
+                :rpgAssistantService="rpgAssistantService"
+                :characterId="firstSelectedCharacterId"
+                @deletedCharacter="onCharacterDeleted"
+              />
+            </div>
 
-        <div class="dropdown-item">
-          <CreateCharacterKnowEdgeComponent
-            :rpgAssistantService="rpgAssistantService"
-            :fromNodeId="firstSelectedCharacterId"
-            :targetNodeId="secondSelectedCharacterId"
-            :edgeIdSeparator="edgeIdSeparator"
-            @createKnowEdge="onEdgeKnowCreated"
-          />
+            <div class="dropdown-item dropdown-item--embedded">
+              <CreateCharacterKnowEdgeComponent
+                :rpgAssistantService="rpgAssistantService"
+                :fromNodeId="firstSelectedCharacterId"
+                :targetNodeId="secondSelectedCharacterId"
+                :edgeIdSeparator="edgeIdSeparator"
+                @createKnowEdge="onEdgeKnowCreated"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -129,6 +133,36 @@ defineExpose({
 
 .node-context-dropdown .dropdown-divider {
   background-color: #e5e7eb;
+}
+
+.node-context-dropdown .dropdown-item--embedded {
+  padding: 0;
+}
+
+.node-context-dropdown .dropdown-item--embedded > :deep(*) {
+  margin: 0;
+}
+
+.node-context-dropdown .dropdown-item--embedded :deep(button) {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0.375rem 1rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.node-context-dropdown .dropdown-item--embedded :deep(button:hover:not(:disabled)) {
+  background: #f3f4f6;
+}
+
+.node-context-dropdown .dropdown-item--embedded :deep(button:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .is-disabled {
