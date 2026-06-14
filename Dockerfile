@@ -21,5 +21,5 @@ ENV ASPNETCORE_ENVIRONMENT=Development
 EXPOSE 8080
 
 COPY --from=build /app/out .
-ENTRYPOINT ["dotnet", "Loreweave.Api.dll"]
+ENTRYPOINT ["dotnet", "LoreWeave.Api.dll"]
 

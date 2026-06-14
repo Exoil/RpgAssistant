@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-    title: Loreweave Character API
+    title: LoreWeave Character API
     version: 1.0.0
 servers:
     -   url: https://localhost:7048
