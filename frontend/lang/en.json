@@ -1,7 +1,0 @@
-{
-  "rpg-assistant.title": "RpgAssistant",
-  "rpg-assistant.controls.open": "Open RpgAssistant",
-  "rpg-assistant.controls.tooltip": "Open the character-relationship graph",
-  "rpg-assistant.settings.apiBaseUrl.name": "Backend API base URL",
-  "rpg-assistant.settings.apiBaseUrl.hint": "URL the module uses to reach the RpgAssistant backend API (the nginx gateway). Default points at the local docker-compose gateway."
-}
