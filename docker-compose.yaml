@@ -1,14 +1,15 @@
-## Deployment profiles (see ADR-0003):
-##   - `foundry`    → API + DB + CORS-enabled gateway on :8080 + Foundry on :30000
-##   - `standalone` → API + DB + SPA nginx on :8080 (same-origin, no CORS)
+## Deployment profile (see ADR-0003):
+##   - `foundry` → API + DB + CORS-enabled gateway on :8080 + Foundry on :30000
 ##
-## Run with:   docker compose --profile foundry    up
-##         or  docker compose --profile standalone up
+## Run with:   docker compose --profile foundry up
 ##
-## `api` and `neo4j` have no profile so they always start, regardless of which
-## UI front-door is active. The `gateway` and `ui` services both bind host
-## port 8080 — they are mutually exclusive by design; never enable both
-## profiles at once.
+## `api` and `neo4j` have no profile so they always start. The UI itself
+## (Loreweave UI, the Foundry module) lives in a separate repository:
+## https://github.com/Exoil/Loreweave-plugin
+##
+## Before bringing the `foundry` profile up, build the module in that repo
+## (`bun run build:foundry`) and bind-mount its `dist/` into the foundry
+## service below — see the foundry service's volumes section.
 
 services:
   gateway:
@@ -21,23 +22,6 @@ services:
       - "8080:80"
     volumes:
       - ./gateways-config-sample/gateway/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
-    networks:
-      - app_net
-    restart: unless-stopped
-
-  ui:
-    profiles: ["standalone"]
-    image: nginx:1.27-alpine
-    container_name: rpgassistant-ui
-    depends_on:
-      - api
-    ports:
-      - "8080:80"
-    volumes:
-      - ./gateways-config-sample/ui/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
-      # Build with `bun run build-only` (in frontend/) before bringing this
-      # profile up — Vite emits dist-standalone/ (see vite.config.ts → outDir).
-      - ./frontend/dist-standalone:/usr/share/nginx/html:ro
     networks:
       - app_net
     restart: unless-stopped
@@ -114,9 +98,11 @@ services:
       FOUNDRY_TELEMETRY: "false"
     volumes:
       - $HOME/foundry/data:/data
-      # Single directory mount: vite.config.foundry.ts copies module.json
-      # and lang/ into dist/ during build, so dist/ IS the module folder.
-      - ./frontend/dist:/data/Data/modules/rpg-assistant:ro
+      # Loreweave UI lives in a separate repo (Exoil/Loreweave-plugin).
+      # Build it there with `bun run build:foundry`; vite.config.foundry.ts
+      # copies module.json and lang/ into dist/, so dist/ IS the module
+      # folder. Adjust the host path below to wherever you cloned it.
+      - ../../LoreweaveUi/dist:/data/Data/modules/loreweave-ui:ro
     networks:
       - app_net
     restart: unless-stopped

@@ -6,33 +6,37 @@ rules live in nested `CLAUDE.md` files — see the layout below.
 ## Context
 
 **RpgAssistant** helps tabletop RPG game-masters track characters and the
-relationships between them. The project is a monorepo with three deployable
-components (backend API, frontend SPA, gateway) and a centralized schemas
-directory used as the design source of truth.
+relationships between them. This repository contains the backend API and the
+docker-compose stack. The Foundry VTT UI lives in a **separate repository**:
+[Exoil/Loreweave-plugin](https://github.com/Exoil/Loreweave-plugin) — folder
+`LoreweaveUi/`, sibling to `RpgAssistantProject/` on local disk.
+
+A centralized `schemas/` directory at this repo's root is the design source of
+truth for both projects.
 
 ## Repository layout
 
 The repo root is `RpgAssistantProject/`. `schemas/` sits at the root, **above**
-`backend/` and `frontend/`, so both stacks reference the same design source of
-truth.
+`backend/`, so both this repo and the sibling Loreweave UI repo reference the
+same design source of truth.
 
 ```
-RpgAssistantProject/
-├── schemas/                 <- design schemas (see "Schemas" below)
-│   ├── components/          <- *.drawio
-│   └── sequences/           <- *.md (mermaid)
-└── RpgAssistant/
-    ├── CLAUDE.md            <- this file: project overview + schema pointers
-    ├── docs/
-    │   └── adr/             <- Architecture Decision Records (see "ADRs" below)
-    ├── backend/             <- ASP.NET Core 10 Web API (C#, Neo4j)
-    │   ├── CLAUDE.md        <- general backend coding rules
-    │   ├── src/RpgAssistant.Application/CLAUDE.md
-    │   │                    <- Application-layer CQRS patterns
-    │   └── test/CLAUDE.md   <- backend test rules
-    ├── frontend/            <- Vue 3 + TypeScript SPA (Vite, Bun)
-    │   └── CLAUDE.md        <- general frontend coding rules
-    └── gateway/             <- Nginx reverse proxy in front of API + SPA
+Projects/
+├── RpgAssistantProject/         <- this repo (backend + stack)
+│   ├── schemas/                 <- design schemas (see "Schemas" below)
+│   │   ├── components/          <- *.drawio
+│   │   └── sequences/           <- *.md (mermaid)
+│   └── RpgAssistant/
+│       ├── CLAUDE.md            <- this file: project overview + schema pointers
+│       ├── docs/
+│       │   └── adr/             <- Architecture Decision Records (see "ADRs" below)
+│       ├── backend/             <- ASP.NET Core 10 Web API (C#, Neo4j)
+│       │   ├── CLAUDE.md        <- general backend coding rules
+│       │   ├── src/RpgAssistant.Application/CLAUDE.md
+│       │   │                    <- Application-layer CQRS patterns
+│       │   └── test/CLAUDE.md   <- backend test rules
+│       └── gateway/             <- Nginx reverse proxy in front of API
+└── LoreweaveUi/                 <- separate repo: Foundry VTT module (Vue 3 + Vite)
 ```
 
 When in doubt, follow the rules in the **nearest** `CLAUDE.md`. The further it
@@ -46,7 +50,7 @@ sits from the file you are editing, the lower its priority.
 | Application | `backend/src/RpgAssistant.Application` | CQRS via MessagePipe |
 | Domain | `backend/src/RpgAssistant.Domain` | Entities, repository contracts |
 | Infrastructure | `backend/src/RpgAssistant.Infrastructure` | Neo4j driver + transactions |
-| SPA | `frontend` | Vue 3, vue-router, axios, v-network-graph |
+| Foundry module (separate repo) | `../../LoreweaveUi/` | Vue 3, vue-router, axios, v-network-graph |
 | Gateway | `gateway` | Nginx reverse proxy |
 | Database | (container) | Neo4j 5 (bolt port `17687` on local compose) |
 
@@ -102,8 +106,11 @@ supersedes the old one rather than editing the body of the old one.
 ## Local development
 
 ```bash
-# Full stack (API + Neo4j + frontend + gateway)
-docker-compose up
+# Build the Loreweave UI module first (in the sibling repo)
+cd ../../LoreweaveUi && bun install && bun run build:foundry && cd -
+
+# Full stack (API + Neo4j + gateway + Foundry serving the built module)
+docker compose --profile foundry up
 ```
 
 Per-component dev commands live in each component's `CLAUDE.md`.
