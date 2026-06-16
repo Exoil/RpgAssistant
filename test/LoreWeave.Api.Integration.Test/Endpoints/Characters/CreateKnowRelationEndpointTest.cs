@@ -43,7 +43,8 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
         {
             FromCharacterId = fromCharacterId,
             ToCharacterId = toCharacterId,
-            Description = "Test"
+            Description = "Test",
+            IsStrongRelation = true
         };
 
         // Act
@@ -74,7 +75,8 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
         {
             FromCharacterId = fromCharacterId,
             ToCharacterId = fromCharacterId,
-            Description = "Test"
+            Description = "Test",
+            IsStrongRelation = true
         };
 
         // Act
@@ -103,7 +105,8 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
         {
             FromCharacterId = fromCharacterId,
             ToCharacterId = Ulid.NewUlid().UlidToGuid(),
-            Description = "Test"
+            Description = "Test",
+            IsStrongRelation = true
         };
 
         // Act
@@ -132,7 +135,8 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
         {
             FromCharacterId = Ulid.NewUlid().UlidToGuid(),
             ToCharacterId = toCharacterId,
-            Description = "Test"
+            Description = "Test",
+            IsStrongRelation = true
         };
 
         // Act
@@ -170,7 +174,8 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
         {
             FromCharacterId = fromCharacterId,
             ToCharacterId = toCharacterId,
-            Description = new string('*', descriptionLenght)
+            Description = new string('*', descriptionLenght),
+            IsStrongRelation = true
         };
 
         // Act

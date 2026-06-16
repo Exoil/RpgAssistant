@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
     title: LoreWeave Character API
-    version: 1.0.0
+    version: 1.0.1
 servers:
     -   url: https://localhost:7048
 paths:
@@ -378,7 +378,7 @@ components:
         CreateKnowsDto:
             title: CreateKnowsDto
             type: object
-            required: [ fromCharacterId, toCharacterId, description ]
+            required: [ fromCharacterId, toCharacterId, description, isStrongRelation ]
             properties:
                 fromCharacterId:
                     type: string
@@ -390,3 +390,5 @@ components:
                     type: string
                     minLength: 0
                     maxLength: 50
+                isStrongRelation:
+                    type: boolean

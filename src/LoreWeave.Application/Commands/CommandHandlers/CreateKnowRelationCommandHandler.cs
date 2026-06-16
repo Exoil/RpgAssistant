@@ -42,7 +42,8 @@ public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowR
                 id,
                 request.FromCharacterId,
                 request.ToCharacterId,
-                request.Description);
+                request.Description,
+                request.IsStrongRelation);
 
             var fromCharacterExists = await _characterRepository.ExistsAsync(
                 transaction,
