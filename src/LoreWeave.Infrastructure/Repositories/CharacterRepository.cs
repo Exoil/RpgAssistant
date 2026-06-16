@@ -147,7 +147,7 @@ public class CharacterRepository : ICharacterRepository
     {
         const string queryString = @"
             MATCH (fromCh:Character {Id: $FromCharacterId}), (toCh:Character {Id: $ToCharacterId})
-            MERGE (fromCh)-[r:KNOWS]->(toCh)
+            MERGE (fromCh)-[r:KNOWS {IsStrong: $IsStrong}]->(toCh)
             SET  r.Id = $Id, r.Version = $Version, r.Description = $Description";
         var query = new Query(
             queryString,
@@ -157,6 +157,7 @@ public class CharacterRepository : ICharacterRepository
                 FromCharacterId = createKnowRelation.FromCharacterId.ToDatabaseId(),
                 ToCharacterId = createKnowRelation.ToCharacterId.ToDatabaseId(),
                 createKnowRelation.Description,
+                IsStrong = createKnowRelation.IsStrongRelation,
                 Version = 1
             });
 

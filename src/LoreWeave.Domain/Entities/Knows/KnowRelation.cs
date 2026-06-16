@@ -5,12 +5,14 @@ public sealed class KnowRelation
     public KnowRelation(
         Ulid id,
         string description,
+        bool isStrongRelation,
         Ulid fromCharacterId,
         Ulid toCharacterId,
         int version)
     {
         Id = id;
         Description = description;
+        IsStrongRelation = isStrongRelation;
         FromCharacterId = fromCharacterId;
         ToCharacterId = toCharacterId;
         Version = version;
@@ -23,6 +25,8 @@ public sealed class KnowRelation
     public Ulid FromCharacterId { get; private set; }
 
     public Ulid ToCharacterId { get; private set; }
+    
+    public bool IsStrongRelation { get; private set; }
 
     public int Version { get; private set; }
 }

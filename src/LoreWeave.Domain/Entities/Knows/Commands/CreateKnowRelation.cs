@@ -12,7 +12,8 @@ public sealed record CreateKnowRelation : BaseValueObject
         Ulid id,
         Ulid fromCharacterId,
         Ulid toCharacterId,
-        string description)
+        string description,
+        bool isStrongRelation)
     {
         if (fromCharacterId == toCharacterId)
         {
@@ -24,6 +25,7 @@ public sealed record CreateKnowRelation : BaseValueObject
         FromCharacterId = fromCharacterId;
         ToCharacterId = toCharacterId;
         Description = description;
+        IsStrongRelation = isStrongRelation; 
 
         Validate();
     }
@@ -38,4 +40,6 @@ public sealed record CreateKnowRelation : BaseValueObject
 
     [StringLength(50, MinimumLength = 0, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     public required string Description { get; init; }
+    
+    public required bool IsStrongRelation { get; init; }
 }
