@@ -17,6 +17,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoreWeave.Api.Integration.Test", "test\LoreWeave.Api.Integration.Test\LoreWeave.Api.Integration.Test.csproj", "{6595DB8B-6888-4703-9639-2B2932BE900C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{FF4341F7-45B5-4D19-9558-CC5CB850CFA1}"
+	ProjectSection(SolutionItems) = preProject
+		Utilities\Contract.yaml = Utilities\Contract.yaml
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoreWeave.Application", "src\LoreWeave.Application\LoreWeave.Application.csproj", "{B23FB0CD-18FC-4540-90C0-4B9E7FD9F40A}"
 EndProject
