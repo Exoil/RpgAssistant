@@ -40,7 +40,8 @@ public class CreateKnowRelationCommandHandlerTest
     public async Task InvokeAsync_WhenBothCharactersExist_ReturnsUlid()
     {
         // Arrange
-        var command = new CreateKnowRelationCommand(_fromCharacterId, _toCharacterId, "They know each other", true);
+        const string description = "They know each other";
+        var command = new CreateKnowRelationCommand(_fromCharacterId, _toCharacterId, description, true);
         _characterRepository
             .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
             .Returns((true, 1));
@@ -59,7 +60,37 @@ public class CreateKnowRelationCommandHandlerTest
             .Received(1)
             .CreateKnowRelationAsync(
                 Arg.Any<IAsyncTransaction>(),
-                Arg.Is<LoreWeave.Domain.Entities.Knows.Commands.CreateKnowRelation>(r => r.IsStrongRelation));
+                Arg.Is<LoreWeave.Domain.Entities.Knows.Commands.CreateKnowRelation>(r =>
+                    r.IsStrongRelation
+                    && r.Description == description
+                    && r.FromCharacterId == _fromCharacterId
+                    && r.ToCharacterId == _toCharacterId));
+    }
+
+    [Fact]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
+    public async Task InvokeAsync_WhenBothCharactersExist_PassesDescriptionToRepository()
+    {
+        // Arrange
+        const string description = "A long-standing friendship";
+        var command = new CreateKnowRelationCommand(_fromCharacterId, _toCharacterId, description, true);
+        _characterRepository
+            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
+            .Returns((true, 1));
+        _characterRepository
+            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterId)
+            .Returns((true, 1));
+
+        // Act
+        var result = await _sut.InvokeAsync(command);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue("Know relation creation should succeed when both characters exist");
+        await _characterRepository
+            .Received(1)
+            .CreateKnowRelationAsync(
+                Arg.Any<IAsyncTransaction>(),
+                Arg.Is<LoreWeave.Domain.Entities.Knows.Commands.CreateKnowRelation>(r => r.Description == description));
     }
 
     [Fact]

@@ -8,7 +8,7 @@ namespace LoreWeave.Api.Dtos;
 public record CreateKnowsDto(
     Guid FromCharacterId,
     Guid ToCharacterId,
-    [StringLength(50, MinimumLength = 0, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
+    [StringLength(256, MinimumLength = 0, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     string Description,
     bool IsStrongRelation)
 {

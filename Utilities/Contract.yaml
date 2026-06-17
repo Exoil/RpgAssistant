@@ -389,6 +389,6 @@ components:
                 description:
                     type: string
                     minLength: 0
-                    maxLength: 50
+                    maxLength: 256
                 isStrongRelation:
                     type: boolean

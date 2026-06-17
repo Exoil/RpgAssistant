@@ -38,7 +38,7 @@ public sealed record CreateKnowRelation : BaseValueObject
 
     public required Ulid ToCharacterId { get; init; }
 
-    [StringLength(50, MinimumLength = 0, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
+    [StringLength(256, MinimumLength = 0, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     public required string Description { get; init; }
     
     public required bool IsStrongRelation { get; init; }
