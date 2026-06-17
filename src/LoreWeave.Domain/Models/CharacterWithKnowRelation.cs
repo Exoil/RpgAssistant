@@ -3,4 +3,9 @@ namespace LoreWeave.Domain.Models;
 public sealed record CharacterWithKnowRelation(
     Ulid Id,
     string Name,
-    IReadOnlyCollection<Ulid> KnowCharacterIds);
+    IReadOnlyCollection<KnowRelationDetail> KnowRelations);
+
+public sealed record KnowRelationDetail(
+    Ulid CharacterId,
+    string Description,
+    bool IsStrongRelation);

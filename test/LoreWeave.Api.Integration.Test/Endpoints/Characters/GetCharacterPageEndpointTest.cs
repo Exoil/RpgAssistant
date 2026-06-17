@@ -73,7 +73,8 @@ public class GetCharacterPageEndpointTest : IntegrationTestBase
             {
                 FromCharacterId = idFrom,
                 ToCharacterId = idTo,
-                Description = "Test"
+                Description = "Test",
+                IsStrongRelation = true
             };
 
             await Client.PostAsJsonAsync(KnowEndpoint, createRelationRequest, CancellationToken.None);
@@ -93,7 +94,10 @@ public class GetCharacterPageEndpointTest : IntegrationTestBase
 
         list.Select(c => c.Name).ShouldBe(expectedNames);
         list.All(c => characterIds.Contains(c.Id)).ShouldBeTrue();
-        list.ShouldAllBe(c => c.KnowCharacterIds.Count == 1);
+        list.ShouldAllBe(c => c.KnowCharacters.Count == 1);
+        list.ShouldAllBe(c => c.KnowCharacters.First().Description == "Test");
+        list.ShouldAllBe(c => c.KnowCharacters.First().IsStrongRelation);
+        list.All(c => characterIds.Contains(c.KnowCharacters.First().CharacterId)).ShouldBeTrue();
     }
 
 
@@ -153,7 +157,8 @@ public class GetCharacterPageEndpointTest : IntegrationTestBase
             {
                 FromCharacterId = idFrom,
                 ToCharacterId = idTo,
-                Description = "Test"
+                Description = "Test",
+                IsStrongRelation = true
             };
 
             await Client.PostAsJsonAsync(KnowEndpoint, createRelationRequest, CancellationToken.None);

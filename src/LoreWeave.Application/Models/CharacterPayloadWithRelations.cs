@@ -9,5 +9,14 @@ public record CharacterPayloadWithRelations(
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     [property: JsonPropertyName("name")]
     string Name,
-    [property: JsonPropertyName("knowCharacterIds")]
-    IReadOnlyCollection<Guid> KnowCharacterIds);
+    [property: JsonPropertyName("knowCharacters")]
+    IReadOnlyCollection<KnowCharacterRelationPayload> KnowCharacters);
+
+public record KnowCharacterRelationPayload(
+    [property: JsonPropertyName("characterId")]
+    Guid CharacterId,
+    [StringLength(256, MinimumLength = 0, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
+    [property: JsonPropertyName("description")]
+    string Description,
+    [property: JsonPropertyName("isStrongRelation")]
+    bool IsStrongRelation);

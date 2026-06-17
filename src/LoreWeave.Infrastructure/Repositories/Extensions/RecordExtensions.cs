@@ -23,9 +23,12 @@ public static class RecordExtensions
         var character = new CharacterWithKnowRelation(
             record["Id"].As<string>().DatabaseIdToUlid(),
             record["Name"].As<string>(),
-            record["KnowRelationIds"]
-                .As<List<string>>()
-                .Select(x => x.DatabaseIdToUlid())
+            record["KnowRelations"]
+                .As<List<IReadOnlyDictionary<string, object>>>()
+                .Select(relation => new KnowRelationDetail(
+                    relation["Id"].As<string>().DatabaseIdToUlid(),
+                    relation["Description"].As<string>(),
+                    relation["IsStrong"].As<bool>()))
                 .ToList()
                 .AsReadOnly());
 

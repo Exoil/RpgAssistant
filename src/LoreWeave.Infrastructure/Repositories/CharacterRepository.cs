@@ -116,8 +116,8 @@ public class CharacterRepository : ICharacterRepository
 
         queryStringBuilder
             .AppendLine("WHERE $NameFilter = '' OR toLower(ch.Name) CONTAINS toLower($NameFilter)")
-            .AppendLine("OPTIONAL MATCH (ch)-[:KNOWS]->(toCh:Character)")
-            .AppendLine("WITH ch, collect(toCh.Id) AS KnowRelationIds")
+            .AppendLine("OPTIONAL MATCH (ch)-[r:KNOWS]->(toCh:Character)")
+            .AppendLine("WITH ch, collect(CASE WHEN toCh IS NULL THEN null ELSE {Id: toCh.Id, Description: r.Description, IsStrong: r.IsStrong} END) AS KnowRelations")
             .AppendLine("ORDER BY")
             .AppendLine("CASE WHEN $SortType = 'Id' AND $SortOrder = 'Asc' THEN ch.Id END ASC,")
             .AppendLine("CASE WHEN $SortType = 'Id' AND $SortOrder = 'Desc' THEN ch.Id END DESC,")
@@ -125,7 +125,7 @@ public class CharacterRepository : ICharacterRepository
             .AppendLine("CASE WHEN $SortType = 'Name' AND $SortOrder = 'Desc' THEN ch.Name END DESC")
             .AppendLine("SKIP $Skip")
             .AppendLine("LIMIT $Limit")
-            .AppendLine("RETURN ch.Id AS Id, ch.Name AS Name, KnowRelationIds");
+            .AppendLine("RETURN ch.Id AS Id, ch.Name AS Name, KnowRelations");
 
         var query = new Query(queryStringBuilder.ToString(), new
         {

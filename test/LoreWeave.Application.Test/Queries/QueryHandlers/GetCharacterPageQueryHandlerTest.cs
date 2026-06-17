@@ -7,6 +7,7 @@ using LoreWeave.Application.Models;
 using LoreWeave.Application.Queries;
 using LoreWeave.Application.Queries.QueryHandlers;
 using LoreWeave.Domain.Entities.Characters.Queries;
+using LoreWeave.Domain.Extensions;
 using LoreWeave.Domain.Factories;
 using LoreWeave.Domain.Models;
 using LoreWeave.Domain.Repositories;
@@ -45,8 +46,12 @@ public class GetCharacterPageQueryHandlerTest
         var knownCharacterId = Ulid.NewUlid();
         var characters = new List<CharacterWithKnowRelation>
         {
-            new(Ulid.NewUlid(), "CharacterA", new List<Ulid> { knownCharacterId }.AsReadOnly()),
-            new(Ulid.NewUlid(), "CharacterB", new List<Ulid>().AsReadOnly())
+            new(Ulid.NewUlid(), "CharacterA",
+                new List<KnowRelationDetail>
+                {
+                    new(knownCharacterId, "Childhood friends", true)
+                }.AsReadOnly()),
+            new(Ulid.NewUlid(), "CharacterB", new List<KnowRelationDetail>().AsReadOnly())
         }.AsReadOnly();
 
         _characterRepository
@@ -61,8 +66,14 @@ public class GetCharacterPageQueryHandlerTest
         result.Value.ShouldBeAssignableTo<IReadOnlyCollection<CharacterPayloadWithRelations>>("Result should be a read-only collection");
         result.Value.Count.ShouldBe(2, "Result should contain 2 characters");
         result.Value.First().Name.ShouldBe("CharacterA", "First character name should match");
-        result.Value.First().KnowCharacterIds.Count.ShouldBe(1, "First character should have 1 relation");
-        result.Value.Last().KnowCharacterIds.ShouldBeEmpty("Second character should have no relations");
+        result.Value.First().KnowCharacters.Count.ShouldBe(1, "First character should have 1 relation");
+
+        var relation = result.Value.First().KnowCharacters.First();
+        relation.CharacterId.ShouldBe(knownCharacterId.ToGuid(), "Relation should point to the known character");
+        relation.Description.ShouldBe("Childhood friends", "Relation description should match");
+        relation.IsStrongRelation.ShouldBeTrue("Relation should be marked as strong");
+
+        result.Value.Last().KnowCharacters.ShouldBeEmpty("Second character should have no relations");
     }
 
     [Fact]
