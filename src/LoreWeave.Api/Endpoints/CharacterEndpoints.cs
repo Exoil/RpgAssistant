@@ -116,6 +116,23 @@ public static class CharacterEndpoints
             );
 
         endpointGroup
+            .MapPut(
+                "/knows/{from:guid}/to/{to:guid}",
+                async (
+                        [FromServices] ResultsToHttpResponses responseResolver,
+                        [FromRoute] Guid from,
+                        [FromRoute] Guid to,
+                        [FromHeader(Name = HeadersConstants.IfMatch)]
+                        string version,
+                        [FromBody] UpdateKnowsDto updateKnowsDto,
+                        CancellationToken cancellationToken = default) =>
+                    await responseResolver.GetResult<UpdateKnowRelationCommand>(
+                        updateKnowsDto.ToCommand(from, to, version),
+                        Results.NoContent,
+                        cancellationToken)
+            );
+
+        endpointGroup
             .MapDelete(
                 "/knows/{from:guid}/to/{to:guid}",
                 async (

@@ -47,7 +47,7 @@ public class CharacterRepository : ICharacterRepository
         await transaction.RunAsync(query);
     }
 
-    public async Task<(bool Exists, int Version)> ExistsAsync(IAsyncTransaction transaction, Ulid id)
+    public async Task<EntityExistence> CharacterExistsAsync(IAsyncTransaction transaction, Ulid id)
     {
         const string queryString = @"
             MATCH (ch:Character {Id: $Id })
@@ -63,12 +63,12 @@ public class CharacterRepository : ICharacterRepository
 
         if (records.Count == 0)
         {
-            return (false, -1);
+            return new EntityExistence(false, -1);
         }
 
         var record = records[0];
 
-        return (record["Exists"].As<bool>(), record["Version"].As<int>());
+        return new EntityExistence(record["Exists"].As<bool>(), record["Version"].As<int>());
     }
 
     public async Task DeleteAsync(IAsyncTransaction transaction, DeleteCharacter deleteCharacter)
@@ -159,6 +159,55 @@ public class CharacterRepository : ICharacterRepository
                 createKnowRelation.Description,
                 IsStrong = createKnowRelation.IsStrongRelation,
                 Version = 1
+            });
+
+        await transaction.RunAsync(query);
+    }
+
+    public async Task<EntityExistence> KnowRelationExistsAsync(
+        IAsyncTransaction transaction,
+        Ulid fromCharacterId,
+        Ulid toCharacterId)
+    {
+        const string queryString = @"
+            MATCH (fromCh:Character {Id: $FromCharacterId})-[r:KNOWS]->(toCh:Character {Id: $ToCharacterId})
+            RETURN r IS NOT NULL AS Exists, coalesce(r.Version, -1) AS Version";
+        var query = new Query(queryString, new
+        {
+            FromCharacterId = fromCharacterId.ToDatabaseId(),
+            ToCharacterId = toCharacterId.ToDatabaseId()
+        });
+
+        var cursorResult = await transaction.RunAsync(query);
+
+        var records = await cursorResult.ToListAsync();
+
+        if (records.Count == 0)
+        {
+            return new EntityExistence(false, -1);
+        }
+
+        var record = records[0];
+
+        return new EntityExistence(record["Exists"].As<bool>(), record["Version"].As<int>());
+    }
+
+    public async Task UpdateKnowRelationAsync(IAsyncTransaction transaction, UpdateKnowRelation updateKnowRelation)
+    {
+        const string queryString = @"
+            MATCH (fromCh:Character {Id: $FromCharacterId})-[r:KNOWS]->(toCh:Character {Id: $ToCharacterId})
+            SET
+                r.Description = $Description,
+                r.IsStrong = $IsStrong,
+                r.Version = r.Version + 1";
+        var query = new Query(
+            queryString,
+            new
+            {
+                FromCharacterId = updateKnowRelation.FromCharacterId.ToDatabaseId(),
+                ToCharacterId = updateKnowRelation.ToCharacterId.ToDatabaseId(),
+                updateKnowRelation.Description,
+                IsStrong = updateKnowRelation.IsStrongRelation
             });
 
         await transaction.RunAsync(query);

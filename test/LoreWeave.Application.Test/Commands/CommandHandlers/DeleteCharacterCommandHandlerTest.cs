@@ -7,6 +7,7 @@ using LoreWeave.Application.Commands;
 using LoreWeave.Application.Commands.CommandHandlers;
 using LoreWeave.Domain.Exceptions;
 using LoreWeave.Domain.Factories;
+using LoreWeave.Domain.Models;
 using LoreWeave.Domain.Repositories;
 
 using Serilog;
@@ -41,8 +42,8 @@ public class DeleteCharacterCommandHandlerTest
         // Arrange
         var command = new DeleteCharacterCommand(_characterId);
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .Returns(new EntityExistence(true, 1));
 
         // Act
         var result = await _sut.InvokeAsync(command);
@@ -59,8 +60,8 @@ public class DeleteCharacterCommandHandlerTest
         // Arrange
         var command = new DeleteCharacterCommand(_characterId);
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
-            .Returns((false, 0));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .Returns(new EntityExistence(false, 0));
 
         // Act
         var result = await _sut.InvokeAsync(command);
@@ -78,8 +79,8 @@ public class DeleteCharacterCommandHandlerTest
         var command = new DeleteCharacterCommand(_characterId);
         var expectedException = new Exception("DB error");
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
             .DeleteAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<LoreWeave.Domain.Entities.Characters.Commands.DeleteCharacter>())
             .ThrowsAsync(expectedException);

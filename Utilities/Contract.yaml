@@ -163,6 +163,40 @@ paths:
                     $ref: '#/components/responses/NotFound'
 
     /v1/characters/knows/{from}/to/{to}:
+        put:
+            operationId: updateKnowRelationship
+            summary: Update a knowledge relationship between characters
+            parameters:
+                -   name: from
+                    in: path
+                    required: true
+                    description: Source character identifier
+                    schema:
+                        type: string
+                        format: uuid
+                -   name: to
+                    in: path
+                    required: true
+                    description: Target character identifier
+                    schema:
+                        type: string
+                        format: uuid
+                -   $ref: '#/components/parameters/IfMatch'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateKnowsDto'
+            responses:
+                '204':
+                    description: No Content
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+                '412':
+                    $ref: '#/components/responses/PreconditionFailed'
         delete:
             operationId: deleteKnowRelationship
             summary: Delete a knowledge relationship
@@ -386,6 +420,17 @@ components:
                 toCharacterId:
                     type: string
                     format: uuid
+                description:
+                    type: string
+                    minLength: 0
+                    maxLength: 256
+                isStrongRelation:
+                    type: boolean
+        UpdateKnowsDto:
+            title: UpdateKnowsDto
+            type: object
+            required: [ description, isStrongRelation ]
+            properties:
                 description:
                     type: string
                     minLength: 0

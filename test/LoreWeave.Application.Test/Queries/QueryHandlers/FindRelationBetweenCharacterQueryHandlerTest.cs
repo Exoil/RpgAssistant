@@ -14,6 +14,7 @@ using LoreWeave.Application.Queries.QueryHandlers;
 using LoreWeave.Domain.Exceptions;
 using LoreWeave.Domain.Extensions;
 using LoreWeave.Domain.Factories;
+using LoreWeave.Domain.Models;
 using LoreWeave.Domain.Repositories;
 
 using Shouldly;
@@ -52,11 +53,11 @@ public class FindRelationBetweenCharacterQueryHandlerTest
         var query = new FindRelationBetweenCharacterQuery(_fromCharacterGuid, _toCharacterGuid, 10);
 
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
             .FindPathBetweenCharactersAsync(
                 Arg.Any<IAsyncTransaction>(), _fromCharacterUlid, _toCharacterUlid, 10)
@@ -82,11 +83,11 @@ public class FindRelationBetweenCharacterQueryHandlerTest
         var query = new FindRelationBetweenCharacterQuery(_fromCharacterGuid, _toCharacterGuid, 10);
 
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
             .FindPathBetweenCharactersAsync(
                 Arg.Any<IAsyncTransaction>(), _fromCharacterUlid, _toCharacterUlid, 10)
@@ -109,8 +110,8 @@ public class FindRelationBetweenCharacterQueryHandlerTest
         var query = new FindRelationBetweenCharacterQuery(_fromCharacterGuid, _toCharacterGuid, 10);
 
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
-            .Returns((false, -1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .Returns(new EntityExistence(false, -1));
 
         // Act
         var result = await _sut.InvokeAsync(query);
@@ -128,11 +129,11 @@ public class FindRelationBetweenCharacterQueryHandlerTest
         var query = new FindRelationBetweenCharacterQuery(_fromCharacterGuid, _toCharacterGuid, 10);
 
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
-            .Returns((false, -1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
+            .Returns(new EntityExistence(false, -1));
 
         // Act
         var result = await _sut.InvokeAsync(query);
@@ -151,11 +152,11 @@ public class FindRelationBetweenCharacterQueryHandlerTest
         var expectedException = new Exception("DB error");
 
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
             .FindPathBetweenCharactersAsync(
                 Arg.Any<IAsyncTransaction>(), _fromCharacterUlid, _toCharacterUlid, 10)
@@ -178,11 +179,11 @@ public class FindRelationBetweenCharacterQueryHandlerTest
         var query = new FindRelationBetweenCharacterQuery(_fromCharacterGuid, _toCharacterGuid, maxHops);
 
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
             .FindPathBetweenCharactersAsync(
                 Arg.Any<IAsyncTransaction>(), _fromCharacterUlid, _toCharacterUlid, maxHops)

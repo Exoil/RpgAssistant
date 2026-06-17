@@ -7,6 +7,7 @@ using LoreWeave.Application.Commands;
 using LoreWeave.Application.Commands.CommandHandlers;
 using LoreWeave.Domain.Exceptions;
 using LoreWeave.Domain.Factories;
+using LoreWeave.Domain.Models;
 using LoreWeave.Domain.Repositories;
 
 using Serilog;
@@ -42,8 +43,8 @@ public class UpdateCharacterCommandHandlerTest
         // Arrange
         var command = new UpdateCharacterCommand(CharacterId, "UpdatedName", CurrentVersion);
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
-            .Returns((true, CurrentVersion));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .Returns(new EntityExistence(true, CurrentVersion));
 
         // Act
         var result = await _sut.InvokeAsync(command);
@@ -60,8 +61,8 @@ public class UpdateCharacterCommandHandlerTest
         // Arrange
         var command = new UpdateCharacterCommand(CharacterId, "UpdatedName", CurrentVersion);
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
-            .Returns((false, 0));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .Returns(new EntityExistence(false, 0));
 
         // Act
         var result = await _sut.InvokeAsync(command);
@@ -78,8 +79,8 @@ public class UpdateCharacterCommandHandlerTest
         // Arrange
         var command = new UpdateCharacterCommand(CharacterId, "UpdatedName", CurrentVersion);
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
-            .Returns((true, CurrentVersion + 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .Returns(new EntityExistence(true, CurrentVersion + 1));
 
         // Act
         var result = await _sut.InvokeAsync(command);
@@ -97,8 +98,8 @@ public class UpdateCharacterCommandHandlerTest
         var command = new UpdateCharacterCommand(CharacterId, "UpdatedName", CurrentVersion);
         var expectedException = new Exception("DB error");
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
-            .Returns((true, CurrentVersion));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .Returns(new EntityExistence(true, CurrentVersion));
         _characterRepository
             .UpdateAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>(), Arg.Any<LoreWeave.Domain.Entities.Characters.Commands.UpdateCharacter>())
             .ThrowsAsync(expectedException);

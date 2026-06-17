@@ -39,7 +39,7 @@ public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacte
 
         try
         {
-            var exists = await _characterRepository.ExistsAsync(transaction, idAsUlid);
+            var exists = await _characterRepository.CharacterExistsAsync(transaction, idAsUlid);
 
             if (!exists.Exists)
             {
