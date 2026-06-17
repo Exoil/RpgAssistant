@@ -1,9 +1,12 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 using Neo4j.Driver;
 
 using Testcontainers.Neo4j;
+
+using LoreWeave.Infrastructure.Migrations;
 
 namespace LoreWeave.Api.Integration.Test.Containers;
 
@@ -40,18 +43,14 @@ public class Neo4jContainerRunner : IAsyncDisposable
         await _container.StartAsync();
 
         await using var driver = CreateDriver();
-        await using var session = driver.AsyncSession();
-        await using var transaction = await session.BeginTransactionAsync();
-
-        await SetConstraintsAsync(transaction);
-        await transaction.CommitAsync();
+        var migrationRunner = new Neo4jMigrationRunner(driver, MigrationsDirectory);
+        await migrationRunner.RunAsync();
 
         _isInitialized = true;
     }
 
-    private async Task SetConstraintsAsync(IAsyncTransaction transaction) =>
-        await transaction.RunAsync(new Query(
-            "CREATE CONSTRAINT character_UQ_characterid FOR (ch:Character) REQUIRE ch.Id IS UNIQUE"));
+    private static string MigrationsDirectory =>
+        Path.Combine(AppContext.BaseDirectory, "migrations");
 
     public async Task ResetAsync()
     {
