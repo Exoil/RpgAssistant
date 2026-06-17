@@ -56,8 +56,11 @@ public class GetCharacterPageQueryHandler
                 .Select(x => new CharacterPayloadWithRelations(
                     x.Id.ToGuid(),
                     x.Name,
-                    x.KnowCharacterIds
-                        .Select(y => y.ToGuid())
+                    x.KnowRelations
+                        .Select(relation => new KnowCharacterRelationPayload(
+                            relation.CharacterId.ToGuid(),
+                            relation.Description,
+                            relation.IsStrongRelation))
                         .ToList()
                         .AsReadOnly()))
                 .ToList()
