@@ -1,0 +1,22 @@
+---
+paths:
+  - "src/LoreWeave.Infrastructure/**"
+---
+
+# Infrastructure layer rules
+
+These rules apply when editing files under `src/LoreWeave.Infrastructure/`.
+
+- Repositories implement Domain interfaces and live in
+  `Infrastructure/Repositories/`.
+- Cypher queries are `const string` (or `StringBuilder` for dynamic queries),
+  always **parameterized** with anonymous-object parameters. Never concatenate
+  user input into Cypher.
+- IDs are stored as their database string form via `.ToDatabaseId()`. Convert
+  back with `.DatabaseIdToUlid()`.
+- Result mapping uses extension methods under `Repositories/Extensions/`
+  (e.g. `record.ToCharacter()`).
+- `TransactionFactory<IAsyncTransaction>` produces transactions; never resolve
+  `IDriver` or sessions directly in repositories.
+- The Cypher `SET` for updates always increments version:
+  `SET ch.Version = ch.Version + 1`.
