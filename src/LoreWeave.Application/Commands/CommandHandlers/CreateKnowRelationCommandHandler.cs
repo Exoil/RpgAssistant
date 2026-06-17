@@ -45,7 +45,7 @@ public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowR
                 request.Description,
                 request.IsStrongRelation);
 
-            var fromCharacterExists = await _characterRepository.ExistsAsync(
+            var fromCharacterExists = await _characterRepository.CharacterExistsAsync(
                 transaction,
                 createKnowRelation.FromCharacterId);
 
@@ -57,7 +57,7 @@ public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowR
                     .FromCharacterId);
             }
 
-            var toCharacterExists = await _characterRepository.ExistsAsync(
+            var toCharacterExists = await _characterRepository.CharacterExistsAsync(
                 transaction,
                 createKnowRelation.ToCharacterId);
 

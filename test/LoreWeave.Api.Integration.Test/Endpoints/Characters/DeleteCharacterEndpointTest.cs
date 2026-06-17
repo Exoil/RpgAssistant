@@ -55,7 +55,7 @@ public class DeleteCharacterEndpointTest : IntegrationTestBase
         await using var transaction = await session.BeginTransactionAsync();
 
         var characterRepository = new CharacterRepository();
-        var exists = await characterRepository.ExistsAsync(transaction, id.GuidToUlid());
+        var exists = await characterRepository.CharacterExistsAsync(transaction, id.GuidToUlid());
 
         exists.Exists.ShouldBeFalse();
     }

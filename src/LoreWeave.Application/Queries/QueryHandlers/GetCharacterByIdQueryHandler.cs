@@ -40,7 +40,7 @@ public class
         {
             var idAsUlid = request.Id.GuidToUlid();
 
-            var exists = await _characterRepository.ExistsAsync(transaction, idAsUlid);
+            var exists = await _characterRepository.CharacterExistsAsync(transaction, idAsUlid);
 
             if (!exists.Exists)
             {

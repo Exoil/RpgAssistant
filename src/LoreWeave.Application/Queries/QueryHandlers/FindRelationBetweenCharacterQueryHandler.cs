@@ -42,10 +42,10 @@ public class FindRelationBetweenCharacterQueryHandler
             var toCharacterIdAsUlid = request.ToCharacterId.GuidToUlid();
 
             var fromCharacterExists = await _characterRepository
-                .ExistsAsync(transaction, fromCharacterIdAsUlid);
+                .CharacterExistsAsync(transaction, fromCharacterIdAsUlid);
 
             var toCharacterExists = await _characterRepository
-                .ExistsAsync(transaction, toCharacterIdAsUlid);
+                .CharacterExistsAsync(transaction, toCharacterIdAsUlid);
 
             if (!fromCharacterExists.Exists)
             {

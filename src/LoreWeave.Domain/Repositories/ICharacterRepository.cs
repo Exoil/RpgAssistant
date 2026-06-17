@@ -14,7 +14,7 @@ public interface ICharacterRepository
 
     Task UpdateAsync(IAsyncTransaction transaction, Ulid id, UpdateCharacter updateCharacter);
 
-    Task<(bool Exists, int Version)> ExistsAsync(IAsyncTransaction transaction, Ulid id);
+    Task<EntityExistence> CharacterExistsAsync(IAsyncTransaction transaction, Ulid id);
 
     Task DeleteAsync(IAsyncTransaction transaction, DeleteCharacter deleteCharacter);
 
@@ -26,6 +26,13 @@ public interface ICharacterRepository
         CharacterSearchFilter searchFilter);
 
     Task CreateKnowRelationAsync(IAsyncTransaction transaction, CreateKnowRelation createKnowRelation);
+
+    Task<EntityExistence> KnowRelationExistsAsync(
+        IAsyncTransaction transaction,
+        Ulid fromCharacterId,
+        Ulid toCharacterId);
+
+    Task UpdateKnowRelationAsync(IAsyncTransaction transaction, UpdateKnowRelation updateKnowRelation);
 
     Task DeleteKnowRelationAsync(IAsyncTransaction transaction, DeleteKnowRelation createKnowRelation);
 

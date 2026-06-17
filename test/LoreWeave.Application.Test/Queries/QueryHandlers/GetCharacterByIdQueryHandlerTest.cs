@@ -11,6 +11,7 @@ using LoreWeave.Domain.Entities.Characters.Commands;
 using LoreWeave.Domain.Exceptions;
 using LoreWeave.Domain.Extensions;
 using LoreWeave.Domain.Factories;
+using LoreWeave.Domain.Models;
 using LoreWeave.Domain.Repositories;
 
 using Serilog;
@@ -46,8 +47,8 @@ public class GetCharacterByIdQueryHandlerTest
         var query = new GetCharacterByIdQuery(_characterGuid);
         var character = new Character(new CreateCharacter(_characterUlid, "TestCharacter"), version: 2);
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
-            .Returns((true, character.Version));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
+            .Returns(new EntityExistence(true, character.Version));
         _characterRepository
             .GetAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
             .Returns(character);
@@ -70,8 +71,8 @@ public class GetCharacterByIdQueryHandlerTest
         // Arrange
         var query = new GetCharacterByIdQuery(_characterGuid);
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
-            .Returns((false, 0));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
+            .Returns(new EntityExistence(false, 0));
 
         // Act
         var result = await _sut.InvokeAsync(query);
@@ -89,8 +90,8 @@ public class GetCharacterByIdQueryHandlerTest
         var query = new GetCharacterByIdQuery(_characterGuid);
         var expectedException = new Exception("DB error");
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
             .GetAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
             .ThrowsAsync(expectedException);

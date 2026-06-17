@@ -5,17 +5,20 @@ using LoreWeave.Domain.Extensions;
 
 namespace LoreWeave.Api.Dtos;
 
-public record CreateKnowsDto(
-    Guid FromCharacterId,
-    Guid ToCharacterId,
+public record UpdateKnowsDto(
     [StringLength(256, MinimumLength = 0, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     string Description,
     bool IsStrongRelation)
 {
-    public CreateKnowRelationCommand ToCommand() =>
+    public UpdateKnowRelationCommand ToCommand(Guid from, Guid to, string version) =>
         new(
-            FromCharacterId.GuidToUlid(),
-            ToCharacterId.GuidToUlid(),
+            from,
+            to,
             Description,
-            IsStrongRelation);
+            IsStrongRelation,
+            int.Parse(
+                version
+                    .Replace(
+                        "\"",
+                        string.Empty)));
 }

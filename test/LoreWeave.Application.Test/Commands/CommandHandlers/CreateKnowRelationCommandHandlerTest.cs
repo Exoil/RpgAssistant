@@ -7,6 +7,7 @@ using LoreWeave.Application.Commands;
 using LoreWeave.Application.Commands.CommandHandlers;
 using LoreWeave.Domain.Exceptions;
 using LoreWeave.Domain.Factories;
+using LoreWeave.Domain.Models;
 using LoreWeave.Domain.Repositories;
 
 using Serilog;
@@ -40,13 +41,14 @@ public class CreateKnowRelationCommandHandlerTest
     public async Task InvokeAsync_WhenBothCharactersExist_ReturnsUlid()
     {
         // Arrange
-        var command = new CreateKnowRelationCommand(_fromCharacterId, _toCharacterId, "They know each other", true);
+        const string description = "They know each other";
+        var command = new CreateKnowRelationCommand(_fromCharacterId, _toCharacterId, description, true);
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterId)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterId)
+            .Returns(new EntityExistence(true, 1));
 
         // Act
         var result = await _sut.InvokeAsync(command);
@@ -59,7 +61,37 @@ public class CreateKnowRelationCommandHandlerTest
             .Received(1)
             .CreateKnowRelationAsync(
                 Arg.Any<IAsyncTransaction>(),
-                Arg.Is<LoreWeave.Domain.Entities.Knows.Commands.CreateKnowRelation>(r => r.IsStrongRelation));
+                Arg.Is<LoreWeave.Domain.Entities.Knows.Commands.CreateKnowRelation>(r =>
+                    r.IsStrongRelation
+                    && r.Description == description
+                    && r.FromCharacterId == _fromCharacterId
+                    && r.ToCharacterId == _toCharacterId));
+    }
+
+    [Fact]
+    [Trait(Constants.TraitName, Constants.TestTitle)]
+    public async Task InvokeAsync_WhenBothCharactersExist_PassesDescriptionToRepository()
+    {
+        // Arrange
+        const string description = "A long-standing friendship";
+        var command = new CreateKnowRelationCommand(_fromCharacterId, _toCharacterId, description, true);
+        _characterRepository
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
+            .Returns(new EntityExistence(true, 1));
+        _characterRepository
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterId)
+            .Returns(new EntityExistence(true, 1));
+
+        // Act
+        var result = await _sut.InvokeAsync(command);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue("Know relation creation should succeed when both characters exist");
+        await _characterRepository
+            .Received(1)
+            .CreateKnowRelationAsync(
+                Arg.Any<IAsyncTransaction>(),
+                Arg.Is<LoreWeave.Domain.Entities.Knows.Commands.CreateKnowRelation>(r => r.Description == description));
     }
 
     [Fact]
@@ -69,11 +101,11 @@ public class CreateKnowRelationCommandHandlerTest
         // Arrange
         var command = new CreateKnowRelationCommand(_fromCharacterId, _toCharacterId, "They know each other", false);
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterId)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterId)
+            .Returns(new EntityExistence(true, 1));
 
         // Act
         var result = await _sut.InvokeAsync(command);
@@ -94,8 +126,8 @@ public class CreateKnowRelationCommandHandlerTest
         // Arrange
         var command = new CreateKnowRelationCommand(_fromCharacterId, _toCharacterId, "They know each other", true);
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
-            .Returns((false, 0));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
+            .Returns(new EntityExistence(false, 0));
 
         // Act
         var result = await _sut.InvokeAsync(command);
@@ -112,11 +144,11 @@ public class CreateKnowRelationCommandHandlerTest
         // Arrange
         var command = new CreateKnowRelationCommand(_fromCharacterId, _toCharacterId, "They know each other", true);
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterId)
-            .Returns((false, 0));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterId)
+            .Returns(new EntityExistence(false, 0));
 
         // Act
         var result = await _sut.InvokeAsync(command);
@@ -134,11 +166,11 @@ public class CreateKnowRelationCommandHandlerTest
         var command = new CreateKnowRelationCommand(_fromCharacterId, _toCharacterId, "They know each other", true);
         var expectedException = new Exception("DB error");
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterId)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .ExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterId)
-            .Returns((true, 1));
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterId)
+            .Returns(new EntityExistence(true, 1));
         _characterRepository
             .CreateKnowRelationAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<LoreWeave.Domain.Entities.Knows.Commands.CreateKnowRelation>())
             .ThrowsAsync(expectedException);
