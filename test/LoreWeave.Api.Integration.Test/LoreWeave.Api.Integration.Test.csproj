@@ -27,6 +27,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <!-- Migrations are run to set up the test database; copy them next to the test assembly. -->
+        <Content Include="..\..\migrations\*.cypher" Link="migrations\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\..\src\LoreWeave.Api\LoreWeave.Api.csproj"/>
     </ItemGroup>
 
