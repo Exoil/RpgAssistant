@@ -93,7 +93,7 @@ public class GetCharacterPageEndpointTest : IntegrationTestBase
 
         list.Select(c => c.Name).ShouldBe(expectedNames);
         list.All(c => characterIds.Contains(c.Id)).ShouldBeTrue();
-        list.ShouldAllBe(c => c.KnowCharacterIds.Count == 1);
+        list.ShouldAllBe(c => c.KnowCharacters.Count == 1);
     }
 
 

@@ -61,8 +61,8 @@ public class GetCharacterPageQueryHandlerTest
         result.Value.ShouldBeAssignableTo<IReadOnlyCollection<CharacterPayloadWithRelations>>("Result should be a read-only collection");
         result.Value.Count.ShouldBe(2, "Result should contain 2 characters");
         result.Value.First().Name.ShouldBe("CharacterA", "First character name should match");
-        result.Value.First().KnowCharacterIds.Count.ShouldBe(1, "First character should have 1 relation");
-        result.Value.Last().KnowCharacterIds.ShouldBeEmpty("Second character should have no relations");
+        result.Value.First().KnowCharacters.Count.ShouldBe(1, "First character should have 1 relation");
+        result.Value.Last().KnowCharacters.ShouldBeEmpty("Second character should have no relations");
     }
 
     [Fact]
