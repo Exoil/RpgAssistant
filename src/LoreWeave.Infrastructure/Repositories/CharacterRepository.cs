@@ -5,6 +5,7 @@ using Neo4j.Driver;
 using LoreWeave.Domain.Entities.Characters;
 using LoreWeave.Domain.Entities.Characters.Commands;
 using LoreWeave.Domain.Entities.Characters.Queries;
+using LoreWeave.Domain.Entities.Knows;
 using LoreWeave.Domain.Entities.Knows.Commands;
 using LoreWeave.Domain.Extensions;
 using LoreWeave.Domain.Models;
@@ -190,6 +191,34 @@ public class CharacterRepository : ICharacterRepository
         var record = records[0];
 
         return new EntityExistence(record["Exists"].As<bool>(), record["Version"].As<int>());
+    }
+
+    public async Task<KnowRelation> GetKnowRelationAsync(
+        IAsyncTransaction transaction,
+        Ulid fromCharacterId,
+        Ulid toCharacterId)
+    {
+        const string queryString = @"
+            MATCH (fromCh:Character {Id: $FromCharacterId})-[r:KNOWS]->(toCh:Character {Id: $ToCharacterId})
+            RETURN
+                r.Id AS Id,
+                r.Description AS Description,
+                r.IsStrong AS IsStrong,
+                r.Version AS Version,
+                fromCh.Id AS FromCharacterId,
+                toCh.Id AS ToCharacterId";
+        var query = new Query(queryString, new
+        {
+            FromCharacterId = fromCharacterId.ToDatabaseId(),
+            ToCharacterId = toCharacterId.ToDatabaseId()
+        });
+
+        var cursorResult = await transaction.RunAsync(query);
+
+        var knowRelation = await cursorResult
+            .SingleAsync(record => record.ToKnowRelation());
+
+        return knowRelation;
     }
 
     public async Task UpdateKnowRelationAsync(IAsyncTransaction transaction, UpdateKnowRelation updateKnowRelation)

@@ -30,7 +30,8 @@ public static class HandlerConfiguration
             .AddAsyncRequestHandler<CreateKnowRelationCommandHandler>()
             .AddAsyncRequestHandler<UpdateKnowRelationCommandHandler>()
             .AddAsyncRequestHandler<DeleteKnowRelationCommandHandler>()
-            .AddAsyncRequestHandler<FindRelationBetweenCharacterQueryHandler>();
+            .AddAsyncRequestHandler<FindRelationBetweenCharacterQueryHandler>()
+            .AddAsyncRequestHandler<GetKnowRelationQueryHandler>();
 
         return services;
     }
