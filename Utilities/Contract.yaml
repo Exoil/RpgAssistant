@@ -163,6 +163,40 @@ paths:
                     $ref: '#/components/responses/NotFound'
 
     /v1/characters/knows/{from}/to/{to}:
+        get:
+            operationId: getKnowRelationship
+            summary: Get the knowledge relationship between two characters
+            parameters:
+                -   name: from
+                    in: path
+                    required: true
+                    description: Source character identifier
+                    schema:
+                        type: string
+                        format: uuid
+                -   name: to
+                    in: path
+                    required: true
+                    description: Target character identifier
+                    schema:
+                        type: string
+                        format: uuid
+            responses:
+                '200':
+                    description: Knowledge relationship found
+                    headers:
+                        ETag:
+                            description: Entity tag representing the current version
+                            schema:
+                                type: string
+                                minLength: 1
+                                maxLength: 50
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/KnowRelationPayload'
+                '404':
+                    $ref: '#/components/responses/NotFound'
         put:
             operationId: updateKnowRelationship
             summary: Update a knowledge relationship between characters
@@ -385,6 +419,26 @@ components:
                 isStrongRelation:
                     type: boolean
 
+        KnowRelationPayload:
+            title: KnowRelationPayload
+            description: >-
+                The current version is returned in the ETag response header,
+                not in the body.
+            type: object
+            required: [ fromCharacterId, toCharacterId, description, isStrongRelation ]
+            properties:
+                fromCharacterId:
+                    type: string
+                    format: uuid
+                toCharacterId:
+                    type: string
+                    format: uuid
+                description:
+                    type: string
+                    minLength: 0
+                    maxLength: 256
+                isStrongRelation:
+                    type: boolean
         RelationPathPayload:
             title: RelationPathPayload
             type: object

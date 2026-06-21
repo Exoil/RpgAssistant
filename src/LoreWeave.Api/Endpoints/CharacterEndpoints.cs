@@ -116,6 +116,26 @@ public static class CharacterEndpoints
             );
 
         endpointGroup
+            .MapGet(
+                "/knows/{from:guid}/to/{to:guid}",
+                async (
+                        [FromServices] IHttpContextAccessor httpContextAccessor,
+                        [FromServices] ResultsToHttpResponses responseResolver,
+                        [FromRoute] Guid from,
+                        [FromRoute] Guid to,
+                        CancellationToken cancellationToken = default) =>
+                    await responseResolver.GetResult<GetKnowRelationQuery, KnowRelationPayload>(
+                        new GetKnowRelationQuery(from, to),
+                        data =>
+                        {
+                            httpContextAccessor.HttpContext!.Response.Headers.ETag = new StringValues(data.Etag);
+
+                            return Results.Ok(data.ToKnowsDto());
+                        },
+                        cancellationToken)
+            );
+
+        endpointGroup
             .MapPut(
                 "/knows/{from:guid}/to/{to:guid}",
                 async (

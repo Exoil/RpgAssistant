@@ -3,6 +3,7 @@ using Neo4j.Driver;
 using LoreWeave.Domain.Entities.Characters;
 using LoreWeave.Domain.Entities.Characters.Commands;
 using LoreWeave.Domain.Entities.Characters.Queries;
+using LoreWeave.Domain.Entities.Knows;
 using LoreWeave.Domain.Entities.Knows.Commands;
 using LoreWeave.Domain.Models;
 
@@ -28,6 +29,11 @@ public interface ICharacterRepository
     Task CreateKnowRelationAsync(IAsyncTransaction transaction, CreateKnowRelation createKnowRelation);
 
     Task<EntityExistence> KnowRelationExistsAsync(
+        IAsyncTransaction transaction,
+        Ulid fromCharacterId,
+        Ulid toCharacterId);
+
+    Task<KnowRelation> GetKnowRelationAsync(
         IAsyncTransaction transaction,
         Ulid fromCharacterId,
         Ulid toCharacterId);

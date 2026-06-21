@@ -2,6 +2,7 @@ using Neo4j.Driver;
 
 using LoreWeave.Domain.Entities.Characters;
 using LoreWeave.Domain.Entities.Characters.Commands;
+using LoreWeave.Domain.Entities.Knows;
 using LoreWeave.Domain.Extensions;
 using LoreWeave.Domain.Models;
 
@@ -34,4 +35,13 @@ public static class RecordExtensions
 
         return character;
     }
+
+    public static KnowRelation ToKnowRelation(this IRecord record) =>
+        new(
+            record["Id"].As<string>().DatabaseIdToUlid(),
+            record["Description"].As<string>(),
+            record["IsStrong"].As<bool>(),
+            record["FromCharacterId"].As<string>().DatabaseIdToUlid(),
+            record["ToCharacterId"].As<string>().DatabaseIdToUlid(),
+            record["Version"].As<int>());
 }
