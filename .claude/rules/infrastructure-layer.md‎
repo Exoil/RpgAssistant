@@ -13,7 +13,7 @@ These rules apply when editing files under `src/LoreWeave.Infrastructure/`.
   always **parameterized** with anonymous-object parameters. Never concatenate
   user input into Cypher.
 - IDs are stored as their database string form via `.ToDatabaseId()`. Convert
-  back with `.DatabaseIdToUlid()`.
+  back with `.DatabaseIdToGuid()`.
 - Result mapping uses extension methods under `Repositories/Extensions/`
   (e.g. `record.ToCharacter()`).
 - `TransactionFactory<IAsyncTransaction>` produces transactions; never resolve

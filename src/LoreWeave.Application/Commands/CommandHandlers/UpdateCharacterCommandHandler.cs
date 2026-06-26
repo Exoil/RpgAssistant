@@ -6,7 +6,6 @@ using LoreWeave.Application.Models;
 using LoreWeave.Domain.Entities.Characters.Commands;
 using LoreWeave.Domain.Exceptions;
 using LoreWeave.Domain.Exceptions.Enums;
-using LoreWeave.Domain.Extensions;
 using LoreWeave.Domain.Factories;
 using LoreWeave.Domain.Repositories;
 
@@ -35,11 +34,11 @@ public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacte
         CancellationToken cancellationToken = default)
     {
         await using var transaction = await _transactionFactory.CreateAsync();
-        var idAsUlid = request.Id.GuidToUlid();
+        var id = request.Id;
 
         try
         {
-            var exists = await _characterRepository.CharacterExistsAsync(transaction, idAsUlid);
+            var exists = await _characterRepository.CharacterExistsAsync(transaction, id);
 
             if (!exists.Exists)
             {
@@ -55,7 +54,7 @@ public class UpdateCharacterCommandHandler : IAsyncRequestHandler<UpdateCharacte
 
             var updateCharacter = new UpdateCharacter(request.Name);
 
-            await _characterRepository.UpdateAsync(transaction, idAsUlid, updateCharacter);
+            await _characterRepository.UpdateAsync(transaction, id, updateCharacter);
             await transaction.CommitAsync();
             _logger.Information("Character updated: {Id}", request.Id);
         }

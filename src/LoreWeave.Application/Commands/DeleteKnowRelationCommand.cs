@@ -1,5 +1,5 @@
 namespace LoreWeave.Application.Commands;
 
 public record DeleteKnowRelationCommand(
-    Ulid FromCharacterId,
-    Ulid ToCharacterId);
+    Guid FromCharacterId,
+    Guid ToCharacterId);

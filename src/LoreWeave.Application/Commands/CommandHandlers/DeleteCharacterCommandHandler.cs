@@ -6,7 +6,6 @@ using LoreWeave.Application.Models;
 using LoreWeave.Domain.Entities.Characters.Commands;
 using LoreWeave.Domain.Exceptions;
 using LoreWeave.Domain.Exceptions.Enums;
-using LoreWeave.Domain.Extensions;
 using LoreWeave.Domain.Factories;
 using LoreWeave.Domain.Repositories;
 
@@ -38,7 +37,7 @@ public class DeleteCharacterCommandHandler : IAsyncRequestHandler<DeleteCharacte
 
         try
         {
-            var userId = request.Id.GuidToUlid();
+            var userId = request.Id;
             var exists = await _characterRepository.CharacterExistsAsync(transaction, userId);
 
             if (!exists.Exists)
@@ -47,7 +46,7 @@ public class DeleteCharacterCommandHandler : IAsyncRequestHandler<DeleteCharacte
                 return new NotFoundException(Entities.Character);
             }
 
-            var deleteCharacter = new DeleteCharacter(request.Id.GuidToUlid());
+            var deleteCharacter = new DeleteCharacter(request.Id);
             await _characterRepository.DeleteAsync(transaction, deleteCharacter);
             await transaction.CommitAsync();
             _logger.Information("Character deleted: {Id}", request.Id);

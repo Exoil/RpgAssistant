@@ -13,7 +13,7 @@ public sealed class Character
 
     public Character(CreateCharacter createCharacter, int version) : this(createCharacter) => Version = version;
 
-    public Ulid Id { get; private init; }
+    public Guid Id { get; private init; }
 
     public string Name { get; private set; }
 

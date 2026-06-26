@@ -6,7 +6,6 @@ using LoreWeave.Application.Models;
 using LoreWeave.Domain.Entities.Knows.Commands;
 using LoreWeave.Domain.Exceptions;
 using LoreWeave.Domain.Exceptions.Enums;
-using LoreWeave.Domain.Extensions;
 using LoreWeave.Domain.Factories;
 using LoreWeave.Domain.Repositories;
 
@@ -35,8 +34,8 @@ public class UpdateKnowRelationCommandHandler : IAsyncRequestHandler<UpdateKnowR
         CancellationToken cancellationToken = default)
     {
         await using var transaction = await _transactionFactory.CreateAsync();
-        var fromCharacterId = request.FromCharacterId.GuidToUlid();
-        var toCharacterId = request.ToCharacterId.GuidToUlid();
+        var fromCharacterId = request.FromCharacterId;
+        var toCharacterId = request.ToCharacterId;
 
         try
         {

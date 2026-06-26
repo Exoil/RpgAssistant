@@ -20,8 +20,8 @@ public class DeleteKnowRelationCommandHandlerTest
     private readonly IAsyncTransaction _transaction;
     private readonly DeleteKnowRelationCommandHandler _sut;
 
-    private static readonly Ulid _fromCharacterId = Ulid.NewUlid();
-    private static readonly Ulid _toCharacterId = Ulid.NewUlid();
+    private static readonly Guid _fromCharacterId = Guid.CreateVersion7();
+    private static readonly Guid _toCharacterId = Guid.CreateVersion7();
 
     public DeleteKnowRelationCommandHandlerTest()
     {

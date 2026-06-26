@@ -64,7 +64,7 @@ public class DeleteKnowRelationTest : IntegrationTestBase
     public async Task Delete_KnowRelation_WhenIds_Are_Same_BadRequestCode()
     {
         // Arrange
-        var id = Ulid.NewUlid().ToGuid();
+        var id = Guid.CreateVersion7();
 
         // Act
         var response = await Client.DeleteAsync(

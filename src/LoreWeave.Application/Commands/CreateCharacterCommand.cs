@@ -1,3 +1,3 @@
 namespace LoreWeave.Application.Commands;
 
-public record CreateCharacterCommand(Ulid Id, string Name);
+public record CreateCharacterCommand(Guid Id, string Name);

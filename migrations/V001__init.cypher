@@ -1,7 +1,7 @@
 // V001 — Initial schema
 //
 // ── Character node ──────────────────────────────────────────────────────────
-// Character.Id is the internal ULID stored as a database string (see
+// Character.Id is the internal GUID stored as a database string (see
 // Domain.Extensions.ToDatabaseId). It must be globally unique. Community edition
 // supports node uniqueness constraints, so this is enforced at the DB level.
 

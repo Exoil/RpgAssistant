@@ -9,7 +9,7 @@ public sealed record CreateCharacter : BaseValueObject
 {
     [SetsRequiredMembers]
     public CreateCharacter(
-        Ulid id,
+        Guid id,
         string name)
     {
         Id = id;
@@ -20,7 +20,7 @@ public sealed record CreateCharacter : BaseValueObject
 
     protected override string ModelName => nameof(CreateCharacter);
 
-    public required Ulid Id { get; init; }
+    public required Guid Id { get; init; }
 
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     public required string Name { get; init; }

@@ -13,13 +13,13 @@ public interface ICharacterRepository
 {
     Task CreateAsync(IAsyncTransaction transaction, CreateCharacter createCharacter);
 
-    Task UpdateAsync(IAsyncTransaction transaction, Ulid id, UpdateCharacter updateCharacter);
+    Task UpdateAsync(IAsyncTransaction transaction, Guid id, UpdateCharacter updateCharacter);
 
-    Task<EntityExistence> CharacterExistsAsync(IAsyncTransaction transaction, Ulid id);
+    Task<EntityExistence> CharacterExistsAsync(IAsyncTransaction transaction, Guid id);
 
     Task DeleteAsync(IAsyncTransaction transaction, DeleteCharacter deleteCharacter);
 
-    Task<Character> GetAsync(IAsyncTransaction transaction, Ulid id);
+    Task<Character> GetAsync(IAsyncTransaction transaction, Guid id);
 
     Task<IReadOnlyCollection<CharacterWithKnowRelation>> GetAsync(
         IAsyncTransaction transaction,
@@ -30,21 +30,21 @@ public interface ICharacterRepository
 
     Task<EntityExistence> KnowRelationExistsAsync(
         IAsyncTransaction transaction,
-        Ulid fromCharacterId,
-        Ulid toCharacterId);
+        Guid fromCharacterId,
+        Guid toCharacterId);
 
     Task<KnowRelation> GetKnowRelationAsync(
         IAsyncTransaction transaction,
-        Ulid fromCharacterId,
-        Ulid toCharacterId);
+        Guid fromCharacterId,
+        Guid toCharacterId);
 
     Task UpdateKnowRelationAsync(IAsyncTransaction transaction, UpdateKnowRelation updateKnowRelation);
 
     Task DeleteKnowRelationAsync(IAsyncTransaction transaction, DeleteKnowRelation createKnowRelation);
 
-    Task<IReadOnlyCollection<Ulid>> FindPathBetweenCharactersAsync(
+    Task<IReadOnlyCollection<Guid>> FindPathBetweenCharactersAsync(
         IAsyncTransaction transaction,
-        Ulid fromCharacterId,
-        Ulid toCharacterId,
+        Guid fromCharacterId,
+        Guid toCharacterId,
         int maxHops);
 }

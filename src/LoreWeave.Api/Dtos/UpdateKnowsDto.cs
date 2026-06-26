@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
 using LoreWeave.Application.Commands;
-using LoreWeave.Domain.Extensions;
 
 namespace LoreWeave.Api.Dtos;
 

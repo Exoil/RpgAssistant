@@ -9,8 +9,8 @@ public sealed record UpdateKnowRelation : BaseValueObject
 {
     [SetsRequiredMembers]
     public UpdateKnowRelation(
-        Ulid fromCharacterId,
-        Ulid toCharacterId,
+        Guid fromCharacterId,
+        Guid toCharacterId,
         string description,
         bool isStrongRelation)
     {
@@ -30,9 +30,9 @@ public sealed record UpdateKnowRelation : BaseValueObject
 
     protected override string ModelName => nameof(UpdateKnowRelation);
 
-    public required Ulid FromCharacterId { get; init; }
+    public required Guid FromCharacterId { get; init; }
 
-    public required Ulid ToCharacterId { get; init; }
+    public required Guid ToCharacterId { get; init; }
 
     [StringLength(256, MinimumLength = 0, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     public required string Description { get; init; }

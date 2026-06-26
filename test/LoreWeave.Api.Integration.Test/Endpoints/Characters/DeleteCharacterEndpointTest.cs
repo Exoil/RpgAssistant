@@ -39,7 +39,7 @@ public class DeleteCharacterEndpointTest : IntegrationTestBase
     public async Task DeleteCharacter_With_Not_Existing_Id_GetNotFound()
     {
         // Arrange
-        var characterId = Ulid.NewUlid().ToGuid();
+        var characterId = Guid.CreateVersion7();
 
         // Act
         var responseDelete = await Client.DeleteAsync($"{Endpoint}/{characterId}", CancellationToken.None);
@@ -55,7 +55,7 @@ public class DeleteCharacterEndpointTest : IntegrationTestBase
         await using var transaction = await session.BeginTransactionAsync();
 
         var characterRepository = new CharacterRepository();
-        var exists = await characterRepository.CharacterExistsAsync(transaction, id.GuidToUlid());
+        var exists = await characterRepository.CharacterExistsAsync(transaction, id);
 
         exists.Exists.ShouldBeFalse();
     }

@@ -10,5 +10,5 @@ public record CreateCharacterDto(
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Value for {0} must be between {1} and {2} characters.")]
     string Name)
 {
-    public CreateCharacterCommand ToCommand() => new(Ulid.NewUlid(), Name);
+    public CreateCharacterCommand ToCommand() => new(Guid.CreateVersion7(), Name);
 }

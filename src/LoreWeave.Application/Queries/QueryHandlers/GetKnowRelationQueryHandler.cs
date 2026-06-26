@@ -5,7 +5,6 @@ using Neo4j.Driver;
 using LoreWeave.Application.Models;
 using LoreWeave.Domain.Exceptions;
 using LoreWeave.Domain.Exceptions.Enums;
-using LoreWeave.Domain.Extensions;
 using LoreWeave.Domain.Factories;
 using LoreWeave.Domain.Repositories;
 
@@ -38,8 +37,8 @@ public class GetKnowRelationQueryHandler
 
         try
         {
-            var fromCharacterId = request.FromCharacterId.GuidToUlid();
-            var toCharacterId = request.ToCharacterId.GuidToUlid();
+            var fromCharacterId = request.FromCharacterId;
+            var toCharacterId = request.ToCharacterId;
 
             var exists = await _characterRepository.KnowRelationExistsAsync(
                 transaction,
@@ -66,8 +65,8 @@ public class GetKnowRelationQueryHandler
                 request.ToCharacterId);
 
             return new KnowRelationPayload(
-                knowRelation.FromCharacterId.ToGuid(),
-                knowRelation.ToCharacterId.ToGuid(),
+                knowRelation.FromCharacterId,
+                knowRelation.ToCharacterId,
                 knowRelation.Description,
                 knowRelation.IsStrongRelation,
                 knowRelation.Version);

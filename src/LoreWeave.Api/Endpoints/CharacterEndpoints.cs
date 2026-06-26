@@ -8,7 +8,6 @@ using LoreWeave.Api.ResultResolvers;
 using LoreWeave.Application.Commands;
 using LoreWeave.Application.Models;
 using LoreWeave.Application.Queries;
-using LoreWeave.Domain.Extensions;
 
 namespace LoreWeave.Api.Endpoints;
 
@@ -29,9 +28,9 @@ public static class CharacterEndpoints
                         [FromServices] ResultsToHttpResponses responseResolver,
                         [FromBody] CreateCharacterDto createCharacter,
                         CancellationToken cancellationToken = default) =>
-                    await responseResolver.GetResult<CreateCharacterCommand, Ulid>(
+                    await responseResolver.GetResult<CreateCharacterCommand, Guid>(
                         createCharacter.ToCommand(),
-                        data => Results.Created(string.Empty, data.UlidToGuid()),
+                        data => Results.Created(string.Empty, data),
                         cancellationToken));
 
         endpointGroup
@@ -108,10 +107,10 @@ public static class CharacterEndpoints
                         [FromServices] ResultsToHttpResponses responseResolver,
                         [FromBody] CreateKnowsDto createKnowsDto,
                         CancellationToken cancellationToken = default) =>
-                    await responseResolver.GetResult<CreateKnowRelationCommand, Ulid>(
+                    await responseResolver.GetResult<CreateKnowRelationCommand, Guid>(
                         createKnowsDto.ToCommand(),
                         data => Results.Created(
-                            new Uri($"/knows/{data.UlidToGuid()}", UriKind.Relative), data.UlidToGuid()),
+                            new Uri($"/knows/{data}", UriKind.Relative), data),
                         cancellationToken)
             );
 
@@ -161,7 +160,7 @@ public static class CharacterEndpoints
                         [FromRoute] Guid to,
                         CancellationToken cancellationToken = default) =>
                     await responseResolver.GetResult<DeleteKnowRelationCommand>(
-                        new DeleteKnowRelationCommand(from.GuidToUlid(), to.GuidToUlid()),
+                        new DeleteKnowRelationCommand(from, to),
                         Results.NoContent,
                         cancellationToken)
             );

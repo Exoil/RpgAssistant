@@ -5,7 +5,6 @@ using Neo4j.Driver;
 using LoreWeave.Application.Models;
 using LoreWeave.Domain.Exceptions;
 using LoreWeave.Domain.Exceptions.Enums;
-using LoreWeave.Domain.Extensions;
 using LoreWeave.Domain.Factories;
 using LoreWeave.Domain.Repositories;
 
@@ -38,9 +37,9 @@ public class
 
         try
         {
-            var idAsUlid = request.Id.GuidToUlid();
+            var id = request.Id;
 
-            var exists = await _characterRepository.CharacterExistsAsync(transaction, idAsUlid);
+            var exists = await _characterRepository.CharacterExistsAsync(transaction, id);
 
             if (!exists.Exists)
             {
@@ -48,10 +47,10 @@ public class
                 return new NotFoundException(Entities.Character);
             }
 
-            var character = await _characterRepository.GetAsync(transaction, idAsUlid);
+            var character = await _characterRepository.GetAsync(transaction, id);
             _logger.Information("Character found: {Id}", request.Id);
 
-            return new CharacterPayload(character.Id.ToGuid(), character.Name, character.Version);
+            return new CharacterPayload(character.Id, character.Name, character.Version);
         }
         catch (Exception exception)
         {

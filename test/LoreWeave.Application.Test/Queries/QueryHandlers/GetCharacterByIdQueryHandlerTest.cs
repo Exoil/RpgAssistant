@@ -26,7 +26,6 @@ public class GetCharacterByIdQueryHandlerTest
     private readonly GetCharacterByIdQueryHandler _sut;
 
     private static readonly Guid _characterGuid = Guid.NewGuid();
-    private static readonly Ulid _characterUlid = _characterGuid.GuidToUlid();
 
     public GetCharacterByIdQueryHandlerTest()
     {
@@ -45,12 +44,12 @@ public class GetCharacterByIdQueryHandlerTest
     {
         // Arrange
         var query = new GetCharacterByIdQuery(_characterGuid);
-        var character = new Character(new CreateCharacter(_characterUlid, "TestCharacter"), version: 2);
+        var character = new Character(new CreateCharacter(_characterGuid, "TestCharacter"), version: 2);
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _characterGuid)
             .Returns(new EntityExistence(true, character.Version));
         _characterRepository
-            .GetAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
+            .GetAsync(Arg.Any<IAsyncTransaction>(), _characterGuid)
             .Returns(character);
 
         // Act
@@ -71,7 +70,7 @@ public class GetCharacterByIdQueryHandlerTest
         // Arrange
         var query = new GetCharacterByIdQuery(_characterGuid);
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _characterGuid)
             .Returns(new EntityExistence(false, 0));
 
         // Act
@@ -90,10 +89,10 @@ public class GetCharacterByIdQueryHandlerTest
         var query = new GetCharacterByIdQuery(_characterGuid);
         var expectedException = new Exception("DB error");
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _characterGuid)
             .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .GetAsync(Arg.Any<IAsyncTransaction>(), _characterUlid)
+            .GetAsync(Arg.Any<IAsyncTransaction>(), _characterGuid)
             .ThrowsAsync(expectedException);
 
         // Act

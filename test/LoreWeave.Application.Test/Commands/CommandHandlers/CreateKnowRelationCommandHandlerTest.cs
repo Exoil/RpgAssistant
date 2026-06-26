@@ -22,8 +22,8 @@ public class CreateKnowRelationCommandHandlerTest
     private readonly IAsyncTransaction _transaction;
     private readonly CreateKnowRelationCommandHandler _sut;
 
-    private static readonly Ulid _fromCharacterId = Ulid.NewUlid();
-    private static readonly Ulid _toCharacterId = Ulid.NewUlid();
+    private static readonly Guid _fromCharacterId = Guid.CreateVersion7();
+    private static readonly Guid _toCharacterId = Guid.CreateVersion7();
 
     public CreateKnowRelationCommandHandlerTest()
     {
@@ -38,7 +38,7 @@ public class CreateKnowRelationCommandHandlerTest
 
     [Fact]
     [Trait(Constants.TraitName, Constants.TestTitle)]
-    public async Task InvokeAsync_WhenBothCharactersExist_ReturnsUlid()
+    public async Task InvokeAsync_WhenBothCharactersExist_ReturnsGuid()
     {
         // Arrange
         const string description = "They know each other";
@@ -55,7 +55,7 @@ public class CreateKnowRelationCommandHandlerTest
 
         // Assert
         result.IsSuccess.ShouldBeTrue("Know relation creation should succeed when both characters exist");
-        result.Value.ShouldNotBe(default(Ulid), "Returned ULID should not be empty");
+        result.Value.ShouldNotBe(default(Guid), "Returned Guid should not be empty");
         await _transaction.Received(1).CommitAsync();
         await _characterRepository
             .Received(1)

@@ -60,7 +60,7 @@ public class CreateCharacterEndpointTest : IntegrationTestBase
         await using var transaction = await session.BeginTransactionAsync();
 
         var characterRepository = new CharacterRepository();
-        var character = await characterRepository.GetAsync(transaction, id.GuidToUlid());
+        var character = await characterRepository.GetAsync(transaction, id);
 
         character.Name.ShouldBe(name);
     }

@@ -43,7 +43,7 @@ public class UpdateCharacterCommandHandlerTest
         // Arrange
         var command = new UpdateCharacterCommand(CharacterId, "UpdatedName", CurrentVersion);
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>())
             .Returns(new EntityExistence(true, CurrentVersion));
 
         // Act
@@ -61,7 +61,7 @@ public class UpdateCharacterCommandHandlerTest
         // Arrange
         var command = new UpdateCharacterCommand(CharacterId, "UpdatedName", CurrentVersion);
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>())
             .Returns(new EntityExistence(false, 0));
 
         // Act
@@ -79,7 +79,7 @@ public class UpdateCharacterCommandHandlerTest
         // Arrange
         var command = new UpdateCharacterCommand(CharacterId, "UpdatedName", CurrentVersion);
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>())
             .Returns(new EntityExistence(true, CurrentVersion + 1));
 
         // Act
@@ -98,10 +98,10 @@ public class UpdateCharacterCommandHandlerTest
         var command = new UpdateCharacterCommand(CharacterId, "UpdatedName", CurrentVersion);
         var expectedException = new Exception("DB error");
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>())
             .Returns(new EntityExistence(true, CurrentVersion));
         _characterRepository
-            .UpdateAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>(), Arg.Any<LoreWeave.Domain.Entities.Characters.Commands.UpdateCharacter>())
+            .UpdateAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>(), Arg.Any<LoreWeave.Domain.Entities.Characters.Commands.UpdateCharacter>())
             .ThrowsAsync(expectedException);
 
         // Act

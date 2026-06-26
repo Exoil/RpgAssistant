@@ -8,8 +8,8 @@ public sealed record DeleteKnowRelation : BaseValueObject
 {
     [SetsRequiredMembers]
     public DeleteKnowRelation(
-        Ulid fromCharacterId,
-        Ulid toCharacterId)
+        Guid fromCharacterId,
+        Guid toCharacterId)
     {
         if (fromCharacterId == toCharacterId)
         {
@@ -25,7 +25,7 @@ public sealed record DeleteKnowRelation : BaseValueObject
 
     protected override string ModelName => nameof(DeleteKnowRelation);
 
-    public required Ulid FromCharacterId { get; init; }
+    public required Guid FromCharacterId { get; init; }
 
-    public required Ulid ToCharacterId { get; init; }
+    public required Guid ToCharacterId { get; init; }
 }

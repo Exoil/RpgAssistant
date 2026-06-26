@@ -1,7 +1,7 @@
 namespace LoreWeave.Application.Commands;
 
 public record CreateKnowRelationCommand(
-    Ulid FromCharacterId,
-    Ulid ToCharacterId,
+    Guid FromCharacterId,
+    Guid ToCharacterId,
     string Description,
     bool IsStrongRelation);

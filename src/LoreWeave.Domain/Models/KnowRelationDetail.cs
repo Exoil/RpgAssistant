@@ -1,6 +1,6 @@
 namespace LoreWeave.Domain.Models;
 
 public sealed record KnowRelationDetail(
-    Ulid CharacterId,
+    Guid CharacterId,
     string Description,
     bool IsStrongRelation);

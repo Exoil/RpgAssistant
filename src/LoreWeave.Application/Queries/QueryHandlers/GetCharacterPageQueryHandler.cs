@@ -54,11 +54,11 @@ public class GetCharacterPageQueryHandler
 
             return character
                 .Select(x => new CharacterPayloadWithRelations(
-                    x.Id.ToGuid(),
+                    x.Id,
                     x.Name,
                     x.KnowRelations
                         .Select(relation => new KnowCharacterRelationPayload(
-                            relation.CharacterId.ToGuid(),
+                            relation.CharacterId,
                             relation.Description,
                             relation.IsStrongRelation))
                         .ToList()
