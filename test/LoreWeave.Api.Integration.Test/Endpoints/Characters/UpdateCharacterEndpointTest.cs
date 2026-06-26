@@ -113,7 +113,7 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
     public async Task UpdateNotExistingCharacterName()
     {
         // Arrange
-        var characterId = Ulid.NewUlid().ToGuid();
+        var characterId = Guid.CreateVersion7();
         var dataWithUpdate = new
         {
             Name = "Test",
@@ -139,7 +139,7 @@ public class UpdateCharacterEndpointTest : IntegrationTestBase
         await using var transaction = await session.BeginTransactionAsync();
 
         var characterRepository = new CharacterRepository();
-        var character = await characterRepository.GetAsync(transaction, id.GuidToUlid());
+        var character = await characterRepository.GetAsync(transaction, id);
 
         character.Name.ShouldBe(name);
     }

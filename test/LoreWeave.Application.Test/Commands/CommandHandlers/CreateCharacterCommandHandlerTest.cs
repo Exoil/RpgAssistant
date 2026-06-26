@@ -33,17 +33,17 @@ public class CreateCharacterCommandHandlerTest
 
     [Fact]
     [Trait(Constants.TraitName, Constants.TestTitle)]
-    public async Task InvokeAsync_WhenCharacterIsCreated_ReturnsUlid()
+    public async Task InvokeAsync_WhenCharacterIsCreated_ReturnsGuid()
     {
         // Arrange
-        var command = new CreateCharacterCommand(Ulid.NewUlid(), "TestCharacter");
+        var command = new CreateCharacterCommand(Guid.CreateVersion7(), "TestCharacter");
 
         // Act
         var result = await _sut.InvokeAsync(command);
 
         // Assert
         result.IsSuccess.ShouldBeTrue("Character creation should succeed");
-        result.Value.ShouldBe(command.Id, "Returned ULID should match the command Id");
+        result.Value.ShouldBe(command.Id, "Returned Guid should match the command Id");
         await _transaction.Received(1).CommitAsync();
     }
 
@@ -52,7 +52,7 @@ public class CreateCharacterCommandHandlerTest
     public async Task InvokeAsync_WhenRepositoryThrows_ReturnsExceptionAndRollsBack()
     {
         // Arrange
-        var command = new CreateCharacterCommand(Ulid.NewUlid(), "TestCharacter");
+        var command = new CreateCharacterCommand(Guid.CreateVersion7(), "TestCharacter");
         var expectedException = new Exception("DB error");
         _characterRepository
             .CreateAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<LoreWeave.Domain.Entities.Characters.Commands.CreateCharacter>())

@@ -26,8 +26,6 @@ public class GetKnowRelationQueryHandlerTest
 
     private static readonly Guid _fromGuid = Guid.NewGuid();
     private static readonly Guid _toGuid = Guid.NewGuid();
-    private static readonly Ulid _fromUlid = _fromGuid.GuidToUlid();
-    private static readonly Ulid _toUlid = _toGuid.GuidToUlid();
 
     public GetKnowRelationQueryHandlerTest()
     {
@@ -47,18 +45,18 @@ public class GetKnowRelationQueryHandlerTest
         // Arrange
         var query = new GetKnowRelationQuery(_fromGuid, _toGuid);
         var knowRelation = new KnowRelation(
-            Ulid.NewUlid(),
+            Guid.CreateVersion7(),
             "Knows well",
             isStrongRelation: true,
-            _fromUlid,
-            _toUlid,
+            _fromGuid,
+            _toGuid,
             version: 3);
 
         _characterRepository
-            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), _fromUlid, _toUlid)
+            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), _fromGuid, _toGuid)
             .Returns(new EntityExistence(true, knowRelation.Version));
         _characterRepository
-            .GetKnowRelationAsync(Arg.Any<IAsyncTransaction>(), _fromUlid, _toUlid)
+            .GetKnowRelationAsync(Arg.Any<IAsyncTransaction>(), _fromGuid, _toGuid)
             .Returns(knowRelation);
 
         // Act
@@ -82,7 +80,7 @@ public class GetKnowRelationQueryHandlerTest
         // Arrange
         var query = new GetKnowRelationQuery(_fromGuid, _toGuid);
         _characterRepository
-            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), _fromUlid, _toUlid)
+            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), _fromGuid, _toGuid)
             .Returns(new EntityExistence(false, -1));
 
         // Act
@@ -94,7 +92,7 @@ public class GetKnowRelationQueryHandlerTest
 
         await _characterRepository
             .DidNotReceive()
-            .GetKnowRelationAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>(), Arg.Any<Ulid>());
+            .GetKnowRelationAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>(), Arg.Any<Guid>());
     }
 
     [Fact]
@@ -105,10 +103,10 @@ public class GetKnowRelationQueryHandlerTest
         var query = new GetKnowRelationQuery(_fromGuid, _toGuid);
         var expectedException = new Exception("DB error");
         _characterRepository
-            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), _fromUlid, _toUlid)
+            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), _fromGuid, _toGuid)
             .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .GetKnowRelationAsync(Arg.Any<IAsyncTransaction>(), _fromUlid, _toUlid)
+            .GetKnowRelationAsync(Arg.Any<IAsyncTransaction>(), _fromGuid, _toGuid)
             .ThrowsAsync(expectedException);
 
         // Act

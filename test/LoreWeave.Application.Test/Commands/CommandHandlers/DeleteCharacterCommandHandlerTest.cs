@@ -42,7 +42,7 @@ public class DeleteCharacterCommandHandlerTest
         // Arrange
         var command = new DeleteCharacterCommand(_characterId);
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>())
             .Returns(new EntityExistence(true, 1));
 
         // Act
@@ -60,7 +60,7 @@ public class DeleteCharacterCommandHandlerTest
         // Arrange
         var command = new DeleteCharacterCommand(_characterId);
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>())
             .Returns(new EntityExistence(false, 0));
 
         // Act
@@ -79,7 +79,7 @@ public class DeleteCharacterCommandHandlerTest
         var command = new DeleteCharacterCommand(_characterId);
         var expectedException = new Exception("DB error");
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>())
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>())
             .Returns(new EntityExistence(true, 1));
         _characterRepository
             .DeleteAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<LoreWeave.Domain.Entities.Characters.Commands.DeleteCharacter>())

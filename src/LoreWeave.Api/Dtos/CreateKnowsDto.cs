@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
 using LoreWeave.Application.Commands;
-using LoreWeave.Domain.Extensions;
 
 namespace LoreWeave.Api.Dtos;
 
@@ -14,8 +13,8 @@ public record CreateKnowsDto(
 {
     public CreateKnowRelationCommand ToCommand() =>
         new(
-            FromCharacterId.GuidToUlid(),
-            ToCharacterId.GuidToUlid(),
+            FromCharacterId,
+            ToCharacterId,
             Description,
             IsStrongRelation);
 }

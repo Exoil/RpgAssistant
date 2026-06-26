@@ -45,7 +45,7 @@ public class UpdateKnowRelationCommandHandlerTest
         const string description = "Updated description";
         var command = new UpdateKnowRelationCommand(FromCharacterId, ToCharacterId, description, false, CurrentVersion);
         _characterRepository
-            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>(), Arg.Any<Ulid>())
+            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>(), Arg.Any<Guid>())
             .Returns(new EntityExistence(true, CurrentVersion));
 
         // Act
@@ -69,7 +69,7 @@ public class UpdateKnowRelationCommandHandlerTest
         // Arrange
         var command = new UpdateKnowRelationCommand(FromCharacterId, ToCharacterId, "Updated description", true, CurrentVersion);
         _characterRepository
-            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>(), Arg.Any<Ulid>())
+            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>(), Arg.Any<Guid>())
             .Returns(new EntityExistence(false, -1));
 
         // Act
@@ -90,7 +90,7 @@ public class UpdateKnowRelationCommandHandlerTest
         // Arrange
         var command = new UpdateKnowRelationCommand(FromCharacterId, ToCharacterId, "Updated description", true, CurrentVersion);
         _characterRepository
-            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>(), Arg.Any<Ulid>())
+            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>(), Arg.Any<Guid>())
             .Returns(new EntityExistence(true, CurrentVersion + 1));
 
         // Act
@@ -126,7 +126,7 @@ public class UpdateKnowRelationCommandHandlerTest
         var command = new UpdateKnowRelationCommand(FromCharacterId, ToCharacterId, "Updated description", true, CurrentVersion);
         var expectedException = new Exception("DB error");
         _characterRepository
-            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Ulid>(), Arg.Any<Ulid>())
+            .KnowRelationExistsAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<Guid>(), Arg.Any<Guid>())
             .Returns(new EntityExistence(true, CurrentVersion));
         _characterRepository
             .UpdateKnowRelationAsync(Arg.Any<IAsyncTransaction>(), Arg.Any<LoreWeave.Domain.Entities.Knows.Commands.UpdateKnowRelation>())

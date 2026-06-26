@@ -7,7 +7,7 @@ paths:
 
 These rules apply when editing files under `src/LoreWeave.Domain/`.
 
-- Entities are `sealed class` with `Ulid Id { get; private init; }` and a
+- Entities are `sealed class` with `Guid Id { get; private init; }` and a
   `Version` property.
 - Constructors take a Domain *command* record (e.g. `CreateCharacter`) — not
   loose parameters.

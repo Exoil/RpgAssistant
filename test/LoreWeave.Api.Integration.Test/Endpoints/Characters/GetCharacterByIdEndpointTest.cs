@@ -44,7 +44,7 @@ public class GetCharacterByIdEndpointTest : IntegrationTestBase
     public async Task GetCharacter_GetNotFound()
     {
         // Arrange
-        var characterId = Ulid.NewUlid().ToGuid();
+        var characterId = Guid.CreateVersion7();
 
         // Act
         var responseGet = await Client.GetAsync($"{Endpoint}/{characterId}", CancellationToken.None);

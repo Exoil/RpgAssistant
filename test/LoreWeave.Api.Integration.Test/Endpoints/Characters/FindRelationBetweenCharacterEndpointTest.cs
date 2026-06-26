@@ -91,7 +91,7 @@ public class FindRelationBetweenCharacterEndpointTest : IntegrationTestBase
     {
         // Arrange
         var toId = await CreateCharacterAsync("Existing");
-        var nonExistentId = Ulid.NewUlid().UlidToGuid();
+        var nonExistentId = Guid.CreateVersion7();
 
         // Act
         var response = await Client.GetAsync(
@@ -108,7 +108,7 @@ public class FindRelationBetweenCharacterEndpointTest : IntegrationTestBase
     {
         // Arrange
         var fromId = await CreateCharacterAsync("Existing");
-        var nonExistentId = Ulid.NewUlid().UlidToGuid();
+        var nonExistentId = Guid.CreateVersion7();
 
         // Act
         var response = await Client.GetAsync(

@@ -43,15 +43,15 @@ public class GetCharacterPageQueryHandlerTest
     {
         // Arrange
         var query = new GetCharacterPageQuery(1, 10, "Name", "Asc", null);
-        var knownCharacterId = Ulid.NewUlid();
+        var knownCharacterId = Guid.CreateVersion7();
         var characters = new List<CharacterWithKnowRelation>
         {
-            new(Ulid.NewUlid(), "CharacterA",
+            new(Guid.CreateVersion7(), "CharacterA",
                 new List<KnowRelationDetail>
                 {
                     new(knownCharacterId, "Childhood friends", true)
                 }.AsReadOnly()),
-            new(Ulid.NewUlid(), "CharacterB", new List<KnowRelationDetail>().AsReadOnly())
+            new(Guid.CreateVersion7(), "CharacterB", new List<KnowRelationDetail>().AsReadOnly())
         }.AsReadOnly();
 
         _characterRepository
@@ -69,7 +69,7 @@ public class GetCharacterPageQueryHandlerTest
         result.Value.First().KnowCharacters.Count.ShouldBe(1, "First character should have 1 relation");
 
         var relation = result.Value.First().KnowCharacters.First();
-        relation.CharacterId.ShouldBe(knownCharacterId.ToGuid(), "Relation should point to the known character");
+        relation.CharacterId.ShouldBe(knownCharacterId, "Relation should point to the known character");
         relation.Description.ShouldBe("Childhood friends", "Relation description should match");
         relation.IsStrongRelation.ShouldBeTrue("Relation should be marked as strong");
 

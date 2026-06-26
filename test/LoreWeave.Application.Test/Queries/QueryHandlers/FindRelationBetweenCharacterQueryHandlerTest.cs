@@ -30,8 +30,6 @@ public class FindRelationBetweenCharacterQueryHandlerTest
 
     private static readonly Guid _fromCharacterGuid = Guid.NewGuid();
     private static readonly Guid _toCharacterGuid = Guid.NewGuid();
-    private static readonly Ulid _fromCharacterUlid = _fromCharacterGuid.GuidToUlid();
-    private static readonly Ulid _toCharacterUlid = _toCharacterGuid.GuidToUlid();
 
     public FindRelationBetweenCharacterQueryHandlerTest()
     {
@@ -49,19 +47,19 @@ public class FindRelationBetweenCharacterQueryHandlerTest
     public async Task InvokeAsync_WhenPathExists_ReturnsRelationPathPayload()
     {
         // Arrange
-        var middleUlid = Ulid.NewUlid();
+        var middleGuid = Guid.CreateVersion7();
         var query = new FindRelationBetweenCharacterQuery(_fromCharacterGuid, _toCharacterGuid, 10);
 
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterGuid)
             .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterGuid)
             .Returns(new EntityExistence(true, 1));
         _characterRepository
             .FindPathBetweenCharactersAsync(
-                Arg.Any<IAsyncTransaction>(), _fromCharacterUlid, _toCharacterUlid, 10)
-            .Returns(new List<Ulid> { _fromCharacterUlid, middleUlid, _toCharacterUlid }.AsReadOnly());
+                Arg.Any<IAsyncTransaction>(), _fromCharacterGuid, _toCharacterGuid, 10)
+            .Returns(new List<Guid> { _fromCharacterGuid, middleGuid, _toCharacterGuid }.AsReadOnly());
 
         // Act
         var result = await _sut.InvokeAsync(query);
@@ -83,15 +81,15 @@ public class FindRelationBetweenCharacterQueryHandlerTest
         var query = new FindRelationBetweenCharacterQuery(_fromCharacterGuid, _toCharacterGuid, 10);
 
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterGuid)
             .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterGuid)
             .Returns(new EntityExistence(true, 1));
         _characterRepository
             .FindPathBetweenCharactersAsync(
-                Arg.Any<IAsyncTransaction>(), _fromCharacterUlid, _toCharacterUlid, 10)
-            .Returns(Array.Empty<Ulid>().AsReadOnly());
+                Arg.Any<IAsyncTransaction>(), _fromCharacterGuid, _toCharacterGuid, 10)
+            .Returns(Array.Empty<Guid>().AsReadOnly());
 
         // Act
         var result = await _sut.InvokeAsync(query);
@@ -110,7 +108,7 @@ public class FindRelationBetweenCharacterQueryHandlerTest
         var query = new FindRelationBetweenCharacterQuery(_fromCharacterGuid, _toCharacterGuid, 10);
 
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterGuid)
             .Returns(new EntityExistence(false, -1));
 
         // Act
@@ -129,10 +127,10 @@ public class FindRelationBetweenCharacterQueryHandlerTest
         var query = new FindRelationBetweenCharacterQuery(_fromCharacterGuid, _toCharacterGuid, 10);
 
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterGuid)
             .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterGuid)
             .Returns(new EntityExistence(false, -1));
 
         // Act
@@ -152,14 +150,14 @@ public class FindRelationBetweenCharacterQueryHandlerTest
         var expectedException = new Exception("DB error");
 
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterGuid)
             .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterGuid)
             .Returns(new EntityExistence(true, 1));
         _characterRepository
             .FindPathBetweenCharactersAsync(
-                Arg.Any<IAsyncTransaction>(), _fromCharacterUlid, _toCharacterUlid, 10)
+                Arg.Any<IAsyncTransaction>(), _fromCharacterGuid, _toCharacterGuid, 10)
             .ThrowsAsync(expectedException);
 
         // Act
@@ -179,15 +177,15 @@ public class FindRelationBetweenCharacterQueryHandlerTest
         var query = new FindRelationBetweenCharacterQuery(_fromCharacterGuid, _toCharacterGuid, maxHops);
 
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _fromCharacterGuid)
             .Returns(new EntityExistence(true, 1));
         _characterRepository
-            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterUlid)
+            .CharacterExistsAsync(Arg.Any<IAsyncTransaction>(), _toCharacterGuid)
             .Returns(new EntityExistence(true, 1));
         _characterRepository
             .FindPathBetweenCharactersAsync(
-                Arg.Any<IAsyncTransaction>(), _fromCharacterUlid, _toCharacterUlid, maxHops)
-            .Returns(new List<Ulid> { _fromCharacterUlid, _toCharacterUlid }.AsReadOnly());
+                Arg.Any<IAsyncTransaction>(), _fromCharacterGuid, _toCharacterGuid, maxHops)
+            .Returns(new List<Guid> { _fromCharacterGuid, _toCharacterGuid }.AsReadOnly());
 
         // Act
         await _sut.InvokeAsync(query);
@@ -197,8 +195,8 @@ public class FindRelationBetweenCharacterQueryHandlerTest
             .Received(1)
             .FindPathBetweenCharactersAsync(
                 Arg.Any<IAsyncTransaction>(),
-                _fromCharacterUlid,
-                _toCharacterUlid,
+                _fromCharacterGuid,
+                _toCharacterGuid,
                 maxHops);
     }
 }

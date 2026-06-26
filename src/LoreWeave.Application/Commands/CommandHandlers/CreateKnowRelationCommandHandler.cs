@@ -12,7 +12,7 @@ using ILogger = Serilog.ILogger;
 
 namespace LoreWeave.Application.Commands.CommandHandlers;
 
-public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowRelationCommand, Result<Ulid, Exception>>
+public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowRelationCommand, Result<Guid, Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
     private readonly ILogger _logger;
@@ -28,11 +28,11 @@ public class CreateKnowRelationCommandHandler : IAsyncRequestHandler<CreateKnowR
         _logger = logger;
     }
 
-    public async ValueTask<Result<Ulid, Exception>> InvokeAsync(
+    public async ValueTask<Result<Guid, Exception>> InvokeAsync(
         CreateKnowRelationCommand request,
         CancellationToken cancellationToken = new())
     {
-        var id = Ulid.NewUlid();
+        var id = Guid.CreateVersion7();
 
         await using var transaction = await _transactionFactory.CreateAsync();
 

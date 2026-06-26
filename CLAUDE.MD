@@ -58,16 +58,13 @@ For the canonical schemas list see the top-level `../CLAUDE.md`.
 
 ## ID conventions
 
-- **Internal (Domain, Application, Infrastructure)**: `Ulid`.
-- **API boundary (DTOs, endpoints)**: `Guid`.
-- Convert at boundaries with `Domain.Extensions`:
-    - `Guid → Ulid`: `.GuidToUlid()`
-    - `Ulid → Guid`: `.UlidToGuid()` / `.ToGuid()`
-    - `Ulid → DB string`: `.ToDatabaseId()`
-    - `DB string → Ulid`: `.DatabaseIdToUlid()`
-- New entity identifiers are generated as `Ulid.NewUlid()` in commands.
-- References to existing entities flow in as `Guid` and are converted at the
-  handler boundary.
+- Identifiers are `Guid` everywhere — Domain, Application, Infrastructure and the
+  API boundary. There is no internal/boundary type conversion.
+- New entity identifiers are generated as `Guid.CreateVersion7()` in commands
+  (version-7 GUIDs are time-ordered, so inserts stay sequential).
+- The database stores ids as strings. Convert with `Domain.Extensions.GuidExtensions`:
+    - `Guid → DB string`: `.ToDatabaseId()`
+    - `DB string → Guid`: `.DatabaseIdToGuid()`
 
 ## Optimistic concurrency
 

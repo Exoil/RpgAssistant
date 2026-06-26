@@ -104,7 +104,7 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
         var createRelationRequest = new
         {
             FromCharacterId = fromCharacterId,
-            ToCharacterId = Ulid.NewUlid().UlidToGuid(),
+            ToCharacterId = Guid.CreateVersion7(),
             Description = "Test",
             IsStrongRelation = true
         };
@@ -133,7 +133,7 @@ public class CreateKnowRelationEndpointTest : IntegrationTestBase
 
         var createRelationRequest = new
         {
-            FromCharacterId = Ulid.NewUlid().UlidToGuid(),
+            FromCharacterId = Guid.CreateVersion7(),
             ToCharacterId = toCharacterId,
             Description = "Test",
             IsStrongRelation = true

@@ -5,7 +5,6 @@ using Neo4j.Driver;
 using LoreWeave.Application.Models;
 using LoreWeave.Domain.Exceptions;
 using LoreWeave.Domain.Exceptions.Enums;
-using LoreWeave.Domain.Extensions;
 using LoreWeave.Domain.Factories;
 using LoreWeave.Domain.Repositories;
 
@@ -38,14 +37,14 @@ public class FindRelationBetweenCharacterQueryHandler
 
         try
         {
-            var fromCharacterIdAsUlid = request.FromCharacterId.GuidToUlid();
-            var toCharacterIdAsUlid = request.ToCharacterId.GuidToUlid();
+            var fromCharacterId = request.FromCharacterId;
+            var toCharacterId = request.ToCharacterId;
 
             var fromCharacterExists = await _characterRepository
-                .CharacterExistsAsync(transaction, fromCharacterIdAsUlid);
+                .CharacterExistsAsync(transaction, fromCharacterId);
 
             var toCharacterExists = await _characterRepository
-                .CharacterExistsAsync(transaction, toCharacterIdAsUlid);
+                .CharacterExistsAsync(transaction, toCharacterId);
 
             if (!fromCharacterExists.Exists)
             {
@@ -61,8 +60,8 @@ public class FindRelationBetweenCharacterQueryHandler
 
             var path = await _characterRepository.FindPathBetweenCharactersAsync(
                 transaction,
-                fromCharacterIdAsUlid,
-                toCharacterIdAsUlid,
+                fromCharacterId,
+                toCharacterId,
                 request.MaxHops);
 
             if (path.Count == 0)
@@ -75,10 +74,7 @@ public class FindRelationBetweenCharacterQueryHandler
                 return new RelationPathPayload([], 0);
             }
 
-            var characterIds = path
-                .Select(id => id.UlidToGuid())
-                .ToList()
-                .AsReadOnly();
+            var characterIds = path;
 
             _logger.Information(
                 "Found path with {Hops} hops between {FromId} and {ToId}",

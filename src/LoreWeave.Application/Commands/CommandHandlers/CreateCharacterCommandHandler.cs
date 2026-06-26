@@ -11,7 +11,7 @@ using ILogger = Serilog.ILogger;
 
 namespace LoreWeave.Application.Commands.CommandHandlers;
 
-public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacterCommand, Result<Ulid, Exception>>
+public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacterCommand, Result<Guid, Exception>>
 {
     private readonly ICharacterRepository _characterRepository;
     private readonly ILogger _logger;
@@ -28,7 +28,7 @@ public class CreateCharacterCommandHandler : IAsyncRequestHandler<CreateCharacte
     }
 
 
-    public async ValueTask<Result<Ulid, Exception>> InvokeAsync(
+    public async ValueTask<Result<Guid, Exception>> InvokeAsync(
         CreateCharacterCommand request,
         CancellationToken cancellationToken = default)
     {

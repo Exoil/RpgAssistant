@@ -31,7 +31,7 @@ public class CharacterRepository : ICharacterRepository
         await transaction.RunAsync(query);
     }
 
-    public async Task UpdateAsync(IAsyncTransaction transaction, Ulid id, UpdateCharacter updateCharacter)
+    public async Task UpdateAsync(IAsyncTransaction transaction, Guid id, UpdateCharacter updateCharacter)
     {
         const string queryString = @"
             MATCH (ch:Character {Id: $CharacterId })
@@ -48,7 +48,7 @@ public class CharacterRepository : ICharacterRepository
         await transaction.RunAsync(query);
     }
 
-    public async Task<EntityExistence> CharacterExistsAsync(IAsyncTransaction transaction, Ulid id)
+    public async Task<EntityExistence> CharacterExistsAsync(IAsyncTransaction transaction, Guid id)
     {
         const string queryString = @"
             MATCH (ch:Character {Id: $Id })
@@ -85,7 +85,7 @@ public class CharacterRepository : ICharacterRepository
         await transaction.RunAsync(query);
     }
 
-    public async Task<Character> GetAsync(IAsyncTransaction transaction, Ulid id)
+    public async Task<Character> GetAsync(IAsyncTransaction transaction, Guid id)
     {
         const string queryString = @"
             MATCH (ch:Character {Id: $Id})
@@ -167,8 +167,8 @@ public class CharacterRepository : ICharacterRepository
 
     public async Task<EntityExistence> KnowRelationExistsAsync(
         IAsyncTransaction transaction,
-        Ulid fromCharacterId,
-        Ulid toCharacterId)
+        Guid fromCharacterId,
+        Guid toCharacterId)
     {
         const string queryString = @"
             MATCH (fromCh:Character {Id: $FromCharacterId})-[r:KNOWS]->(toCh:Character {Id: $ToCharacterId})
@@ -195,8 +195,8 @@ public class CharacterRepository : ICharacterRepository
 
     public async Task<KnowRelation> GetKnowRelationAsync(
         IAsyncTransaction transaction,
-        Ulid fromCharacterId,
-        Ulid toCharacterId)
+        Guid fromCharacterId,
+        Guid toCharacterId)
     {
         const string queryString = @"
             MATCH (fromCh:Character {Id: $FromCharacterId})-[r:KNOWS]->(toCh:Character {Id: $ToCharacterId})
@@ -258,10 +258,10 @@ public class CharacterRepository : ICharacterRepository
         await transaction.RunAsync(query);
     }
 
-    public async Task<IReadOnlyCollection<Ulid>> FindPathBetweenCharactersAsync(
+    public async Task<IReadOnlyCollection<Guid>> FindPathBetweenCharactersAsync(
         IAsyncTransaction transaction,
-        Ulid fromCharacterId,
-        Ulid toCharacterId,
+        Guid fromCharacterId,
+        Guid toCharacterId,
         int maxHops)
     {
         var queryString = $@"
@@ -281,12 +281,12 @@ public class CharacterRepository : ICharacterRepository
 
         if (records.Count == 0)
         {
-            return Array.Empty<Ulid>();
+            return Array.Empty<Guid>();
         }
 
         return records[0]["CharacterIds"]
             .As<List<string>>()
-            .Select(id => id.DatabaseIdToUlid())
+            .Select(id => id.DatabaseIdToGuid())
             .ToList()
             .AsReadOnly();
     }

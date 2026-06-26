@@ -41,7 +41,7 @@ namespace LoreWeave.Application.Commands;
 
 public record MyOperationCommand(Guid Id, string SomeField);
 ```
-- Use `Ulid` for new entity identifiers, `Guid` for references to existing entities.
+- Identifiers are `Guid`. Generate new entity ids with `Guid.CreateVersion7()`.
 - Use primitive types only — no domain objects in command records.
 
 ### 2. Create the handler — `Commands/CommandHandlers/`
@@ -100,9 +100,9 @@ public class MyOperationCommandHandler : IAsyncRequestHandler<MyOperationCommand
 **Rules:**
 - Always `await using var transaction = await _transactionFactory.CreateAsync()` — never pass raw sessions.
 - Always `CommitAsync()` on success, `RollbackAsync()` in catch.
-- Convert `Guid` → `Ulid` with `.GuidToUlid()` (from `Domain.Extensions`) before passing to the repository.
+- Ids are `Guid` end-to-end — pass `request.Id` straight to the repository, no conversion.
 - Return domain exceptions (`NotFoundException`, `PreconditionException`, `UnprocessableContentException`) directly — they implicitly convert to `Result`.
-- If the command creates a new entity and must return its Id, use `Result<Ulid, Exception>` instead of `Result<Exception>`.
+- If the command creates a new entity and must return its Id, use `Result<Guid, Exception>` instead of `Result<Exception>`.
 
 ### 3. Register the handler — `IoC/HandlerConfiguration.cs`
 ```csharp
@@ -143,7 +143,7 @@ public class MyQueryHandler : IAsyncRequestHandler<MyQuery, Result<MyPayload, Ex
         {
             // 1. Optional: ExistsAsync check → return NotFoundException if missing
             // 2. GetAsync from repository
-            // 3. Map domain entity → payload (convert Ulid → Guid with .ToGuid())
+            // 3. Map domain entity → payload (ids are already Guid)
             return new MyPayload(...);
         }
         catch (Exception exception)
@@ -158,7 +158,6 @@ public class MyQueryHandler : IAsyncRequestHandler<MyQuery, Result<MyPayload, Ex
 **Rules:**
 - Queries do **not** commit or rollback — they are read-only.
 - Always map domain entities to payload models before returning (never leak domain types).
-- Convert `Ulid` → `Guid` with `.ToGuid()` in the mapping step.
 
 ### 4. Register the handler — `IoC/HandlerConfiguration.cs`
 ```csharp
@@ -171,7 +170,7 @@ public class MyQueryHandler : IAsyncRequestHandler<MyQuery, Result<MyPayload, Ex
 
 When an operation requires a character to exist:
 ```csharp
-var exists = await _characterRepository.ExistsAsync(transaction, idAsUlid);
+var exists = await _characterRepository.ExistsAsync(transaction, request.Id);
 
 if (!exists.Exists)
 {

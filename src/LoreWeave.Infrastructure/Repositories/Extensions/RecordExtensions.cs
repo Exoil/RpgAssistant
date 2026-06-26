@@ -13,7 +13,7 @@ public static class RecordExtensions
     public static Character ToCharacter(this IRecord record)
     {
         var createCharacter = new CreateCharacter(
-            record["Id"].As<string>().DatabaseIdToUlid(),
+            record["Id"].As<string>().DatabaseIdToGuid(),
             record["Name"].As<string>());
 
         return new Character(createCharacter, record["Version"].As<int>());
@@ -22,12 +22,12 @@ public static class RecordExtensions
     public static CharacterWithKnowRelation ToCharacterWithKnowRelation(this IRecord record)
     {
         var character = new CharacterWithKnowRelation(
-            record["Id"].As<string>().DatabaseIdToUlid(),
+            record["Id"].As<string>().DatabaseIdToGuid(),
             record["Name"].As<string>(),
             record["KnowRelations"]
                 .As<List<IReadOnlyDictionary<string, object>>>()
                 .Select(relation => new KnowRelationDetail(
-                    relation["Id"].As<string>().DatabaseIdToUlid(),
+                    relation["Id"].As<string>().DatabaseIdToGuid(),
                     relation["Description"].As<string>(),
                     relation["IsStrong"].As<bool>()))
                 .ToList()
@@ -38,10 +38,10 @@ public static class RecordExtensions
 
     public static KnowRelation ToKnowRelation(this IRecord record) =>
         new(
-            record["Id"].As<string>().DatabaseIdToUlid(),
+            record["Id"].As<string>().DatabaseIdToGuid(),
             record["Description"].As<string>(),
             record["IsStrong"].As<bool>(),
-            record["FromCharacterId"].As<string>().DatabaseIdToUlid(),
-            record["ToCharacterId"].As<string>().DatabaseIdToUlid(),
+            record["FromCharacterId"].As<string>().DatabaseIdToGuid(),
+            record["ToCharacterId"].As<string>().DatabaseIdToGuid(),
             record["Version"].As<int>());
 }

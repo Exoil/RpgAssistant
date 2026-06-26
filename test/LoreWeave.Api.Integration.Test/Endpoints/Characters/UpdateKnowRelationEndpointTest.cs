@@ -148,8 +148,8 @@ public class UpdateKnowRelationEndpointTest : IntegrationTestBase
             RETURN r.Description AS Description, r.IsStrong AS IsStrong, r.Version AS Version";
         var query = new Query(queryString, new
         {
-            FromCharacterId = fromId.GuidToUlid().ToDatabaseId(),
-            ToCharacterId = toId.GuidToUlid().ToDatabaseId()
+            FromCharacterId = fromId.ToDatabaseId(),
+            ToCharacterId = toId.ToDatabaseId()
         });
 
         var cursor = await transaction.RunAsync(query);
